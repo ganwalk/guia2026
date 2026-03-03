@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Rendimentos Logarítmica</title>
+    <!-- Incluindo Tailwind CSS para os estilos utilitários -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Importando a fonte Anek Latin do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;500;600;700&display=swap');
+
+        /* Estilização principal do contêiner da calculadora */
+        .investment-wrapper {
+            font-family: 'Anek Latin', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .08);
+            position: relative;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .text-brand-yellow { color: #B8860B; } 
+
+        .num {
+            font-size: clamp(2rem, 8vw, 3rem);
+            transform-origin: bottom center;
+            display: inline-block;
+            transition: transform 0.2s ease-out;
+        }
+
+        .num-static { 
+            font-size: clamp(2rem, 8vw, 3rem);
+            transform-origin: bottom center;
+            display: inline-block;
+            transform: scale(0.8);
+            transition: none;
+        }
+
+        /* Estilização base do input range */
+        .investment-wrapper input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: .5rem;
+            border-radius: .25rem;
+            background: #d1d5db;
+            outline: 0;
+            cursor: pointer;
+            accent-color: #efbf4e;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Thumb Chrome/Safari */
+        .investment-wrapper input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #efbf4e;
+            border: 3px solid #fff;
+            box-shadow: 0 0 3px rgba(0, 0, 0, .25);
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Thumb Firefox */
+        .investment-wrapper input[type=range]::-moz-range-thumb {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: #efbf4e;
+            border: 3px solid #fff;
+            box-shadow: 0 0 3px rgba(0, 0, 0, .25);
+            cursor: pointer;
+        }
+
+        .investment-wrapper h3 { font-size: 1.25rem; line-height: 1.5rem; margin: 0; }
+        .investment-wrapper p  { margin: 0; }
+
+        .slider-popup {
+            position: absolute;
+            left: 0; 
+            transform: translate(calc(-100% - 12px), -50%);
+            background: #efbf4e;
+            color: #1f2937;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+
+        .slider-popup::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent transparent #efbf4e;
+        }
+
+        .slider-popup.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-4">
+
+    <div class="investment-wrapper" id="investmentWidget">
+
+        <!-- Sliders -->
+        <div class="grid grid-cols-1 gap-8">
+            
+            <!-- 
+                Slider 1: Investimento Inicial 
+            -->
+            <div class="w-full relative">
+                <div class="flex justify-between items-center mb-1">
+                    <p class="text-gray-500 text-sm font-medium">Seu investimento inicial</p>
+                    <span id="initialValue" class="num text-brand-yellow font-semibold text-xl">R$ 0</span>
+                </div>
+                <!-- Escala 0-1000 mapeada logaritmicamente no JS -->
+                <input id="investmentSlider" type="range" min="0" max="1000" step="1" value="232">
+                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
+                    <span>R$ 1 mil</span><span>R$ 10 mi</span>
+                </div>
+                 <!-- Balão de Popup -->
+                <div id="sliderPopup" class="slider-popup">
+                    Arraste para simular
+                </div>
+            </div>
+
+            <!-- 
+                Slider 2: Aporte Mensal 
+            -->
+            <div class="w-full">
+                <div class="flex justify-between items-center mb-1">
+                    <p class="text-gray-500 text-sm font-medium">Aporte mensal adicional</p>
+                    <span id="monthlyValue" class="num text-brand-yellow font-semibold text-xl">R$ 0</span>
+                </div>
+                <input id="monthlySlider" type="range" min="0" max="1000" step="1" value="387">
+                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
+                    <span>R$ 0</span><span>R$ 500 mil</span>
+                </div>
+            </div>
+
+            <!-- Slider 3: Tempo (Agora MAX 9 Anos) -->
+            <div class="w-full">
+                <div class="flex justify-between items-center mb-1">
+                    <p class="text-gray-500 text-sm font-medium">Anos que você investe</p>
+                    <span id="timeValue" class="num text-brand-yellow font-semibold text-xl">0 anos</span>
+                </div>
+                <!-- Alterado max para 9 -->
+                <input id="timeSlider" type="range" min="1" max="9" step="1" value="5">
+                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
+                    <span>1 ano</span><span>9 anos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exibição do Valor Final -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg items-end">
+             <div class="text-center">
+                <p class="text-gray-500 text-sm font-medium">Valor estimado com uma carteira diversificada¹</p>
+                <span id="finalValue" class="num text-green-700 font-semibold">R$ 0</span>
+             </div>
+             <div class="text-center">
+                <p class="text-gray-500 text-sm font-medium">Valor estimado na poupança²</p>
+                <span id="savingsValue" class="num-static text-red-600 font-semibold">R$ 0</span>
+             </div>
+        </div>
+
+        <!-- Disclaimers alinhados à esquerda -->
+        <div class="text-xs text-gray-400 text-left leading-tight space-y-1">
+            <p>
+                ¹ Simulação baseada em uma carteira teórica: 50% em títulos públicos indexados à inflação, seguindo o índice IMA-B, e 50% em AUVP11 (que replica um índice que seleciona ações através de fundamentos, metodologia ensinada na AUVP Escola). Para o prazo selecionado, a rentabilidade histórica anualizada utilizada é de <span id="disclaimerRate" class="font-bold text-gray-500">0,00%</span> a.a.<br>
+                ² Regra da Poupança: 0,5% a.m. + TR (TR estimada em 0,09% a.m.).
+            </p>
+            <p class="opacity-75">
+                Resultados passados não garantem retornos futuros. Os valores são estimativas brutas e não consideram impostos ou inflação no período.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const investmentSlider = document.getElementById('investmentSlider');
+        const monthlySlider = document.getElementById('monthlySlider'); 
+        const timeSlider = document.getElementById('timeSlider');
+
+        const initialSpan = document.getElementById('initialValue');
+        const monthlySpan = document.getElementById('monthlyValue'); 
+        const timeSpan = document.getElementById('timeValue');
+        const finalSpan = document.getElementById('finalValue');
+        const savingsSpan = document.getElementById('savingsValue');
+        const disclaimerRateSpan = document.getElementById('disclaimerRate');
+        
+        const popup = document.getElementById('sliderPopup');
+        const widget = document.getElementById('investmentWidget');
+
+        // --- DADOS DE RENTABILIDADE POR ANO (Extraídos das Imagens) ---
+        // A chave é o número de anos (1 a 9), o valor é a taxa a.a. decimal (ex: 0.2287 = 22,87%)
+        const ANNUAL_RATES_BY_YEAR = {
+            1: 0.2287,  // 22.87%
+            2: 0.1311,  // 13.11%
+            3: 0.1766,  // 17.66%
+            4: 0.1508,  // 15.08%
+            5: 0.1030,  // 10.30%
+            6: 0.0865,  // 8.65%
+            7: 0.1056,  // 10.56%
+            8: 0.1090,  // 10.90%
+            9: 0.1228   // 12.28%
+        };
+        
+        // Regra Poupança: 0.5% fixo + TR (0.09% Est.)
+        const FIXED_MONTHLY_SAVINGS = 0.005; 
+        const ESTIMATED_MONTHLY_TR = 0.0009; 
+        const MONTHLY_RATE_SAVINGS = FIXED_MONTHLY_SAVINGS + ESTIMATED_MONTHLY_TR;
+        
+        // Função auxiliar para converter taxa anual para mensal
+        const calculateMonthlyRate = (annualRate) => Math.pow(1 + annualRate, 1/12) - 1;
+
+        // --- CONFIGURAÇÃO LOGARÍTMICA ---
+        const INITIAL_MIN_REAL = 1000;
+        const INITIAL_MAX_REAL = 10000000; 
+        const MONTHLY_MIN_LOG_START = 50; 
+        const MONTHLY_MAX_REAL = 500000;
+
+        // Função de arredondamento inteligente
+        function smartRound(value) {
+            if (value < 1000) return Math.round(value / 50) * 50; 
+            if (value < 10000) return Math.round(value / 100) * 100;
+            if (value < 100000) return Math.round(value / 500) * 500;
+            if (value < 1000000) return Math.round(value / 1000) * 1000;
+            return Math.round(value / 5000) * 5000;
+        }
+
+        // Mapeamento Logarítmico: Investimento Inicial
+        function getLogInitialInvestment(position) {
+            const minp = 0;
+            const maxp = 1000;
+            const minv = Math.log(INITIAL_MIN_REAL);
+            const maxv = Math.log(INITIAL_MAX_REAL);
+            const scale = (maxv - minv) / (maxp - minp);
+            const value = Math.exp(minv + scale * (position - minp));
+            return smartRound(value);
+        }
+
+        // Mapeamento Logarítmico: Aporte Mensal
+        function getLogMonthlyContribution(position) {
+            if (position == 0) return 0;
+            const minp = 1; 
+            const maxp = 1000;
+            const minv = Math.log(MONTHLY_MIN_LOG_START);
+            const maxv = Math.log(MONTHLY_MAX_REAL);
+            const scale = (maxv - minv) / (maxp - minp);
+            const value = Math.exp(minv + scale * (position - minp));
+            return smartRound(value);
+        }
+
+        const formatCurrency = (value, showCents = true) => {
+            const options = {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: showCents ? 2 : 0,
+                maximumFractionDigits: showCents ? 2 : 0,
+            };
+            return value.toLocaleString('pt-BR', options);
+        };
+        
+        const formatPercent = (value) => {
+            return (value * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+        };
+
+        const calculateFutureValueAnnuity = (monthlyContribution, monthlyRate, totalMonths) => {
+            if (monthlyContribution <= 0) return 0;
+            const fvFactor = (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate;
+            return monthlyContribution * fvFactor * (1 + monthlyRate); 
+        }
+
+        function updateValues() {
+            // 1. Valores dos Inputs
+            const initialInvestment = getLogInitialInvestment(parseInt(investmentSlider.value));
+            const monthlyContribution = getLogMonthlyContribution(parseInt(monthlySlider.value));
+            const years = parseInt(timeSlider.value, 10);
+            const totalMonths = years * 12;
+
+            // 2. Determinar a taxa anualizada com base no ano selecionado
+            const currentAnnualRate = ANNUAL_RATES_BY_YEAR[years] || 0.12; // fallback
+            const currentMonthlyRate = calculateMonthlyRate(currentAnnualRate);
+
+            // 3. Cálculos Carteira (usando a taxa dinâmica)
+            const fvInitialPortfolio = initialInvestment * Math.pow((1 + currentMonthlyRate), totalMonths);
+            const fvMonthlyPortfolio = calculateFutureValueAnnuity(monthlyContribution, currentMonthlyRate, totalMonths);
+            const finalValue = fvInitialPortfolio + fvMonthlyPortfolio;
+
+            // 4. Cálculos Poupança
+            const fvInitialSavings = initialInvestment * Math.pow((1 + MONTHLY_RATE_SAVINGS), totalMonths);
+            const fvMonthlySavings = calculateFutureValueAnnuity(monthlyContribution, MONTHLY_RATE_SAVINGS, totalMonths);
+            const savingsFinalValue = fvInitialSavings + fvMonthlySavings;
+
+            // 5. Atualização da Interface
+            const scale = 0.8 + ((years - timeSlider.min) / (timeSlider.max - timeSlider.min)) * 0.2;
+            
+            initialSpan.textContent = formatCurrency(initialInvestment, false);
+            monthlySpan.textContent = formatCurrency(monthlyContribution, false); 
+            timeSpan.textContent = `${years} ano${years > 1 ? 's' : ''}`;
+            
+            finalSpan.textContent = formatCurrency(finalValue, true);
+            savingsSpan.textContent = formatCurrency(savingsFinalValue, true); 
+            
+            // Atualiza o disclaimer com a taxa usada
+            disclaimerRateSpan.textContent = formatPercent(currentAnnualRate);
+
+            finalSpan.style.transform = `scale(${scale})`;
+            
+            movePopupToThumb();
+        }
+
+        function movePopupToThumb() {
+            const percent = (investmentSlider.value - investmentSlider.min) / (investmentSlider.max - investmentSlider.min);
+            const thumbX = investmentSlider.offsetLeft + percent * investmentSlider.offsetWidth;
+            popup.style.left = `${thumbX}px`;
+            const verticalCenter = investmentSlider.offsetTop + (investmentSlider.offsetHeight / 2);
+            popup.style.top = `${verticalCenter}px`;
+        }
+        
+        investmentSlider.addEventListener('input', () => {
+            updateValues();
+            popup.classList.remove('show');
+        });
+        monthlySlider.addEventListener('input', updateValues); 
+        timeSlider.addEventListener('input', updateValues);
+
+        updateValues();
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    movePopupToThumb();
+                    popup.classList.add('show');
+                    setTimeout(() => popup.classList.remove('show'), 4000);
+                    observer.unobserve(widget); 
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(widget);
+    </script>
+</body>
+</html>
