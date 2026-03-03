@@ -1,363 +1,1223 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Rendimentos Logarítmica</title>
-    <!-- Incluindo Tailwind CSS para os estilos utilitários -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Importando a fonte Anek Latin do Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;500;600;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia Lançamentos 2026</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        /* Estilização principal do contêiner da calculadora */
-        .investment-wrapper {
-            font-family: 'Anek Latin', sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: #fff;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, .08);
-            position: relative;
-            gap: 1.5rem;
-            width: 100%;
-        }
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/garet');
+    
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    }
 
-        .text-brand-yellow { color: #B8860B; } 
+    .font-garet { font-family: 'Garet', sans-serif; }
+    
+    /* Animação CSS pura e fiável para a linha */
+    @keyframes reveal-line {
+      0% { clip-path: inset(0 100% 0 0); }
+      100% { clip-path: inset(0 0 0 0); }
+    }
+    .animate-reveal-line {
+      animation: reveal-line 6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
 
-        .num {
-            font-size: clamp(2rem, 8vw, 3rem);
-            transform-origin: bottom center;
-            display: inline-block;
-            transition: transform 0.2s ease-out;
-        }
-
-        .num-static { 
-            font-size: clamp(2rem, 8vw, 3rem);
-            transform-origin: bottom center;
-            display: inline-block;
-            transform: scale(0.8);
-            transition: none;
-        }
-
-        /* Estilização base do input range */
-        .investment-wrapper input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: .5rem;
-            border-radius: .25rem;
-            background: #d1d5db;
-            outline: 0;
-            cursor: pointer;
-            accent-color: #efbf4e;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Thumb Chrome/Safari */
-        .investment-wrapper input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border-radius: 50%;
-            background: #efbf4e;
-            border: 3px solid #fff;
-            box-shadow: 0 0 3px rgba(0, 0, 0, .25);
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* Thumb Firefox */
-        .investment-wrapper input[type=range]::-moz-range-thumb {
-            width: 1.25rem;
-            height: 1.25rem;
-            border-radius: 50%;
-            background: #efbf4e;
-            border: 3px solid #fff;
-            box-shadow: 0 0 3px rgba(0, 0, 0, .25);
-            cursor: pointer;
-        }
-
-        .investment-wrapper h3 { font-size: 1.25rem; line-height: 1.5rem; margin: 0; }
-        .investment-wrapper p  { margin: 0; }
-
-        .slider-popup {
-            position: absolute;
-            left: 0; 
-            transform: translate(calc(-100% - 12px), -50%);
-            background: #efbf4e;
-            color: #1f2937;
-            padding: 0.4rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            z-index: 5;
-            opacity: 0;
-            pointer-events: none;
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-
-        .slider-popup::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            transform: translateY(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent transparent transparent #efbf4e;
-        }
-
-        .slider-popup.show {
-            opacity: 1;
-        }
-    </style>
+    /* Ocultar barra de rolagem */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 p-4">
+<body class="min-h-screen bg-black text-white selection:bg-[#ccff00] selection:text-black pb-20 overflow-x-hidden flex flex-col">
 
-    <div class="investment-wrapper" id="investmentWidget">
+  <!-- Navigation Header -->
+  <nav class="sticky top-0 z-50 border-b border-[#333] bg-black/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
+      <div onclick="switchTab('home')" class="text-[#ccff00] font-black text-xl sm:text-2xl tracking-tighter cursor-pointer font-garet">
+        GUIA <span class="text-white">26</span>
+      </div>
+      <div class="flex gap-2 sm:gap-6 items-center flex-wrap" id="nav-buttons">
+        <button onclick="switchTab('home')" data-tab="home" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-[#ccff00]">
+          O Guia
+        </button>
+        <button onclick="switchTab('submit')" data-tab="submit" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400">
+          Ficou de Fora?
+        </button>
+        <button onclick="switchTab('admin')" data-tab="admin" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider flex items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
+          <i data-lucide="shield-alert" class="w-4 h-4 sm:w-4 sm:h-4"></i> <span class="hidden sm:inline">Admin</span>
+        </button>
+      </div>
+    </div>
+  </nav>
 
-        <!-- Sliders -->
-        <div class="grid grid-cols-1 gap-8">
-            
-            <!-- 
-                Slider 1: Investimento Inicial 
-            -->
-            <div class="w-full relative">
-                <div class="flex justify-between items-center mb-1">
-                    <p class="text-gray-500 text-sm font-medium">Seu investimento inicial</p>
-                    <span id="initialValue" class="num text-brand-yellow font-semibold text-xl">R$ 0</span>
-                </div>
-                <!-- Escala 0-1000 mapeada logaritmicamente no JS -->
-                <input id="investmentSlider" type="range" min="0" max="1000" step="1" value="232">
-                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
-                    <span>R$ 1 mil</span><span>R$ 10 mi</span>
-                </div>
-                 <!-- Balão de Popup -->
-                <div id="sliderPopup" class="slider-popup">
-                    Arraste para simular
-                </div>
+  <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full relative">
+    
+    <!-- === HOME VIEW === -->
+    <div id="view-home" class="space-y-12 sm:space-y-16 animate-[fadeIn_0.5s_ease-out]">
+      <!-- Hero Section -->
+      <header class="relative py-8 sm:py-12 border-b-2 border-[#ccff00]">
+        <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.85] text-[#ccff00] mb-6 font-garet break-words">
+          Lançamentos<br/>
+          <span class="text-white">da música br 2026</span>
+        </h1>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center text-base sm:text-xl lg:text-2xl font-light text-gray-300">
+          <span class="flex items-center gap-2"><i data-lucide="arrow-right" class="text-[#ccff00] w-6 h-6 shrink-0"></i> Discos, EPs e Singles mais esperados.</span>
+          <span class="flex items-center gap-2"><i data-lucide="arrow-right" class="text-[#ccff00] w-6 h-6 shrink-0"></i> <span id="hero-count">0</span> artistas na mira.</span>
+        </div>
+        
+        <div class="absolute right-0 top-0 opacity-20 pointer-events-none hidden md:block animate-[spin_10s_linear_infinite]">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <path id="curve" d="M 100 100 m -75 0 a 75 75 0 1 1 150 0 a 75 75 0 1 1 -150 0" fill="transparent" />
+            <text class="text-[#ccff00] font-bold text-2xl uppercase tracking-widest fill-current">
+              <textPath href="#curve" startOffset="0">• NEW • NEW • NEW • NEW • NEW</textPath>
+            </text>
+          </svg>
+        </div>
+      </header>
+
+      <!-- Soundwave / Timeline Section -->
+      <section class="mb-12 bg-[#0a0a0a] border border-gray-900 rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+          <div class="flex flex-wrap items-center gap-4">
+            <h3 class="text-xl sm:text-2xl font-black text-white uppercase tracking-widest flex items-center gap-2 font-garet">
+              <i data-lucide="music" class="text-[#ccff00] w-6 h-6"></i> Frequência
+            </h3>
+            <button id="btn-clear-filter-timeline" onclick="setPeriod('Todos')" class="hidden text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#ccff00]/10 border border-[#ccff00]/30 text-[#ccff00] px-3 py-1.5 rounded-lg hover:bg-[#ccff00] hover:text-black transition-colors flex items-center gap-1">
+              Limpar Filtro <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          
+          <div class="flex flex-wrap items-center justify-between w-full lg:w-auto gap-4">
+            <div class="flex bg-[#111] p-1 rounded-lg border border-gray-800 w-full sm:w-auto justify-center">
+              <button onclick="setTimelineMode('months')" id="btn-mode-months" class="bg-[#ccff00] text-black flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors">Meses</button>
+              <button onclick="setTimelineMode('semesters')" id="btn-mode-semesters" class="text-gray-500 hover:text-white flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors">Semestres</button>
             </div>
-
-            <!-- 
-                Slider 2: Aporte Mensal 
-            -->
-            <div class="w-full">
-                <div class="flex justify-between items-center mb-1">
-                    <p class="text-gray-500 text-sm font-medium">Aporte mensal adicional</p>
-                    <span id="monthlyValue" class="num text-brand-yellow font-semibold text-xl">R$ 0</span>
-                </div>
-                <input id="monthlySlider" type="range" min="0" max="1000" step="1" value="387">
-                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
-                    <span>R$ 0</span><span>R$ 500 mil</span>
-                </div>
+            <div class="flex items-center justify-center gap-2 text-gray-600 bg-[#111] px-3 py-1.5 rounded-lg border border-gray-800 text-[10px] sm:text-xs uppercase tracking-wider font-bold w-full sm:w-auto">
+              <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Arraste para explorar <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
             </div>
+          </div>
+        </div>
+        
+        <div id="timeline-scroll" class="relative py-4 overflow-x-auto cursor-grab active:cursor-grabbing no-scrollbar">
+          <!-- Timeline content rendered via JS -->
+          <div id="timeline-content" class="relative flex items-end gap-2 w-max min-w-full px-4 h-[200px]"></div>
+        </div>
+      </section>
 
-            <!-- Slider 3: Tempo (Agora MAX 9 Anos) -->
-            <div class="w-full">
-                <div class="flex justify-between items-center mb-1">
-                    <p class="text-gray-500 text-sm font-medium">Anos que você investe</p>
-                    <span id="timeValue" class="num text-brand-yellow font-semibold text-xl">0 anos</span>
-                </div>
-                <!-- Alterado max para 9 -->
-                <input id="timeSlider" type="range" min="1" max="9" step="1" value="5">
-                <div class="flex justify-between text-sm text-gray-600 mt-2 font-semibold">
-                    <span>1 ano</span><span>9 anos</span>
-                </div>
-            </div>
+      <!-- List Section -->
+      <section>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 sm:mb-8 gap-4 border-b border-gray-900 pb-4">
+          <h2 class="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight text-[#ccff00] lowercase flex flex-wrap items-center gap-2 sm:gap-4 font-garet">
+            mapa de 26
+            <span id="badge-period" class="hidden text-sm sm:text-xl lg:text-3xl text-white opacity-50 bg-gray-900 px-3 sm:px-4 py-1 rounded-full uppercase tracking-widest flex items-center gap-1 sm:gap-2"></span>
+          </h2>
+          <div class="text-gray-500 font-bold uppercase tracking-wider text-xs sm:text-sm bg-[#111] px-3 sm:px-4 py-2 rounded-lg border border-gray-800 shrink-0">
+            <span id="map-count" class="text-[#ccff00] text-base sm:text-lg mr-2">0</span> Registros
+          </div>
         </div>
 
-        <!-- Exibição do Valor Final -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg items-end">
-             <div class="text-center">
-                <p class="text-gray-500 text-sm font-medium">Valor estimado com uma carteira diversificada¹</p>
-                <span id="finalValue" class="num text-green-700 font-semibold">R$ 0</span>
-             </div>
-             <div class="text-center">
-                <p class="text-gray-500 text-sm font-medium">Valor estimado na poupança²</p>
-                <span id="savingsValue" class="num-static text-red-600 font-semibold">R$ 0</span>
-             </div>
+        <!-- Filtros -->
+        <div class="flex flex-col lg:flex-row gap-4 mb-8 bg-[#111] p-4 border border-gray-800 rounded-xl">
+          <div class="flex-1 relative min-w-0">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-[18px] h-[18px]"></i>
+            <input type="text" id="input-search" placeholder="Buscar artista, título ou selo..." class="w-full bg-black border border-gray-800 focus:border-[#ccff00] text-white pl-10 pr-4 py-3 outline-none transition-colors rounded-lg font-medium placeholder-gray-600 text-sm sm:text-base"/>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:flex gap-4 w-full lg:w-auto">
+            <div class="w-full lg:w-48 xl:w-64 relative flex items-center">
+              <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px]"></i>
+              <select id="select-period" class="w-full bg-black border border-gray-800 focus:border-[#ccff00] text-white pl-10 pr-10 py-3 outline-none transition-colors rounded-lg font-bold uppercase tracking-wider text-[10px] sm:text-xs appearance-none cursor-pointer">
+                <option value="Todos">Todos os Períodos</option>
+                <!-- Populated via JS -->
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px] pointer-events-none"></i>
+            </div>
+
+            <div class="w-full lg:w-48 xl:w-64 relative flex items-center">
+              <i data-lucide="disc" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px]"></i>
+              <select id="select-type" class="w-full bg-black border border-gray-800 focus:border-[#ccff00] text-white pl-10 pr-10 py-3 outline-none transition-colors rounded-lg font-bold uppercase tracking-wider text-[10px] sm:text-xs appearance-none cursor-pointer">
+                <option value="Todos">Todos os Formatos</option>
+                <option value="Disco">Apenas Discos</option>
+                <option value="EP">Apenas EPs</option>
+                <option value="Single">Apenas Singles</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px] pointer-events-none"></i>
+            </div>
+
+            <div class="w-full lg:w-48 xl:w-56 relative flex items-center">
+              <i data-lucide="arrow-up-down" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px]"></i>
+              <select id="select-sort" class="w-full bg-black border border-gray-800 focus:border-[#ccff00] text-white pl-10 pr-10 py-3 outline-none transition-colors rounded-lg font-bold uppercase tracking-wider text-[10px] sm:text-xs appearance-none cursor-pointer">
+                <option value="nome">Ordem: Nome</option>
+                <option value="data">Ordem: Data</option>
+                <option value="selo">Ordem: Selo</option>
+                <option value="fonte">Ordem: Fonte</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px] pointer-events-none"></i>
+            </div>
+
+            <div class="w-full sm:col-span-2 md:col-span-1 flex bg-black border border-gray-800 rounded-lg p-1 shrink-0 lg:w-32 min-h-[48px]">
+              <button onclick="setViewMode('grid')" id="btn-view-grid" class="bg-[#ccff00] text-black shadow-sm flex-1 rounded-md transition-all flex items-center justify-center" title="Visualização em Grade">
+                <i data-lucide="layout-grid" class="w-[18px] h-[18px]"></i>
+              </button>
+              <button onclick="setViewMode('list')" id="btn-view-list" class="text-gray-500 hover:text-white hover:bg-gray-900 flex-1 rounded-md transition-all flex items-center justify-center" title="Visualização em Lista">
+                <i data-lucide="list" class="w-[18px] h-[18px]"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div id="loading-spinner" class="flex justify-center py-20 hidden">
+          <div class="w-12 h-12 border-4 border-[#ccff00] border-t-transparent rounded-full animate-spin"></div>
         </div>
 
-        <!-- Disclaimers alinhados à esquerda -->
-        <div class="text-xs text-gray-400 text-left leading-tight space-y-1">
-            <p>
-                ¹ Simulação baseada em uma carteira teórica: 50% em títulos públicos indexados à inflação, seguindo o índice IMA-B, e 50% em AUVP11 (que replica um índice que seleciona ações através de fundamentos, metodologia ensinada na AUVP Escola). Para o prazo selecionado, a rentabilidade histórica anualizada utilizada é de <span id="disclaimerRate" class="font-bold text-gray-500">0,00%</span> a.a.<br>
-                ² Regra da Poupança: 0,5% a.m. + TR (TR estimada em 0,09% a.m.).
-            </p>
-            <p class="opacity-75">
-                Resultados passados não garantem retornos futuros. Os valores são estimativas brutas e não consideram impostos ou inflação no período.
-            </p>
+        <div id="releases-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <!-- Rendered via JS -->
         </div>
+      </section>
     </div>
 
-    <script>
-        const investmentSlider = document.getElementById('investmentSlider');
-        const monthlySlider = document.getElementById('monthlySlider'); 
-        const timeSlider = document.getElementById('timeSlider');
+    <!-- === SUBMIT VIEW === -->
+    <div id="view-submit" class="hidden max-w-2xl mx-auto animate-[fadeIn_0.5s_ease-out]">
+      <div class="mb-10 text-center sm:text-left">
+        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-[#ccff00] uppercase leading-none mb-4 font-garet">
+          Ficou<br/>De Fora?
+        </h2>
+        <p class="text-base sm:text-xl text-gray-300 font-light">
+          Preencha as informações do lançamento de acordo com as colunas do nosso mapa de 2026.
+        </p>
+      </div>
 
-        const initialSpan = document.getElementById('initialValue');
-        const monthlySpan = document.getElementById('monthlyValue'); 
-        const timeSpan = document.getElementById('timeValue');
-        const finalSpan = document.getElementById('finalValue');
-        const savingsSpan = document.getElementById('savingsValue');
-        const disclaimerRateSpan = document.getElementById('disclaimerRate');
-        
-        const popup = document.getElementById('sliderPopup');
-        const widget = document.getElementById('investmentWidget');
+      <div class="bg-[#111] border border-gray-800 p-6 sm:p-10 relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ccff00] to-green-600"></div>
 
-        // --- DADOS DE RENTABILIDADE POR ANO (Extraídos das Imagens) ---
-        // A chave é o número de anos (1 a 9), o valor é a taxa a.a. decimal (ex: 0.2287 = 22,87%)
-        const ANNUAL_RATES_BY_YEAR = {
-            1: 0.2287,  // 22.87%
-            2: 0.1311,  // 13.11%
-            3: 0.1766,  // 17.66%
-            4: 0.1508,  // 15.08%
-            5: 0.1030,  // 10.30%
-            6: 0.0865,  // 8.65%
-            7: 0.1056,  // 10.56%
-            8: 0.1090,  // 10.90%
-            9: 0.1228   // 12.28%
+        <div id="submit-success" class="hidden flex-col items-center justify-center py-20 text-center">
+          <div class="w-20 h-20 bg-[#ccff00] rounded-full flex items-center justify-center mb-6">
+            <i data-lucide="check" class="text-black w-10 h-10"></i>
+          </div>
+          <h3 class="text-3xl font-black mb-2 text-white font-garet">ENVIADO COM SUCESSO!</h3>
+          <p class="text-gray-400">Seu lançamento foi para a fila de aprovação da nossa curadoria.</p>
+          <button onclick="switchTab('home')" class="mt-8 px-6 py-3 bg-transparent border-2 border-[#ccff00] text-[#ccff00] font-bold uppercase tracking-wider hover:bg-[#ccff00] hover:text-black transition-colors">
+            Voltar para o Guia
+          </button>
+        </div>
+
+        <form id="submit-form" class="space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Artista <span class="text-[#ccff00]">*</span></label>
+            <input required type="text" name="artist" placeholder="Nome do artista/banda" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors text-xl font-medium" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Disco, EP ou Single? <span class="text-[#ccff00]">*</span></label>
+            <div class="flex gap-4 sm:gap-6 mt-2">
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="radio" name="type" value="Disco" checked class="w-5 h-5 accent-[#ccff00] bg-black border-gray-700" />
+                <span class="text-lg group-hover:text-[#ccff00] transition-colors">Disco</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="radio" name="type" value="EP" class="w-5 h-5 accent-[#ccff00] bg-black border-gray-700" />
+                <span class="text-lg group-hover:text-[#ccff00] transition-colors">EP</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="radio" name="type" value="Single" class="w-5 h-5 accent-[#ccff00] bg-black border-gray-700" />
+                <span class="text-lg group-hover:text-[#ccff00] transition-colors">Single</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Data de Lançamento <span class="text-[#ccff00]">*</span></label>
+            <input required type="text" name="date" placeholder="Ex: 24/02, Março, Não Revelada..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Título <span class="text-[#ccff00]">*</span></label>
+            <input required type="text" name="title" placeholder="Nome do disco/EP ou 'Não Revelado'" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors italic" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Label / Via <span class="text-[#ccff00]">*</span></label>
+            <input required type="text" name="label" placeholder="Ex: Independente, Deck, ONErpm..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Fonte <span class="text-[#ccff00]">*</span></label>
+            <input required type="text" name="fonte" placeholder="Quem forneceu (ex: Próprio Artista, Globo, Assessoria)" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 flex items-center gap-2">
+              Link do Smartlink / Spotify <i data-lucide="link" class="w-3.5 h-3.5"></i>
+            </label>
+            <input type="url" name="link" placeholder="https://..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors text-blue-400" />
+          </div>
+
+          <button type="submit" id="btn-submit" class="w-full bg-[#ccff00] text-black font-black text-xl py-4 mt-8 hover:bg-white transition-colors uppercase tracking-widest disabled:opacity-50 flex justify-center items-center gap-2">
+            <span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+          <p id="submit-error" class="hidden text-red-500 text-sm text-center mt-2">Ocorreu um erro ao enviar. Tente novamente.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- === ADMIN VIEW === -->
+    <div id="view-admin" class="hidden max-w-6xl mx-auto animate-[fadeIn_0.5s_ease-out]">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase flex items-center gap-3 font-garet">
+            <i data-lucide="settings" class="text-[#ccff00] w-9 h-9"></i> Painel de Curadoria
+          </h2>
+          <p class="text-gray-400 mt-2 text-sm sm:text-base">Aprove ou rejeite as submissões do público.</p>
+        </div>
+        <div class="text-left sm:text-right">
+          <div id="admin-count" class="text-3xl font-black text-[#ccff00]">0</div>
+          <div class="text-xs uppercase tracking-widest text-gray-500 font-bold">Pendentes</div>
+        </div>
+      </div>
+      <div id="admin-container" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-900 py-12 relative overflow-hidden flex flex-col items-center mt-auto">
+    <div class="absolute left-1/2 md:left-24 top-1/2 -translate-x-1/2 md:translate-x-0 -translate-y-1/2 opacity-10 pointer-events-none animate-[spin_10s_linear_infinite]">
+      <svg width="250" height="250" viewBox="0 0 200 200">
+        <path id="curve-footer" d="M 100 100 m -75 0 a 75 75 0 1 1 150 0 a 75 75 0 1 1 -150 0" fill="transparent" />
+        <text class="text-[#ccff00] font-bold text-3xl uppercase tracking-widest fill-current">
+          <textPath href="#curve-footer" startOffset="0">• NEW • NEW • NEW • NEW •</textPath>
+        </text>
+      </svg>
+    </div>
+
+    <div class="z-10 text-center text-gray-600 font-mono text-xs uppercase tracking-widest">
+      <p class="text-white font-bold text-lg mb-2">Guia de Lançamentos Brasileiros 2026</p>
+      <p class="mt-2 text-gray-500">Inspirado na curadoria de Alexandre Giglio e Rafael Chioccarello</p>
+      <p class="mt-2 text-gray-500">Desenvolvido por @ganwalk</p>
+    </div>
+  </footer>
+
+  <!-- Lógica da Aplicação -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+    // Estado da Aplicação
+    const state = {
+      activeTab: 'home',
+      user: null,
+      releases: [],
+      timelineMode: 'months', // 'months' ou 'semesters'
+      selectedPeriod: 'Todos',
+      searchTerm: '',
+      filterType: 'Todos',
+      sortBy: 'nome',
+      viewMode: 'grid', // 'grid' ou 'list'
+      db: null,
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
+    };
+
+    // Constantes e Dados Estáticos
+    const MONTHS_ORDER = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro', 'Sem data anunciada'];
+    const SEMESTERS_ORDER = ['1º Semestre', '2º Semestre', 'Sem data anunciada'];
+
+    const RAW_CSV_DATA = `[26:15]|Disco|Março|Não Revelado|ONErpm|Isabela D'Avila|
+2freak|Disco|Março|Não Revelado|Independente|Jow (No Corre)|
+2ZDINIZZ|Disco|Não Revelada|Não Revelado|HHR Records|Felipe Mascari|
+A Banda Que Nunca Existiu (ABQNE)|Disco|Previsão: entre maio e junho|Não Revelado|Independente|Adriana Bueno|
+Abel Capella|Disco|Não Revelada|Não Revelado|Independente|Paola Zambianchi|
+Afrocidade|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+Aíla|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+Alaíde Costa|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+Alceu Valença|Disco|Não Revelada|Não Revelado|Deck|Globo|
+Alee e Klisman|Disco|24/02|Para: Todas Que Fingi Amar|Independente|Lucas Gabriel|
+Ali Prando|Disco|Segundo semestre|Trabalhador Noturno|Independente|Próprio Artista|
+Amanda Cadore|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Amanda Pacífico|EP|Segundo semestre|Não Revelado|Independente|Letícia Tiê|
+Amilton Godoy e Gabriel Grossi|Disco|05/03|Os Filhos de Villa|Tudo Bem Produções|Tati Pugliesi|
+Anabê|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Anaís Sylla|Disco|Fim do Primeiro Semestre|Não Revelado|Ori Records|Mercedes Tristão|
+Andrea Aiko|EP|13/01|Deixa Ser Feliz|Independente|Matheus Luzi|
+Anelis Assumpção|Disco|Não Revelada|Não Revelado|Scubidu Music|Insta Hits Perdidos|
+Anônimos Anônimos|Disco|Maio|Acabou Sorrire|Forever Vacation|Própria banda|
+Antropoceno|Disco|16/03|No Ritmo da Terra|Longinus Recordings|Próprio Artista|
+Aquino|Disco|Não Revelada|Não Revelado|Selo Rockambole|Omni|
+Artur Wais|EP e Disco|24/02 e 02/04|Vida de Isqueiro e Se Acost7|Independente|Próprio Artista|
+As Beattas|EP|Não Revelada|Não Revelado|Independente|Própria banda|
+Augusta Barna|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+Ava Rocha|Disco|Segundo Semestre|Não Revelado|Estilhaços Discos|Mercedes Tristão|
+BADLUV|Disco|Não Revelada|Não Revelado|Selo Rockambole|Omni|
+BaianaSystem|Disco|Não Revelada|Não Revelado|Máquina de Louco|Marina Santa Clara|
+Banda Rocco|Álbum|Segundo Semestre|Não Revelado|Independente|Próprio Artista|
+Barona|Disco|Não Revelada|Não Revelado|LabMaresya|Felipe Mascari|
+Bebé|Disco|Não Revelada|Não Revelado|Coala Records|Wagner Rodolfo|
+BELLI|EP|23/01|Mormaço Vol. 1|Independente|Assessoria|
+Bemti|Disco|22/01|Adeus Atlântico|Independente|Gustavo Koch|
+Bia Balugani|Disco|Não Revelada|Não Revelado|Groover Obsessions|Rede Social|
+BIOND1|Disco|Primeiro Semestre|Não Revelado|Independente|Caroline Buzatto|
+BK'|Disco|Não Revelada|Não Revelado|Gigantes|Ágata Cunha|
+Black Alien|Disco e EP|Abril (Disco)|ABAIXO DE ZERO VOL. II|Independente|Felipe Mascari|
+Black Pantera|2 Discos|Março e Agosto|Não Revelado|Deck|Piky|
+Borabaez|EP|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Boto|Disco|Não Revelada|Diferente de Ninguém|Independente|Paola Zambianchi|
+Brenno Casagrande|Disco|Não Revelada|Não Revelado|Warner Chappell|Ágata Cunha|
+Bruna Lucchesi|Disco|Primeiro Semestre|Não Revelado|Independente|Stella Sanches|
+Bruno Capinan|Disco|Maio|Não Revelado|Independente|Mercedes Tristão|
+BUHR|Disco|Abril|Não Revelado|Sound Department|Piky|
+BUK|Disco|Não Revelada|Não Revelado|midsummer madness|Rodrigo Lariú|
+Cabral|Disco|Janeiro|Não Revelado|Independente|Franchesca|
+Cabruêra|Disco|Março|Cabruêra Ao Vivo|Taioba Music|Fabrício Nikita|
+CAÊ|Disco|Não Revelada|Não Revelado|Independente|Pedro Paulo Furlan|
+Cães de Prata|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Caetano Veloso|Disco|Não Revelada|Não Revelado|Sony Music|Nova Brasil FM|
+cajupitanga|Disco|02/04 e 02/06|TRAMA (Live)|Cantores Del Mundo|Pedro Antunes|
+CALI|Disco|23/01|Trama|Scandalo Music|Ana Beatriz|
+Canvas|Disco|11/02|Alto|Independente|Tati Pugliesi|
+Capital Inicial|Disco|Não Revelada|Não Revelado|Sony Music|Lucas Damião|
+Carl Satan|EP|Não Revelada|Não Revelado|Independente|Carlos Eduardo|
+Carol Pedroso|EP|01/01|Eu canto minha força|Diversão e Arte|Bebel Prates|
+Casual Art Ensemble|Disco|Primeiro Semestre|Moon Forces|Transfusão Noise|Fabrício (Nikita)|
+Casulo|EP|24/02|Rizoma|Selo Portal|https://open.spotify.com/intl-pt/album/1f1DGdYO...|
+Cat Lover|EP|24/01|Active Life|Jetset Records|https://open.spotify.com/intl-pt/album/5T4xaq...|
+CAVIC|Disco|Não Revelada|Não Revelado|Alma Viva Música|Próprio Artista|
+Chico Chico|Disco|Não Revelada|Não Revelado|Deck|Piky|
+Chinaina|Disco|Segundo Semestre|Não Revelado|Independente|Patrícia Dornelas|
+Chococorn & the Sugarcanes|Disco|Não Revelada|Não Revelado|#ERROR!|Insta Minuto Indie|
+Cidade Dormitório|Disco|abril/maio|Não Revelado|Matraca Records|Izabela Costa|
+Clara Bicho|Disco|Não Revelada|Não Revelado|Independente|Ela mesma|
+Clau Aniz|Disco|março ou abril|Não Revelado|Mercúrio Música|Hits Perdidos|
+Claustrofobia|Disco|Não Revelada|Não Revelado|M-Theory Audio|Insta Hits Perdidos|
+Clayton Barros|Disco|Maio|Não Revelado|Independente|Alessandra Braz|
+Coentro|Disco|Primeiro Semestre|Não Revelado|Selinho|Ana Beatriz|
+Color For Shane|Disco|29/01|Um Milhão de Coisas|Independente|Elson Barbosa|
+Compay Oliveira|Disco|Não Revelada|Não Revelado|Independente|Insta Hits Perdidos|
+Confforte|EP|13/01|Canção de Minas|Independente|Própria artista|https://open.spotify.com/intl-pt/album/5b2Ws...|
+Corama|Disco|Não Revelada|Não Revelado|Independente|Jow (No Corre)|
+Criolo, Amaro & Dino|Disco|15/01|Criolo, Amaro, Dino|Independente|Globo|https://open.spotify.com/intl-pt/album/0YYt1...|
+Cris Braun|Disco|16/01|Terno|LAB 344|Bruna Burger|https://open.spotify.com/intl-pt/album/4B...|
+Crise|Disco|31/03|por favor, me perdoe|Lastro Musical|Próprio Artista|
+Cronistas|Disco|08/05|Ainda aprendendo a lidar|Independente|Próprio Artista|
+Dandara MC|Disco|Não Revelada|Por Todas Dandaras|Independente|Aninha Coquetel|
+Dante De Niro|EP|Abril|Não Revelado|Selinho|Ana Beatriz Quinto|
+Danzo|Disco|Não Revelada|Não Revelado|Labbel Records|Ágata Cunha|
+DarkTower|Disco|Segundo Semestre|Não Revelado|Extreme Sounds|Isis Correia|
+Dead Fish|2 Discos|Janeiro|Labirinto da Memória|Deck|Piky|https://open.spotify.com/intl-pt/album/8W...|
+Deadcat|Disco|Segundo Semestre|Goth Ranch|Virgin Music|Letícia Tiê|
+Deekapz|Disco ou EP|Não Revelada|Não Revelado|Independente|Ágata Cunha|
+Delacruz|Disco ou EP|Não Revelada|Não Revelado|Sony Music Brasil|Ágata Cunha|
+Deluce|Disco|Não Revelada|Pimenta|Independente|Marcus Cesar|
+Delusis|EP|04/03|Espelhos|Carmen Records|Próprio Artista|
+Detonautas|Disco|Março|Rádio Love Nacional|Deck|Piky|
+Dezert Horse|Disco|13/02|Dezert Horse|Independente|Malu - OMNI|https://open.spotify.com/intl-pt/album/44i...|
+Disk Mandy|EP|Não Revelada|Não Revelado|Independente|Francielle Mello|
+Dois Barcos|Disco|Segundo Semestre|Não Revelado|Independente|Julia Ourique|
+Dora Sanches|Disco|Não Revelada|Não Revelado|Independente|Lais Strmn|
+Doralyce|Disco|Não Revelada|Não Revelado|Sony Music Brasil|Cris Rangel|
+Duquesa|Disco ou EP|Não Revelada|Não Revelado|Altafonte|Ágata Cunha|
+E a Terra Nunca Me Pareceu Tão Distante|Disco|Não Revelada|Não Revelado|Balaclava Records|Elson Barbosa|
+Echo Upstairs|Disco|26/01|Nossas Sombras Serão Água|midsummer madness|Rodrigo Lariú|https://open.spotify.com/intl-pt/album/7z...|
+Edgard Scandurra|EP|Não Revelada|Não Revelado|Independente|Sue|
+El Efecto|Disco|Não Revelada|Não Revelado|Independente|Insta Hits Perdidos|
+Electric Lo Fi Seresta|Disco|Março|Dark Days and Clear Noon|midsummer madness|Rodrigo Lariú|
+Elisa Maia|Disco|Primeiro Semestre|Céu de Metais|Natura Edital|Yasmin Bianco|
+Emonosterio|Disco|Segundo Semestre|Não Revelado|Independente|Julia Ourique|
+Enri Laert|Disco|Não Revelada|Não Revelado|ONErpm|Isabela D'Avila|
+Eric Bê|Disco|23/01|Sigo andando em frente|Stmusic|Paola Zambianchi|https://open.spotify.com/intl-pt/album/6or...|
+Esther Torres|EP|Não Revelada|Esther|Letra & Música|HQ Music|
+Exclusive Os Cabides|Disco|Não Revelada|Não Revelado|Selinho|Marina Mole|
+Fat Family|Disco ou EP|Não Revelada|Não Revelado|Listo Music|Ágata Cunha|
+Fausto Fawcett|Disco|23/02|Pesadelo Ambicioso|Outra Música|Leonardo Morel|https://tratore.ffm.to/pesadeloambicioso|
+FBC|Disco|Não Revelada|Não Revelado|Xeque Mate|Thalita Facciolo|
+feelP|Disco|22/02|hoa|Independente|Próprio Artista|
+Felipe Antunes|Disco|Abril|Dança do Universo|Independente|Daniel Pandeló|
+FERALKAT|Disco|Junho|KARUKASY|Independente|Letícia Tiê|
+FI Bueno|Disco|Entre Março e Abril|FI|Independente|Adriana Bueno|
+Figueira|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Finis Hominis|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+Fitti|Disco|27/02|Fitti canta Ney|Olho Vivo|Nova Brasil FM|
+Flora Matos|Disco|Não Revelada|Não Revelado|ONErpm|Isabela D'Avila|
+Fossilization|Disco|13/02|Advent Of Wounds|Independente|Elson Barbosa|
+Fresno|Disco|18/04|Carta de Adeus|Warner Music|João Paulo Martins|
+Gabi Lins|Disco|Entre Março e Abril|Não Revelado|Independente|Carllos|
+gabo islaz|Disco|Não Revelada|Não Revelado|Frase Records|Leonardo Serafini|
+Gali Galó|EP|26/03|DE VOLTA|Tratore|Leonardo Morel|https://tratore.ffm.to/devoltagaligalo|
+Getúlio Abelha|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+Gilsons|Disco|Fevereiro|Eu vejo luz em maior proporção|Som Livre|Ágata Cunha|
+Giovani Cidreira|Disco|Não Revelada|Não Revelado|Independente|Wagner Rodolfo|
+Gol de Goleiro|EP|Não Revelada|Não Revelado|Selinho|Ana Beatriz|
+Grisa|Disco|Segundo Semestre|Não Revelado|midsummer madness|Jow|
+Grupo Um|Disco|30/01|Nineteen Seventy Seven|Far Out Recording|Jake|
+Guandu|Disco|Junho / Julho|Não Revelado|Independente|A própria banda|
+Gueersh|Disco|Não Revelada|Não Revelado|Transfusão Noise|A própria banda|
+Guilherme Arantes|Disco|15/01|Interdimensional|Coaxo do Sapo|Bebel|
+Guina Santos|EP|30/01|noitemanhãtarde|Independente|Carllos|
+Gustavo Ortiz|Disco|Não Revelada|Arrasto|Independente|Assessoria|
+Hektor|Disco|Não Revelada|Não Revelado|Independente|Jow|
+Henri Vasques|EP|Março|Não Revelado|Independente|Izabela Costa|
+Igor Celestino|EP/Disco|Não Revelada|Não Revelado|Independente|Jow|
+Illy|Disco|Não Revelada|Illy Canta Belo|Altafonte|Carllos|
+Inraza|Disco|19/02|Acrasia|Independente|Scena Lab|https://distrokid.com/hyperfollow/inraza...|
+Índio da Cuíca|Disco|Primeiro Semestre|Não Revelado|QTV|QTV|
+Infinito Latente|Disco|22/01|Sem Início Nem Fim|Retalho Music|Rede Social|
+Isa Buzzi|Disco|Março|Clube dos Corações|Deck|Piky|
+Isma|Disco|29/01|Made In COHAB|Altafonte|Rede Social|
+Isotopxs|Disco|Não Revelada|Não Revelado|Selo Naif|Insta Hits|
+It's All Red|Disco|Março|Não Revelado|Independente|Isis Correia|
+Ítallo França|Disco|Não Revelada|Não Revelado|Esfera|Insta Hits|
+Ivan Lins|Disco|Não Revelada|Sambadouro|Selo SESC|Nova Brasil FM|
+Ivana Wonder|Disco|Não Revelada|Não Revelado|Independente|Pedro Paulo Furlan|
+Izzy Gordon|Disco|Abril|Izzy Gordon Canta Jorge|Kuarup Produções|Yasmin Bianco|
+J4mpa|Disco|Não Revelada|Não Revelado|Independente|Insta Minuto Indie|
+Jair Naves|Disco|Não Revelada|Não Revelado|Balaclava Records|Dotta|
+Jay Horsth|Disco|27/01|O Velho|LOCO Records|Redes Sociais|
+Jean Sense|Disco|13/01|Ensaio|Independente|Caroline Buzatto|
+Jenni Mosello|Disco|Não Revelada|BRava|Independente|Rede Social|
+Jennifer Souza|Disco|Não Revelada|Não Revelado|Balaclava Records|Dotta|
+Jessica Falchi|EP|23/01|Solace|Independente|Erick Tedesco|
+Jessica Gaspar|Disco|Não Revelada|Não Revelado|Independente|Cris Rangel|
+Joabe Reis|Disco|28/01|Drive Slow|Batuki Records|Bruna Alves|
+João Menezes|Disco|Não Revelada|Não Revelado|RISCO|Insta Hits|
+Josefe|Disco|Não Revelada|Fascínio Diamantino|Independente|Insta Hits|
+Josyara|Disco|Não Revelada|Deu Match Ao Vivo|Deck|Piky|
+Jovem Dionisio|Disco|Não Revelada|Migalhas|Ditto Music|Simone Catto|
+Jovens Ateus|Disco|Não Revelada|Não Revelado|Balaclava Records|Dotta|
+Jovita|2 EPs|Não Revelada|Não Revelado|Independente|Jow|
+Julia Guedes|Disco|Não Revelada|Não Revelado|Dobra Discos|Julianna Sá|
+Juliana Linhares|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Juliano Gauche|Disco|Não Revelada|Não Revelado|Azul Indigo|Francine Ramos|
+Julieta Social|Disco|30/01|Juliera|Seloki Records|Otto Dardene|
+Juvi|Disco|Não Revelada|Não Revelado|Deck|Próprio Artista|
+Kaira Zuex|EP|17/02|¡Esto Es Punkatón!|Burning London|Erick Tedesco|
+Kaisho|Disco|Não Revelada|Não Revelado|Independente|Bruna Alves|
+Kassel|Disco|Não Revelada|Não Revelado|Último Selo|Piky|
+Katy da Voz|Disco|04/02|A Visita|LAB 344|Pedro Paulo|
+Kim & Dramma|Disco|Não Revelada|No Ombro dos Outros|Linha da Beira|Lina Andreosi|
+Korja|Disco|Não Revelada|São Thomé|Neves Records|Própria banda|
+Kovtun|Disco|23/01|Black Goat|Independente|Elson Barbosa|
+Labatú|Disco|Não Revelada|Não Revelado|Independente|Própria banda|
+Lafetah|Disco|Não Revelada|Não Revelado|Independente|Instagram Hits|
+Lamparina|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+LAN|Disco|23/01|Estelar|Lemid|Malu - OMNI|
+Larissa Luz|Disco|Março|Não Revelado|Independente|Fernanda Burzaca|
+Lauiz|Disco|Abril / Maio|Não Revelado|Matraca Records|Izabela Costa|
+Lava Divers|Disco|Não Revelada|Não Revelado|midsummer madness|Rodrigo Lariú|
+Lê Almeida|Disco|Segundo Semestre|#SOMEILUDE|K Records|Fabrício Nikita|
+LEALL|Disco|Não Revelada|Não Revelado|Rock Danger|Caroline Buzatto|
+Leo Middea|Disco|26/02|Notícias de Puglia|LOCO Records|Wagner Rodolfo|https://vm.group/NoticiasdePuglia|
+Letrux|Disco|Não Revelada|Não Revelado|Independente|Wagner Rodolfo|
+Lizard Cult|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+Loomer|Disco|Não Revelada|Hidden Everywhere|midsummer madness|Rodrigo Lariú|
+Lorena Moura|Disco|Não Revelada|Não Revelado|Cavaca Records|Yasmin Kalaf|
+Lori|Disco|Segundo Semestre|Não Revelado|Independente|Julia Ourique|
+Louise|Disco|Primeiro Semestre|Notívaga|Independente|Yasmin Bianco|
+Luana Flores|Disco|Abril ou Maio|Cria do Sol Quente|Nikita Music|Insta Hits|
+Luca Argel|Disco|23/01|O Homem Triste|Aurita Records|Insta Hits|
+Lucas Santtana|Disco|Março|Não Revelado|No Format!|Thalita Facciolo|
+Luccas Carlos|Disco/EP|Não Revelada|Não Revelado|Coala Music|Ágata Cunha|
+Ludovic|Disco|Não Revelada|Não Revelado|Balaclava Records|Dotta|
+Luedji Luna|Disco|Março e Abril|Projeto acústico|Independente|Thalita Facciolo|
+Lugar Algum|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Luísa Sonza|Disco|13/01|Bossa Sempre Nova|Sony Music|Lucas Damião|
+Luiz Barata|Disco|15/01|Eterno Menino Levado|Torcicolo|TikTok|
+Lulis|Disco|Abril|Cais|Retalho Music|Luísa Gontijo|
+Lupino|EP|Segundo Semestre|Não Revelado|Independente|Julia Ourique|
+Macaco Bong|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+Madremonte|EP|06/02|Neurose|Independente|Própria banda|
+Magi|Disco|Não Revelada|Não Revelado|ONErpm|Isabela D'Avila|
+Maglore|Disco|Não Revelada|Não Revelado|Deck|Teago Oliveira|
+Major RD|Disco|Não Revelada|Não Revelado|Rock Danger|Isabela D'Avila|
+Manu Julian|Disco|Não Revelada|Não Revelado|Independente|Franchesca|
+Mar.iana|Disco|Não Revelada|Não Revelado|Independente|Bruna Alves|
+Marcelo Cabral|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Marcelo Callado|Disco|06/03|BRADO|Nublu Records|Thalita Facciolo|
+Marcelo Jeneci|Disco|Não Revelada|Não Revelado|ONErpm|Thalita Facciolo|
+Marcos Costa|Disco|Não Revelada|Não Revelado|Independente|Bruna Alves|
+Marela|Disco|Não Revelada|Aqui|Independente|Ana Beatriz|
+Mari Romano|Disco|Maio|Além da Pele|Independente|Daniel Pandeló|
+Mariana Volker|Disco|Não Revelada|delícia, delícia|Independente|Insta Hits|
+Marina Lima|Disco|24/03|Ópera Grunkie|Independente|Gustavo Koch|
+Marina Mole|Disco|Segundo Semestre|Não Revelado|Independente|Marina Mole|
+Marina Nemésio|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Marinas Found|Disco|19/01|Saudade|Independente|Isis Correia|
+Martins|Disco|27/02|Ao Vivo na Casa Estação|Deck|Rafaella Alcici|
+Mateus Carrilho|Disco|Não Revelada|Não Revelado|Independente|Thalita Facciolo|
+Maurício Pereira|Disco|Não Revelada|Não Revelado|Independente|Twitter|
+Mbé|Disco|Segundo Semestre|Não Revelado|QTV|QTV|
+MC Cabelinho e TZ|Disco|Primeiro Trimestre|PALÁCIO DE LONA|ONErpm|ONErpm|
+MC Lipi|Disco|30/01|Raiz|Love Funk|Assessoria|
+MC Luanna|Disco|Não Revelada|Não Revelado|Independente|Felipe Mascari|
+Melly|Disco|Primeiro Semestre|Não Revelado|Independente|Jaqueline Esteves|
+Mityma|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+Mombojó|Disco|Não Revelada|Não Revelado|Independente|Julianna Sá|
+Mr Spaceman|Disco|10/02|Zeal|midsummer madness|Rodrigo Lariú|
+Muñoz|Disco|Não Revelada|Não Revelado|Independente|Nicole|
+Ná Ozzetti|EP|25/02|Música na Poesia|Independente|Assessoria|
+Negadeza|EP|Abril|Não Revelado|Independente|Mario Camelo|
+Negro Leo|Disco|Não Revelada|White Elephant|Hive Mind Records|Lina|
+Neiva|Disco|Não Revelada|Não Revelado|Cavaca Records|Yasmin Kalaf|
+Nigéria Futebol Clube|Disco|Não Revelada|Não Revelado|Independente|Jow|
+Nobat|Disco|Junho|Movimento|Retalho Music|Luísa Gontijo|
+Nouvella|EP|Não Revelada|Não Revelado|LOCO Records|Nicole|
+O Grilo|2 Discos|Não Revelada|Disco de inéditas|Selo Rockambole|Omni|
+Odradek|EP|27/01|Horror Vacui|Casarão Recorss|Elson Barbosa|
+Orange Disaster|Disco|Não Revelada|Paralich|Aurora Discos|Carlos Eduardo|
+Os Garotin|Disco|Não Revelada|Não Revelado|Virgin Music|Ágata Cunha|
+Os Lancellotti|Disco|Não Revelada|Não Revelado|Amor in Sound|Redes Sociais|
+Ottopapi|Disco|Março|Bala de Banana|Deck|Próprio Artista|
+Outros Bárbaros|Disco|06/02|Pelas Ruas das Américas|Independentes|Sylvia Sussekind|
+Pablo Vermell|Disco|04/06|Futuro Presente Deluxe|Independente|Francielle Mello|
+Paira|Disco|Não Revelada|Não Revelado|Balaclava Records|Dotta|
+Papôla|EP e Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Paquetá|EP|Previsão: entre Abril e Maio|Não Revelado|Independente|Wender Zanon|
+Partido da Classe|Disco|Não Revelada|Não Revelado|Independente|Twitter|
+Pastoras do Rosário|Disco|Não Revelada|Não Revelado|Independente|Thalita Facciolo|
+Paulinho Boca de Cantor|Disco|Janeiro|Novos Baianos|Deck|Piky|
+Paulo Miklos|Disco|Abril|Coisas da Vida|Deck|Piky|
+Paulo Novaes|Disco|27/01|Coisa Híbrida|Esfera|Wagner Rodolfo|
+Pedro Faissal|EP|16/01|INTERMARES|Independente|Pedro Paulo Furlan|
+Pedro Lanches|EP|Março|Não Revelado|Matraca Records|Izabela Costa|
+Pedro Mizutani|Disco|Primeiro Semestre|Não Revelado|Nice Guys|Felipe Tellis|
+Pedro Volta|Disco|Fevereiro|Retrosambas|Nikita Musica|Fabrício Nikita|
+Petrilli|Disco|29/01|Beba Água e Coma Frutas|Independente|Thiago Paleari|
+Plano Coquetel|Disco|Não Revelada|Não Revelado|Frase Records|Leonardo Serafini|
+Pitty|Disco|Não Revelada|Não Revelado|Deck|Matéria na Globo|
+Pluma|Disco|Não Revelada|Não Revelado|Selo Rockambole|Omni|
+Polly Noise|Disco|Março|It's Ok|Independente|Instagram Hits|
+Poty|Disco|Janeiro|Cidreré|1Selo|Ananda Zambi|
+Pra Gira Girar|Disco|Não Revelada|Não Revelado|Amor in Sound|Assessoria|
+Punho de Mahin|Disco|27/02|Entre a Penitência|Deck|Piky|
+Pupillo|Disco|Não Revelada|Pupillo|Amor in Sound|Assessoria|
+Rachel Reis|Disco ou EP|Não Revelada|Não Revelado|Independente|Ágata Cunha|
+Racionais MCs|Disco|Não Revelada|Não Revelado|Cosa Nostra|Ágata Cunha|
+Rael|Disco|Não Revelada|Não Revelado|Independente|Listas de Portais|
+Rafa Castro|Disco|Não Revelada|Não Revelado|Independente|Próprio Artista|
+Rancore|Disco|Não Revelada|Não Revelado|Balaclava Records|Balaclava|
+Raphaello|Disco|Não Revelada|Não Revelado|Independente|Insta Hits|
+Rashid|Disco|Não Revelada|Não Revelado|Foco na Missão|Felipe Mascari|
+Rayane Fortes|EP|Março|Não Revelado|Independente|Jaqueline Esteves|
+Renata Rosa|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Retrato Brasileiro|Disco|26/02|Divertimento|Independente|Stella Sanches|
+R0B Love|Disco|22/01|MAGIK|Fábrica Estúdios|Heitor|
+Rod Krieger|Disco|Não Revelada|A Assembleia Extraordinária|Café8 Music|Thaís Pimenta|
+Rômulo Fróes|Disco|18/02|Boneca Russa|YB Music|Mercedes Tristão|
+Sagrados Anônimos|EP ou Álbum|Segundo Semestre|Não Revelado|Independente|Jow|
+Samuel Amaro|Disco|Segundo Semestre|Não Revelado|Independente|Francielle Mello|
+Sant|Disco|Não Revelada|Não Revelado|Som Livre|Felipe Mascari|
+Sapo Banjo|Disco|Entre Abril e Junho|Não Revelado|Independente|Julia Ourique|
+Scalene|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Science Toys|Disco|12/03|The Art Of Losing Control|Independente|Próprio Artista|
+Selvagens à Procura|2 Discos|Não Revelada|Não Revelado|Independente|Daniel Pandeló|
+Setor Norte|Disco|Não Revelada|Não Revelado|Independente|Bruna Alves|
+Seu Jorge|Disco|Não Revelada|The Other Side|Amor in Sound|Assessoria|
+Shitiago|EP|19/03|NOTURNO|Independente|Próprio artista|
+SHURY|EP|30/01|Código de Rua|Empire|Omim|
+Signo 13|Disco|Não Revelada|Não Revelado|Independente|E-mail Hits|
+Silva Barros|Disco|10/01|Ponto de Fuga|Independente|E-mail Hits|
+Siso|Disco|Não Revelada|Ferro e Fogo|Independente|Izabela Costa|
+SKIPP IS DEAD|Disco|Segundo Semestre|Desmorto|Independente|Julia Ourique|
+Sky Down|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+SONIKA|Disco|Não Revelada|Colateral|Selo DoSol|DoSol|
+sorosoro|Disco|Primeira quinzena de março|Não Revelado|Independente|A própria banda|
+Sotam|EP|12/02|Até o Próximo Carnaval|KZN Records|Assessoria|
+Soul de Brasileiro|Disco|Não Revelada|Não Revelado|Independente|Wagner Rodolfo|
+Soul Sellers|Disco|Não Revelada|Não Revelado|Independente|Wender Zanon|
+Spok|Disco|Não Revelada|Não Revelado|Independente|Izabela Costa|
+Supervão|2 Discos|23/01 e não revelado|Amores e Vícios|Frase Records|Leonardo Serafini|
+Táia|Disco|06/03|OBÁ TAJÁ|Independente|Flora Miguel|
+Teresa Cristina|Disco|17/01|Jessé|FF Entretenimento|Nova Brasil FM|
+The Bombers|Disco|06/07|Uma Noite Alucinante|Craic Dealer|Próprio Artista|
+Thiago Corrêa|Disco|Abril|Claridade|Independente|Luísa Gontijo|
+Thiago Elniño|Disco|Não Revelada|Canjerê|Deck|Piky|
+This Lonely Crowd|Disco|Não Revelada|Não Revelado|Independente|Elson Barbosa|
+Tietê|Disco|27/02|Tâmisa|Independente|Redes Sociais|
+Tom Ribeira|EP|06/03|Pedaço|Independente|Redes Sociais|
+Tranze|Disco|Não Revelada|Não Revelado|Independente|Arthur Amaral|
+truta|Disco|09/09|Não Revelado|Independente|Próprio Artista|
+Tuany|Disco|Não Revelada|Não Revelado|For Music|Ana Beatriz|
+Turmallina|Disco|Não Revelada|Não Revelado|Independente|Insta Minuto|
+Tuyo|Disco|Não Revelada|Projeto Tuyo 10 Anos|BMG|Thalita Facciolo|
+Twin Pumpkin|Disco|Não Revelada|Não Revelado|Independente|Insta Minuto|
+Vallada|Disco|Não Revelada|Não Revelado|Independente|Nicole - Manager|
+Vandal|Disco|01/04|VANGUARDAH|ONErpm|Isabela D'Avila|
+Venere Vai Venus|Disco|Não Revelada|Não Revelado|Independente|Bruna Alves|
+Verde Menta|Disco|Primeiro semestre|Quase-Tudo|Independente|Próprio Artista|
+VHOOR|Disco|Abril|Não Revelado|Independente|Assessoria|
+Victor Xamã e Xamã|Disco|Não Revelada|Não Revelado|Independente|Felipe Mascari|
+Vírus Carinhoso|Disco|Não Revelada|Não Revelado|Natura Edital|Francine Ramos|
+VITA|Disco|06/03|Ponto de Equilíbrio|Independente|Próprio artista|
+Vitor Araújo|Disco|Abril|TORÓ|RISCO|Francine Ramos|
+Vitor Brauer|Disco|22/03|Tréinquinumpára 08|Independente|Francine Ramos|
+Vitu|Disco|Segundo Semestre|Não Revelado|Independente|Julia Ourique|
+Vivian Kuczynski|EP|Não Revelada|KUCZYSNKI|Independente|Própria artista|
+Wándalo|Disco|10/02|eu e o diabo|Independente|Pedro Paulo Furlan|
+WIU e Teto|Disco|27/01|COLAPSO GLOBAL|30praum|Redes Sociais|
+WRY|Disco|Não Revelada|Não Revelado|Independente|Próprio Artista|
+Xavier|Disco|09/01|Quaisquer Sonhos|GRV|Assessoria|
+Yan Cloud|Disco|Não Revelada|Não Revelado|Independente|Ágata Cunha|
+YESDADX|EP|Não Revelada|Não Revelado|Independente|Pedro Paulo Furlan|
+Yunk Vino|Disco|Não Revelada|Não Revelado|Universal Music|Ágata Cunha|
+Zander|Disco|Não Revelada|Não Revelado|Algohits|Redes Sociais|
+Zeca Baleiro|Disco|Não Revelada|Não Revelado|Saravá Discos|Adriana Bueno|
+Zécarlos Ribeiro|Disco|Não Revelada|Não Revelado|Independente|Adriana Bueno|
+Zélia Duncan|Disco|Não Revelada|Não Revelado|Duncan Discos|Nova Brasil FM|
+ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
+
+    const parseDateInfo = (dateStr) => {
+      const d = (dateStr || '').toLowerCase();
+      let month = 'Sem data anunciada';
+      let semester = 'Sem data anunciada';
+
+      if (d.includes('jan') || d.match(/\b01\b/)) { month = 'Janeiro'; semester = '1º Semestre'; }
+      else if (d.includes('fev') || d.match(/\b02\b/)) { month = 'Fevereiro'; semester = '1º Semestre'; }
+      else if (d.includes('mar') || d.match(/\b03\b/)) { month = 'Março'; semester = '1º Semestre'; }
+      else if (d.includes('abr') || d.match(/\b04\b/)) { month = 'Abril'; semester = '1º Semestre'; }
+      else if (d.includes('mai') || d.match(/\b05\b/)) { month = 'Maio'; semester = '1º Semestre'; }
+      else if (d.includes('jun') || d.match(/\b06\b/)) { month = 'Junho'; semester = '1º Semestre'; }
+      else if (d.includes('jul') || d.match(/\b07\b/)) { month = 'Julho'; semester = '2º Semestre'; }
+      else if (d.includes('ago') || d.match(/\b08\b/)) { month = 'Agosto'; semester = '2º Semestre'; }
+      else if (d.includes('set') || d.match(/\b09\b/)) { month = 'Setembro'; semester = '2º Semestre'; }
+      else if (d.includes('out') || d.match(/\b10\b/)) { month = 'Outubro'; semester = '2º Semestre'; }
+      else if (d.includes('nov') || d.match(/\b11\b/)) { month = 'Novembro'; semester = '2º Semestre'; }
+      else if (d.includes('dez') || d.match(/\b12\b/)) { month = 'Dezembro'; semester = '2º Semestre'; }
+
+      if (d.includes('primeiro semestre') || d.includes('1º sem') || d.includes('1o sem') || d.includes('primeiro tri')) {
+        semester = '1º Semestre';
+      } else if (d.includes('segundo semestre') || d.includes('2º sem') || d.includes('2o sem')) {
+        semester = '2º Semestre';
+      }
+
+      return { month, semester };
+    };
+
+    state.releases = RAW_CSV_DATA.split('\n')
+      .filter(line => line.trim().length > 0)
+      .map((line, index) => {
+        const parts = line.split('|');
+        const { month, semester } = parseDateInfo(parts[2]);
+        return {
+          id: `seed_${index}`,
+          artist: parts[0]?.trim() || 'Desconhecido',
+          type: parts[1]?.trim() || 'Disco',
+          date: parts[2]?.trim() || 'Não Revelada',
+          title: parts[3]?.trim() || 'Não Revelado',
+          label: parts[4]?.trim() || 'Independente',
+          fonte: parts[5]?.trim() || 'N/A',
+          link: parts[6]?.trim() || '',
+          month,
+          semester,
+          status: 'approved'
         };
-        
-        // Regra Poupança: 0.5% fixo + TR (0.09% Est.)
-        const FIXED_MONTHLY_SAVINGS = 0.005; 
-        const ESTIMATED_MONTHLY_TR = 0.0009; 
-        const MONTHLY_RATE_SAVINGS = FIXED_MONTHLY_SAVINGS + ESTIMATED_MONTHLY_TR;
-        
-        // Função auxiliar para converter taxa anual para mensal
-        const calculateMonthlyRate = (annualRate) => Math.pow(1 + annualRate, 1/12) - 1;
+      });
 
-        // --- CONFIGURAÇÃO LOGARÍTMICA ---
-        const INITIAL_MIN_REAL = 1000;
-        const INITIAL_MAX_REAL = 10000000; 
-        const MONTHLY_MIN_LOG_START = 50; 
-        const MONTHLY_MAX_REAL = 500000;
+    // Função auxiliar para injetar verde neon nos números das datas
+    const formatNeonNumbers = (dateStr) => {
+      if (!dateStr) return '';
+      return String(dateStr).replace(/(\d+)/g, '<span class="text-[#ccff00] font-bold">$1</span>');
+    };
 
-        // Função de arredondamento inteligente
-        function smartRound(value) {
-            if (value < 1000) return Math.round(value / 50) * 50; 
-            if (value < 10000) return Math.round(value / 100) * 100;
-            if (value < 100000) return Math.round(value / 500) * 500;
-            if (value < 1000000) return Math.round(value / 1000) * 1000;
-            return Math.round(value / 5000) * 5000;
+    // Firebase Initialization
+    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+      const fbConfig = JSON.parse(__firebase_config);
+      const fbApp = initializeApp(fbConfig);
+      const authObj = getAuth(fbApp);
+      state.db = getFirestore(fbApp);
+
+      const initAuth = async () => {
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(authObj, __initial_auth_token);
+          } else {
+            await signInAnonymously(authObj);
+          }
+        } catch (err) {
+          console.error("Auth error:", err);
+          renderUI();
         }
+      };
+      
+      initAuth();
 
-        // Mapeamento Logarítmico: Investimento Inicial
-        function getLogInitialInvestment(position) {
-            const minp = 0;
-            const maxp = 1000;
-            const minv = Math.log(INITIAL_MIN_REAL);
-            const maxv = Math.log(INITIAL_MAX_REAL);
-            const scale = (maxv - minv) / (maxp - minp);
-            const value = Math.exp(minv + scale * (position - minp));
-            return smartRound(value);
+      onAuthStateChanged(authObj, (currentUser) => {
+        state.user = currentUser;
+        if (currentUser && state.db) {
+          document.getElementById('loading-spinner').classList.remove('hidden');
+          const submissionsRef = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4');
+          
+          onSnapshot(submissionsRef, (snapshot) => {
+            const submittedData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const localData = state.releases.filter(r => r.id.startsWith('seed_'));
+            state.releases = [...localData, ...submittedData];
+            document.getElementById('loading-spinner').classList.add('hidden');
+            renderUI();
+          }, (error) => {
+            console.error("Error fetching data:", error);
+            document.getElementById('loading-spinner').classList.add('hidden');
+            renderUI();
+          });
         }
+      });
+    } else {
+      setTimeout(renderUI, 100);
+    }
 
-        // Mapeamento Logarítmico: Aporte Mensal
-        function getLogMonthlyContribution(position) {
-            if (position == 0) return 0;
-            const minp = 1; 
-            const maxp = 1000;
-            const minv = Math.log(MONTHLY_MIN_LOG_START);
-            const maxv = Math.log(MONTHLY_MAX_REAL);
-            const scale = (maxv - minv) / (maxp - minp);
-            const value = Math.exp(minv + scale * (position - minp));
-            return smartRound(value);
+    // Global Functions to be called from HTML
+    window.switchTab = (tab) => {
+      state.activeTab = tab;
+      document.getElementById('view-home').classList.add('hidden');
+      document.getElementById('view-submit').classList.add('hidden');
+      document.getElementById('view-admin').classList.add('hidden');
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      
+      // Update nav styles
+      document.querySelectorAll('#nav-buttons button').forEach(btn => {
+        btn.classList.remove('text-[#ccff00]');
+        if (btn.dataset.tab === 'admin') btn.classList.add('text-gray-600');
+        else btn.classList.add('text-gray-400');
+      });
+      const activeBtn = document.querySelector(`#nav-buttons button[data-tab="${tab}"]`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-gray-400', 'text-gray-600');
+        if (tab === 'admin') activeBtn.classList.add('text-red-500');
+        else activeBtn.classList.add('text-[#ccff00]');
+      }
+
+      if (tab === 'admin') renderAdmin();
+      if (tab === 'home') renderTimeline();
+    };
+
+    window.setTimelineMode = (mode) => {
+      state.timelineMode = mode;
+      state.selectedPeriod = 'Todos';
+      renderTimeline();
+      updateFiltersUI();
+      renderReleases();
+    };
+
+    window.setPeriod = (period) => {
+      if (state.selectedPeriod === period) state.selectedPeriod = 'Todos';
+      else state.selectedPeriod = period;
+      renderTimeline();
+      updateFiltersUI();
+      renderReleases();
+    };
+
+    window.setViewMode = (mode) => {
+      state.viewMode = mode;
+      updateFiltersUI();
+      renderReleases();
+    };
+
+    // Renderização do Mapa / Lista principal
+    const renderReleases = () => {
+      const approvedReleases = state.releases.filter(r => r.status === 'approved');
+      let displayed = state.selectedPeriod === 'Todos' 
+        ? approvedReleases 
+        : approvedReleases.filter(r => state.timelineMode === 'months' ? r.month === state.selectedPeriod : r.semester === state.selectedPeriod);
+
+      if (state.filterType !== 'Todos') {
+        displayed = displayed.filter(r => r.type.toLowerCase().includes(state.filterType.toLowerCase()));
+      }
+      if (state.searchTerm.trim() !== '') {
+        const lowerSearch = state.searchTerm.toLowerCase();
+        displayed = displayed.filter(r => 
+          (r.artist && r.artist.toLowerCase().includes(lowerSearch)) ||
+          (r.title && r.title.toLowerCase().includes(lowerSearch)) ||
+          (r.label && r.label.toLowerCase().includes(lowerSearch))
+        );
+      }
+
+      displayed = displayed.sort((a, b) => {
+        if (state.sortBy === 'nome') return a.artist.localeCompare(b.artist);
+        if (state.sortBy === 'selo') return a.label.localeCompare(b.label);
+        if (state.sortBy === 'fonte') return a.fonte.localeCompare(b.fonte);
+        if (state.sortBy === 'data') {
+          const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro', 'Sem data anunciada'];
+          const aWeight = months.indexOf(a.month);
+          const bWeight = months.indexOf(b.month);
+          if (aWeight !== bWeight) return aWeight - bWeight;
+          return a.date.localeCompare(b.date);
         }
+        return 0;
+      });
 
-        const formatCurrency = (value, showCents = true) => {
-            const options = {
-                style: 'currency',
-                currency: 'BRL',
-                minimumFractionDigits: showCents ? 2 : 0,
-                maximumFractionDigits: showCents ? 2 : 0,
-            };
-            return value.toLocaleString('pt-BR', options);
-        };
-        
-        const formatPercent = (value) => {
-            return (value * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
-        };
+      document.getElementById('hero-count').innerText = approvedReleases.length;
+      document.getElementById('map-count').innerText = displayed.length;
 
-        const calculateFutureValueAnnuity = (monthlyContribution, monthlyRate, totalMonths) => {
-            if (monthlyContribution <= 0) return 0;
-            const fvFactor = (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate;
-            return monthlyContribution * fvFactor * (1 + monthlyRate); 
-        }
+      const container = document.getElementById('releases-container');
+      
+      if (state.viewMode === 'grid') {
+        container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
+      } else {
+        container.className = "flex flex-col gap-3";
+      }
 
-        function updateValues() {
-            // 1. Valores dos Inputs
-            const initialInvestment = getLogInitialInvestment(parseInt(investmentSlider.value));
-            const monthlyContribution = getLogMonthlyContribution(parseInt(monthlySlider.value));
-            const years = parseInt(timeSlider.value, 10);
-            const totalMonths = years * 12;
-
-            // 2. Determinar a taxa anualizada com base no ano selecionado
-            const currentAnnualRate = ANNUAL_RATES_BY_YEAR[years] || 0.12; // fallback
-            const currentMonthlyRate = calculateMonthlyRate(currentAnnualRate);
-
-            // 3. Cálculos Carteira (usando a taxa dinâmica)
-            const fvInitialPortfolio = initialInvestment * Math.pow((1 + currentMonthlyRate), totalMonths);
-            const fvMonthlyPortfolio = calculateFutureValueAnnuity(monthlyContribution, currentMonthlyRate, totalMonths);
-            const finalValue = fvInitialPortfolio + fvMonthlyPortfolio;
-
-            // 4. Cálculos Poupança
-            const fvInitialSavings = initialInvestment * Math.pow((1 + MONTHLY_RATE_SAVINGS), totalMonths);
-            const fvMonthlySavings = calculateFutureValueAnnuity(monthlyContribution, MONTHLY_RATE_SAVINGS, totalMonths);
-            const savingsFinalValue = fvInitialSavings + fvMonthlySavings;
-
-            // 5. Atualização da Interface
-            const scale = 0.8 + ((years - timeSlider.min) / (timeSlider.max - timeSlider.min)) * 0.2;
-            
-            initialSpan.textContent = formatCurrency(initialInvestment, false);
-            monthlySpan.textContent = formatCurrency(monthlyContribution, false); 
-            timeSpan.textContent = `${years} ano${years > 1 ? 's' : ''}`;
-            
-            finalSpan.textContent = formatCurrency(finalValue, true);
-            savingsSpan.textContent = formatCurrency(savingsFinalValue, true); 
-            
-            // Atualiza o disclaimer com a taxa usada
-            disclaimerRateSpan.textContent = formatPercent(currentAnnualRate);
-
-            finalSpan.style.transform = `scale(${scale})`;
-            
-            movePopupToThumb();
-        }
-
-        function movePopupToThumb() {
-            const percent = (investmentSlider.value - investmentSlider.min) / (investmentSlider.max - investmentSlider.min);
-            const thumbX = investmentSlider.offsetLeft + percent * investmentSlider.offsetWidth;
-            popup.style.left = `${thumbX}px`;
-            const verticalCenter = investmentSlider.offsetTop + (investmentSlider.offsetHeight / 2);
-            popup.style.top = `${verticalCenter}px`;
-        }
-        
-        investmentSlider.addEventListener('input', () => {
-            updateValues();
-            popup.classList.remove('show');
+      if (displayed.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-20 bg-[#0a0a0a] border border-gray-900 rounded-xl mt-4">
+            <p class="text-gray-500 text-xl font-light">Nenhum lançamento catalogado para este filtro.</p>
+            <button onclick="clearAllFilters()" class="mt-4 text-[#ccff00] hover:underline uppercase tracking-widest text-sm font-bold">Limpar todos os filtros</button>
+          </div>
+        `;
+      } else {
+        let html = '';
+        displayed.forEach(release => {
+          if (state.viewMode === 'grid') {
+            html += `
+              <div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
+                <div>
+                  <div class="flex justify-between items-start mb-3 gap-2">
+                    <span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800 shrink-0">
+                      ${release.type}
+                    </span>
+                    <span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">
+                      ${formatNeonNumbers(release.date)}
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">
+                    ${release.artist}
+                  </h3>
+                  <p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">
+                    "${release.title}"
+                  </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3">
+                  <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide">
+                      <i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> 
+                      <span class="truncate">${release.label || 'Independente'}</span>
+                    </span>
+                    ${(release.link && release.link.startsWith('http')) ? `
+                      <a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">
+                        Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i>
+                      </a>
+                    ` : ''}
+                  </div>
+                  <span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono">
+                    <i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span>
+                  </span>
+                </div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-4 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
+                <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full z-10">
+                  <div class="flex items-center gap-3 md:w-48 shrink-0">
+                    <span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">
+                      ${release.type}
+                    </span>
+                    <span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm">
+                      ${formatNeonNumbers(release.date)}
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xl font-black tracking-tight group-hover:text-[#ccff00] transition-colors truncate font-garet">
+                      ${release.artist}
+                    </h3>
+                    <p class="text-sm text-gray-400 italic truncate">"${release.title}"</p>
+                  </div>
+                  <div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 shrink-0 md:w-64">
+                    <span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide truncate">
+                      <i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> 
+                      <span class="truncate">${release.label || 'Independente'}</span>
+                    </span>
+                    <span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono truncate">
+                      <i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> <span class="truncate">${release.fonte || 'N/A'}</span>
+                    </span>
+                  </div>
+                </div>
+                ${(release.link && release.link.startsWith('http')) ? `
+                  <a href="${release.link}" target="_blank" class="shrink-0 mt-3 md:mt-0 z-10 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">
+                    Ouvir <i data-lucide="link" class="w-3 h-3"></i>
+                  </a>
+                ` : ''}
+              </div>
+            `;
+          }
         });
-        monthlySlider.addEventListener('input', updateValues); 
-        timeSlider.addEventListener('input', updateValues);
+        container.innerHTML = html;
+      }
+      lucide.createIcons();
+    };
 
-        updateValues();
+    // Atualiza opções dos selects e botões
+    const updateFiltersUI = () => {
+      document.getElementById('input-search').value = state.searchTerm;
+      document.getElementById('select-type').value = state.filterType;
+      document.getElementById('select-sort').value = state.sortBy;
+      
+      const selectPeriod = document.getElementById('select-period');
+      const order = state.timelineMode === 'months' ? MONTHS_ORDER : SEMESTERS_ORDER;
+      
+      let periodOptions = '<option value="Todos">Todos os Períodos</option>';
+      order.forEach(p => {
+        periodOptions += `<option value="${p}">${p}</option>`;
+      });
+      selectPeriod.innerHTML = periodOptions;
+      selectPeriod.value = state.selectedPeriod;
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    movePopupToThumb();
-                    popup.classList.add('show');
-                    setTimeout(() => popup.classList.remove('show'), 4000);
-                    observer.unobserve(widget); 
-                }
-            });
-        }, { threshold: 0.5 });
+      const badge = document.getElementById('badge-period');
+      if (state.selectedPeriod !== 'Todos') {
+        badge.innerHTML = `<i data-lucide="layers" class="text-[#ccff00] w-4 h-4 sm:w-5 sm:h-5"></i> ${state.selectedPeriod}`;
+        badge.classList.remove('hidden');
+        document.getElementById('btn-clear-filter-timeline').classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+        document.getElementById('btn-clear-filter-timeline').classList.add('hidden');
+      }
 
-        observer.observe(widget);
-    </script>
+      document.getElementById('btn-mode-months').className = `flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${state.timelineMode === 'months' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`;
+      document.getElementById('btn-mode-semesters').className = `flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${state.timelineMode === 'semesters' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`;
+
+      document.getElementById('btn-view-grid').className = `bg-[#ccff00] text-black shadow-sm flex-1 rounded-md transition-all flex items-center justify-center ${state.viewMode === 'grid' ? 'bg-[#ccff00] text-black' : 'bg-transparent text-gray-500 hover:text-white hover:bg-gray-900'}`;
+      document.getElementById('btn-view-list').className = `bg-[#ccff00] text-black shadow-sm flex-1 rounded-md transition-all flex items-center justify-center ${state.viewMode === 'list' ? 'bg-[#ccff00] text-black' : 'bg-transparent text-gray-500 hover:text-white hover:bg-gray-900'}`;
+    };
+
+    window.clearAllFilters = () => {
+      state.selectedPeriod = 'Todos';
+      state.searchTerm = '';
+      state.filterType = 'Todos';
+      renderTimeline();
+      updateFiltersUI();
+      renderReleases();
+    }
+
+    // Renderiza a timeline animada
+    const renderTimeline = () => {
+      const order = state.timelineMode === 'months' ? MONTHS_ORDER : SEMESTERS_ORDER;
+      const approvedReleases = state.releases.filter(r => r.status === 'approved');
+      
+      const counts = {};
+      order.forEach(p => counts[p] = 0);
+      approvedReleases.forEach(r => {
+        const p = state.timelineMode === 'months' ? r.month : r.semester;
+        if (counts[p] !== undefined) counts[p] += 1;
+      });
+
+      const colWidth = state.timelineMode === 'semesters' ? 160 : 112;
+      const gap = 8;
+      const paddingX = 16;
+      const svgWidth = paddingX * 2 + order.length * colWidth + (order.length - 1) * gap;
+
+      // Generate points for SVG Path
+      const points = order.map((period, index) => {
+        const count = counts[period] || 0;
+        let barHeightPx = 10;
+        if (count > 0) {
+          barHeightPx = Math.max(Math.min(count / 100, 1) * 110, 15);
+        }
+        const peak = 57 + barHeightPx * 1.3 + 35;
+        const cy = 200 - peak;
+        const cx = paddingX + index * (colWidth + gap) + colWidth / 2;
+        return { cx, cy };
+      });
+
+      let d = "";
+      if (points.length > 0) {
+        d = `M ${points[0].cx} ${points[0].cy} `;
+        for (let i = 1; i < points.length; i++) {
+          const p0 = points[i-1], p1 = points[i];
+          const cpOffset = (p1.cx - p0.cx) / 2;
+          d += `C ${p0.cx + cpOffset} ${p0.cy}, ${p1.cx - cpOffset} ${p1.cy}, ${p1.cx} ${p1.cy} `;
+        }
+      }
+
+      // Ao usar a classe CSS `animate-reveal-line` diretamente no SVG, a animação vai ocorrer confiantemente após o HTML ser injetado.
+      let html = `
+        <svg style="width: ${svgWidth}px; height: 200px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line">
+          <path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[200px]">
+      `;
+
+      order.forEach((period) => {
+        const isActive = state.selectedPeriod === period;
+        const count = counts[period] || 0;
+        const isSpecial = period === 'Sem data anunciada';
+        let barHeightPx = 10;
+        if (count > 0) {
+          barHeightPx = Math.max(Math.min(count / 100, 1) * 110, 15);
+        }
+        
+        const opacityClass = (state.selectedPeriod !== 'Todos' && !isActive) ? 'opacity-40 hover:opacity-100' : 'opacity-100';
+        const colorClassTop = isActive ? 'bg-[#ccff00] shadow-[0_0_15px_#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
+        const colorClassBot = isActive ? 'bg-[#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
+        const textClass = isActive ? 'text-[#ccff00] scale-110' : 'text-gray-500 group-hover:text-gray-300';
+        const spClass = isSpecial ? 'text-gray-400' : '';
+
+        html += `
+          <div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos">
+            <div class="relative flex flex-col items-center w-full z-10">
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">
+                ${count} registro(s)
+              </div>
+              <div style="height: ${barHeightPx}px" class="w-8 sm:w-10 rounded-t-sm transition-all duration-300 mb-[1px] ${colorClassTop}"></div>
+              <div style="height: calc(${barHeightPx}px * 0.3)" class="w-8 sm:w-10 rounded-b-sm transition-all duration-300 opacity-30 ${colorClassBot}"></div>
+            </div>
+            <div class="mt-4 h-10 flex items-start justify-center w-full z-10">
+              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${spClass}">${period}</span>
+            </div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+      document.getElementById('timeline-content').outerHTML = `<div id="timeline-content">${html}</div>`;
+    };
+
+    // Renderiza a view do Admin
+    const renderAdmin = () => {
+      const pending = state.releases.filter(r => r.status === 'pending');
+      document.getElementById('admin-count').innerText = pending.length;
+      
+      const container = document.getElementById('admin-container');
+      if (pending.length === 0) {
+        container.innerHTML = `
+          <div class="bg-[#111] border border-gray-800 p-12 text-center flex flex-col items-center">
+            <i data-lucide="check" class="text-gray-600 w-12 h-12 mb-4"></i>
+            <h3 class="text-2xl font-bold text-gray-400 font-garet">Fila Limpa!</h3>
+            <p class="text-gray-500 mt-2">Nenhum lançamento pendente de aprovação no momento.</p>
+          </div>
+        `;
+      } else {
+        let html = '';
+        pending.forEach(release => {
+          html += `
+            <div class="bg-[#111] border border-gray-800 p-4 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group hover:border-gray-600 transition-colors">
+              <div class="flex-1 w-full">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-2 py-0.5 text-xs font-bold uppercase tracking-wider">Pendente</span>
+                  <span class="text-gray-500 text-sm flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> ${release.fonte}</span>
+                </div>
+                <h3 class="text-2xl font-black text-white flex items-center gap-2 font-garet">
+                  ${release.artist} <span class="text-gray-600 font-light text-lg">"${release.title}"</span>
+                </h3>
+                <div class="mt-3 flex flex-wrap gap-4 text-sm font-mono text-gray-400">
+                  <span class="flex items-center gap-1"><i data-lucide="disc" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.type}</span>
+                  <span class="flex items-center gap-1"><i data-lucide="calendar" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.date}</span>
+                  <span class="flex items-center gap-1"><i data-lucide="music" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.label}</span>
+                  ${release.link ? `<a href="${release.link}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:underline"><i data-lucide="link" class="w-3.5 h-3.5"></i> Link Fornecido</a>` : ''}
+                </div>
+              </div>
+              <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
+                <button onclick="adminAction('${release.id}', 'approve')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-[#ccff00] text-black font-bold uppercase tracking-wider py-2 px-6 hover:bg-white transition-colors">
+                  <i data-lucide="check" class="w-4 h-4"></i> Aprovar
+                </button>
+                <button onclick="adminAction('${release.id}', 'reject')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-transparent border border-red-900 text-red-500 hover:bg-red-900/20 font-bold uppercase tracking-wider py-2 px-6 transition-colors">
+                  <i data-lucide="x" class="w-4 h-4"></i> Descartar
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+      lucide.createIcons();
+    };
+
+    window.adminAction = async (id, action) => {
+      if (state.db && state.user && id.startsWith('sub_')) {
+        const submissionRef = doc(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4', id);
+        if (action === 'approve') await updateDoc(submissionRef, { status: 'approved' });
+        else if (action === 'reject') await deleteDoc(submissionRef);
+      } else {
+        if (action === 'approve') {
+          state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
+        } else {
+          state.releases = state.releases.filter(r => r.id !== id);
+        }
+        renderAdmin();
+        renderTimeline();
+        renderReleases();
+      }
+    };
+
+    // Formulário Submit
+    document.getElementById('submit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      const btn = document.getElementById('btn-submit');
+      const errEl = document.getElementById('submit-error');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
+      errEl.classList.add('hidden');
+
+      const { month, semester } = parseDateInfo(data.date);
+      const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
+
+      try {
+        if (state.db && state.user) {
+          const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const submissionRef = doc(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4', newId);
+          await setDoc(submissionRef, newRelease);
+        } else {
+          state.releases.push({ id: Date.now().toString(), ...newRelease });
+        }
+        
+        form.reset();
+        document.getElementById('submit-form').classList.add('hidden');
+        document.getElementById('submit-success').classList.remove('hidden');
+        document.getElementById('submit-success').classList.add('flex');
+        
+        setTimeout(() => {
+          document.getElementById('submit-success').classList.add('hidden');
+          document.getElementById('submit-success').classList.remove('flex');
+          document.getElementById('submit-form').classList.remove('hidden');
+        }, 3000);
+      } catch (err) {
+        console.error(err);
+        errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>';
+        lucide.createIcons();
+      }
+    });
+
+    // Listeners de Filtros
+    document.getElementById('input-search').addEventListener('input', (e) => { state.searchTerm = e.target.value; renderReleases(); });
+    document.getElementById('select-type').addEventListener('change', (e) => { state.filterType = e.target.value; renderReleases(); });
+    document.getElementById('select-sort').addEventListener('change', (e) => { state.sortBy = e.target.value; renderReleases(); });
+    document.getElementById('select-period').addEventListener('change', (e) => { setPeriod(e.target.value); });
+
+    // Drag to scroll timeline
+    const timelineEl = document.getElementById('timeline-scroll');
+    let isDragging = false, startX, scrollLeft;
+    timelineEl.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX - timelineEl.offsetLeft; scrollLeft = timelineEl.scrollLeft; });
+    timelineEl.addEventListener('mouseleave', () => { isDragging = false; });
+    timelineEl.addEventListener('mouseup', () => { isDragging = false; });
+    timelineEl.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - timelineEl.offsetLeft;
+      const walk = (x - startX) * 2;
+      timelineEl.scrollLeft = scrollLeft - walk;
+    });
+
+    // Render Inicial
+    const renderUI = () => {
+      updateFiltersUI();
+      renderTimeline();
+      renderReleases();
+      lucide.createIcons();
+    };
+
+  </script>
 </body>
 </html>
