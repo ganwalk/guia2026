@@ -41,10 +41,38 @@
 </head>
 <body class="min-h-screen bg-black text-white selection:bg-[#ccff00] selection:text-black pb-20 overflow-x-hidden flex flex-col">
 
+  <!-- Admin Login Modal Personalizado -->
+  <div id="modal-admin-login" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
+    <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+      <h3 class="text-2xl font-black text-[#ccff00] mb-2 font-garet uppercase tracking-wide">Acesso Restrito</h3>
+      <p class="text-gray-400 text-sm mb-5">Insira a palavra-passe de curadoria.</p>
+      
+      <input type="password" id="input-admin-pwd" placeholder="Palavra-passe" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-4 text-center tracking-[0.2em] font-mono" />
+      
+      <div class="flex gap-3">
+        <button onclick="closeAdminModal()" class="flex-1 py-3 text-gray-500 hover:text-white hover:bg-gray-900 rounded-lg font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
+        <button onclick="submitAdminLogin()" class="flex-1 bg-[#ccff00] text-black font-bold uppercase tracking-wider text-sm py-3 rounded-lg hover:bg-white transition-colors">Entrar</button>
+      </div>
+      <p id="admin-login-error" class="hidden text-red-500 text-xs mt-4 text-center font-bold uppercase tracking-wider animate-pulse">Palavra-passe incorreta.</p>
+    </div>
+  </div>
+  
+  <!-- Admin Logout Modal Personalizado -->
+  <div id="modal-admin-logout" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
+    <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+      <h3 class="text-2xl font-black text-white mb-2 font-garet uppercase tracking-wide">Sair do Admin?</h3>
+      <p class="text-gray-400 text-sm mb-6">Perderá os privilégios de curadoria até fazer login novamente.</p>
+      <div class="flex gap-3">
+        <button onclick="closeLogoutModal()" class="flex-1 py-3 border border-gray-700 text-white font-bold uppercase tracking-wider text-sm rounded-lg hover:bg-gray-800 transition-colors">Cancelar</button>
+        <button onclick="confirmAdminLogout()" class="flex-1 bg-red-600 text-white font-bold uppercase tracking-wider text-sm py-3 rounded-lg hover:bg-red-500 transition-colors">Sair</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Navigation Header -->
   <nav class="sticky top-0 z-50 border-b border-[#333] bg-black/90 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
-      <div onclick="switchTab('home')" class="text-[#ccff00] font-black text-xl sm:text-2xl tracking-tighter cursor-pointer font-garet">
+      <div onclick="secretAdminLogin()" class="text-[#ccff00] font-black text-xl sm:text-2xl tracking-tighter cursor-pointer font-garet select-none hover:scale-105 transition-transform active:scale-95">
         GUIA <span class="text-white">26</span>
       </div>
       <div class="flex gap-2 sm:gap-6 items-center flex-wrap" id="nav-buttons">
@@ -54,7 +82,8 @@
         <button onclick="switchTab('submit')" data-tab="submit" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400">
           Ficou de Fora?
         </button>
-        <button onclick="switchTab('admin')" data-tab="admin" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider flex items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
+        <!-- Botão Admin inicialmente escondido -->
+        <button onclick="switchTab('admin')" id="nav-btn-admin" data-tab="admin" class="hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
           <i data-lucide="shield-alert" class="w-4 h-4 sm:w-4 sm:h-4"></i> <span class="hidden sm:inline">Admin</span>
         </button>
       </div>
@@ -311,20 +340,21 @@
   <!-- Lógica da Aplicação -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getAuth, signInAnonymously, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     // Estado da Aplicação
     const state = {
       activeTab: 'home',
       user: null,
+      isAdmin: false, // Flag de administrador local
       releases: [],
-      timelineMode: 'months', // 'months' ou 'semesters'
+      timelineMode: 'months',
       selectedPeriod: 'Todos',
       searchTerm: '',
       filterType: 'Todos',
       sortBy: 'nome',
-      viewMode: 'grid', // 'grid' ou 'list'
+      viewMode: 'grid',
       db: null,
       appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
     };
@@ -701,6 +731,7 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       return { month, semester };
     };
 
+    // 1. CARREGAR OS DADOS ESTÁTICOS IMEDIATAMENTE
     state.releases = RAW_CSV_DATA.split('\n')
       .filter(line => line.trim().length > 0)
       .map((line, index) => {
@@ -721,56 +752,10 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
         };
       });
 
-    // Função auxiliar para injetar verde neon nos números das datas
     const formatNeonNumbers = (dateStr) => {
       if (!dateStr) return '';
       return String(dateStr).replace(/(\d+)/g, '<span class="text-[#ccff00] font-bold">$1</span>');
     };
-
-    // Firebase Initialization
-    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-      const fbConfig = JSON.parse(__firebase_config);
-      const fbApp = initializeApp(fbConfig);
-      const authObj = getAuth(fbApp);
-      state.db = getFirestore(fbApp);
-
-      const initAuth = async () => {
-        try {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(authObj, __initial_auth_token);
-          } else {
-            await signInAnonymously(authObj);
-          }
-        } catch (err) {
-          console.error("Auth error:", err);
-          renderUI();
-        }
-      };
-      
-      initAuth();
-
-      onAuthStateChanged(authObj, (currentUser) => {
-        state.user = currentUser;
-        if (currentUser && state.db) {
-          document.getElementById('loading-spinner').classList.remove('hidden');
-          const submissionsRef = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4');
-          
-          onSnapshot(submissionsRef, (snapshot) => {
-            const submittedData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const localData = state.releases.filter(r => r.id.startsWith('seed_'));
-            state.releases = [...localData, ...submittedData];
-            document.getElementById('loading-spinner').classList.add('hidden');
-            renderUI();
-          }, (error) => {
-            console.error("Error fetching data:", error);
-            document.getElementById('loading-spinner').classList.add('hidden');
-            renderUI();
-          });
-        }
-      });
-    } else {
-      setTimeout(renderUI, 100);
-    }
 
     // Global Functions to be called from HTML
     window.switchTab = (tab) => {
@@ -780,7 +765,6 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       document.getElementById('view-admin').classList.add('hidden');
       document.getElementById(`view-${tab}`).classList.remove('hidden');
       
-      // Update nav styles
       document.querySelectorAll('#nav-buttons button').forEach(btn => {
         btn.classList.remove('text-[#ccff00]');
         if (btn.dataset.tab === 'admin') btn.classList.add('text-gray-600');
@@ -793,34 +777,33 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
         else activeBtn.classList.add('text-[#ccff00]');
       }
 
-      if (tab === 'admin') renderAdmin();
-      if (tab === 'home') renderTimeline();
+      if (tab === 'admin') window.renderAdmin();
+      if (tab === 'home') window.renderTimeline();
     };
 
     window.setTimelineMode = (mode) => {
       state.timelineMode = mode;
       state.selectedPeriod = 'Todos';
-      renderTimeline();
-      updateFiltersUI();
-      renderReleases();
+      window.renderTimeline();
+      window.updateFiltersUI();
+      window.renderReleases();
     };
 
     window.setPeriod = (period) => {
       if (state.selectedPeriod === period) state.selectedPeriod = 'Todos';
       else state.selectedPeriod = period;
-      renderTimeline();
-      updateFiltersUI();
-      renderReleases();
+      window.renderTimeline();
+      window.updateFiltersUI();
+      window.renderReleases();
     };
 
     window.setViewMode = (mode) => {
       state.viewMode = mode;
-      updateFiltersUI();
-      renderReleases();
+      window.updateFiltersUI();
+      window.renderReleases();
     };
 
-    // Renderização do Mapa / Lista principal
-    const renderReleases = () => {
+    window.renderReleases = () => {
       const approvedReleases = state.releases.filter(r => r.status === 'approved');
       let displayed = state.selectedPeriod === 'Todos' 
         ? approvedReleases 
@@ -951,11 +934,10 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
         });
         container.innerHTML = html;
       }
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     };
 
-    // Atualiza opções dos selects e botões
-    const updateFiltersUI = () => {
+    window.updateFiltersUI = () => {
       document.getElementById('input-search').value = state.searchTerm;
       document.getElementById('select-type').value = state.filterType;
       document.getElementById('select-sort').value = state.sortBy;
@@ -991,13 +973,12 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       state.selectedPeriod = 'Todos';
       state.searchTerm = '';
       state.filterType = 'Todos';
-      renderTimeline();
-      updateFiltersUI();
-      renderReleases();
+      window.renderTimeline();
+      window.updateFiltersUI();
+      window.renderReleases();
     }
 
-    // Renderiza a timeline animada
-    const renderTimeline = () => {
+    window.renderTimeline = () => {
       const order = state.timelineMode === 'months' ? MONTHS_ORDER : SEMESTERS_ORDER;
       const approvedReleases = state.releases.filter(r => r.status === 'approved');
       
@@ -1013,7 +994,6 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       const paddingX = 16;
       const svgWidth = paddingX * 2 + order.length * colWidth + (order.length - 1) * gap;
 
-      // Generate points for SVG Path
       const points = order.map((period, index) => {
         const count = counts[period] || 0;
         let barHeightPx = 10;
@@ -1036,7 +1016,6 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
         }
       }
 
-      // Ao usar a classe CSS `animate-reveal-line` diretamente no SVG, a animação vai ocorrer confiantemente após o HTML ser injetado.
       let html = `
         <svg style="width: ${svgWidth}px; height: 200px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line">
           <path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1078,8 +1057,7 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       document.getElementById('timeline-content').outerHTML = `<div id="timeline-content">${html}</div>`;
     };
 
-    // Renderiza a view do Admin
-    const renderAdmin = () => {
+    window.renderAdmin = () => {
       const pending = state.releases.filter(r => r.status === 'pending');
       document.getElementById('admin-count').innerText = pending.length;
       
@@ -1125,27 +1103,74 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
         });
         container.innerHTML = html;
       }
-      lucide.createIcons();
+      if(window.lucide) lucide.createIcons();
     };
 
     window.adminAction = async (id, action) => {
-      if (state.db && state.user && id.startsWith('sub_')) {
-        const submissionRef = doc(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4', id);
-        if (action === 'approve') await updateDoc(submissionRef, { status: 'approved' });
-        else if (action === 'reject') await deleteDoc(submissionRef);
+      // Se houver conexão Firebase E o utilizador for admin
+      if (state.db && state.user && id.startsWith('sub_') && state.isAdmin) {
+        try {
+          const collectionPath = typeof __firebase_config !== 'undefined' 
+            ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
+            : ['submissions2026'];
+            
+          const submissionRef = doc(state.db, ...collectionPath, id);
+          if (action === 'approve') await updateDoc(submissionRef, { status: 'approved' });
+          else if (action === 'reject') await deleteDoc(submissionRef);
+        } catch (e) {
+          console.error("Firebase falhou, alterando dados localmente", e);
+          updateLocal();
+        }
       } else {
+        updateLocal();
+      }
+
+      function updateLocal() {
         if (action === 'approve') {
           state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
         } else {
           state.releases = state.releases.filter(r => r.id !== id);
         }
-        renderAdmin();
-        renderTimeline();
-        renderReleases();
+        window.renderAdmin();
+        window.renderTimeline();
+        window.renderReleases();
       }
     };
 
-    // Formulário Submit
+    window.renderUI = () => {
+      window.updateFiltersUI();
+      window.renderTimeline();
+      window.renderReleases();
+      if(window.lucide) lucide.createIcons();
+    };
+
+    // 2. RENDERIZAR INTERFACE IMEDIATAMENTE
+    window.renderUI();
+
+    // 3. LISTENERS GERAIS
+    document.getElementById('input-search').addEventListener('input', (e) => { state.searchTerm = e.target.value; window.renderReleases(); });
+    document.getElementById('select-type').addEventListener('change', (e) => { state.filterType = e.target.value; window.renderReleases(); });
+    document.getElementById('select-sort').addEventListener('change', (e) => { state.sortBy = e.target.value; window.renderReleases(); });
+    document.getElementById('select-period').addEventListener('change', (e) => { window.setPeriod(e.target.value); });
+
+    // Enviar palavra passe carregando no Enter
+    document.getElementById('input-admin-pwd').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') { window.submitAdminLogin(); }
+    });
+
+    const timelineEl = document.getElementById('timeline-scroll');
+    let isDragging = false, startX, scrollLeft;
+    timelineEl.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX - timelineEl.offsetLeft; scrollLeft = timelineEl.scrollLeft; });
+    timelineEl.addEventListener('mouseleave', () => { isDragging = false; });
+    timelineEl.addEventListener('mouseup', () => { isDragging = false; });
+    timelineEl.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - timelineEl.offsetLeft;
+      const walk = (x - startX) * 2;
+      timelineEl.scrollLeft = scrollLeft - walk;
+    });
+
     document.getElementById('submit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
@@ -1164,7 +1189,10 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       try {
         if (state.db && state.user) {
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const submissionRef = doc(state.db, 'artifacts', state.appId, 'public', 'data', 'submissions2026_v4', newId);
+          const collectionPath = typeof __firebase_config !== 'undefined' 
+            ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
+            : ['submissions2026'];
+          const submissionRef = doc(state.db, ...collectionPath, newId);
           await setDoc(submissionRef, newRelease);
         } else {
           state.releases.push({ id: Date.now().toString(), ...newRelease });
@@ -1186,36 +1214,131 @@ ZeVitor|Disco|Primeiro Semestre|Gandaia|Independente|Adriana Bueno|`;
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>';
-        lucide.createIcons();
+        if(window.lucide) lucide.createIcons();
       }
     });
 
-    // Listeners de Filtros
-    document.getElementById('input-search').addEventListener('input', (e) => { state.searchTerm = e.target.value; renderReleases(); });
-    document.getElementById('select-type').addEventListener('change', (e) => { state.filterType = e.target.value; renderReleases(); });
-    document.getElementById('select-sort').addEventListener('change', (e) => { state.sortBy = e.target.value; renderReleases(); });
-    document.getElementById('select-period').addEventListener('change', (e) => { setPeriod(e.target.value); });
+    // 4. FIREBASE INITIALIZATION & SYNC
+    let fbConfig = null;
+    let authObj = null;
+    
+    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+      fbConfig = JSON.parse(__firebase_config);
+    }
 
-    // Drag to scroll timeline
-    const timelineEl = document.getElementById('timeline-scroll');
-    let isDragging = false, startX, scrollLeft;
-    timelineEl.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX - timelineEl.offsetLeft; scrollLeft = timelineEl.scrollLeft; });
-    timelineEl.addEventListener('mouseleave', () => { isDragging = false; });
-    timelineEl.addEventListener('mouseup', () => { isDragging = false; });
-    timelineEl.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - timelineEl.offsetLeft;
-      const walk = (x - startX) * 2;
-      timelineEl.scrollLeft = scrollLeft - walk;
-    });
+    if (fbConfig) {
+      try {
+        const fbApp = initializeApp(fbConfig);
+        authObj = getAuth(fbApp);
+        state.db = getFirestore(fbApp);
 
-    // Render Inicial
-    const renderUI = () => {
-      updateFiltersUI();
-      renderTimeline();
-      renderReleases();
-      lucide.createIcons();
+        const initAuth = async () => {
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              await signInWithCustomToken(authObj, __initial_auth_token);
+            } else {
+              await signInAnonymously(authObj);
+            }
+          } catch (err) {
+            console.error("Erro na Autenticação Firebase:", err);
+          }
+        };
+        initAuth();
+
+        onAuthStateChanged(authObj, (currentUser) => {
+          state.user = currentUser;
+          
+          if (currentUser && state.db) {
+            document.getElementById('loading-spinner').classList.remove('hidden');
+            
+            const collectionPath = typeof __firebase_config !== 'undefined' 
+              ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
+              : ['submissions2026'];
+              
+            const submissionsRef = collection(state.db, ...collectionPath);
+            
+            onSnapshot(submissionsRef, (snapshot) => {
+              const submittedData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              const localData = state.releases.filter(r => r.id.startsWith('seed_'));
+              
+              state.releases = [...localData, ...submittedData];
+              document.getElementById('loading-spinner').classList.add('hidden');
+              window.renderUI();
+            }, (error) => {
+              console.error("Erro a ler Firebase:", error);
+              document.getElementById('loading-spinner').classList.add('hidden');
+            });
+          }
+        });
+      } catch(e) {
+        console.error("Ocorreu um erro a configurar o Firebase. A usar modo Offline.", e);
+      }
+    }
+
+    // 5. JANELAS MODAIS E LOGIN SECRETO (4 CLIQUES)
+    window.closeAdminModal = () => {
+      document.getElementById('modal-admin-login').classList.add('hidden');
+      document.getElementById('input-admin-pwd').value = '';
+    };
+
+    window.closeLogoutModal = () => {
+      document.getElementById('modal-admin-logout').classList.add('hidden');
+    };
+
+    window.submitAdminLogin = () => {
+      const pwd = document.getElementById('input-admin-pwd').value;
+      const errorMsg = document.getElementById('admin-login-error');
+      
+      if (pwd === "aleerafa") {
+        window.closeAdminModal();
+        state.isAdmin = true;
+        const adminBtn = document.getElementById('nav-btn-admin');
+        adminBtn.classList.remove('hidden');
+        adminBtn.classList.add('flex');
+        window.switchTab('admin');
+      } else {
+        errorMsg.classList.remove('hidden');
+      }
+    };
+
+    window.confirmAdminLogout = () => {
+      window.closeLogoutModal();
+      state.isAdmin = false; 
+      const adminBtn = document.getElementById('nav-btn-admin');
+      adminBtn.classList.add('hidden');
+      adminBtn.classList.remove('flex');
+      window.switchTab('home');
+    };
+
+    let clickCount = 0;
+    let clickTimeout = null;
+
+    window.secretAdminLogin = () => {
+      clickCount++;
+      
+      // Limpa o temporizador anterior para garantir que os cliques seguidos não são cortados a meio
+      if (clickTimeout) clearTimeout(clickTimeout);
+      
+      if (clickCount === 4) {
+        clickCount = 0; // Reset
+        
+        // Se já for admin, abre o modal para perguntar se quer sair
+        if (state.isAdmin) {
+            document.getElementById('modal-admin-logout').classList.remove('hidden');
+            return;
+        }
+
+        // Se não for, abre o modal da palavra-passe
+        document.getElementById('input-admin-pwd').value = '';
+        document.getElementById('admin-login-error').classList.add('hidden');
+        document.getElementById('modal-admin-login').classList.remove('hidden');
+        
+        // Foca automaticamente no campo de input
+        setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100);
+      } else {
+        // Define um novo temporizador de 2 segundos de inatividade para zerar o contador
+        clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); 
+      }
     };
 
   </script>
