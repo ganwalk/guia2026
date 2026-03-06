@@ -157,15 +157,6 @@
           <span class="flex items-center gap-2"><i data-lucide="arrow-right" class="text-[#ccff00] w-6 h-6 shrink-0"></i> Discos, EPs e Singles mais esperados.</span>
           <span class="flex items-center gap-2"><i data-lucide="arrow-right" class="text-[#ccff00] w-6 h-6 shrink-0"></i> <span id="hero-count">0</span> artistas na mira.</span>
         </div>
-        
-        <div class="absolute right-0 top-0 opacity-20 pointer-events-none hidden md:block animate-[spin_10s_linear_infinite]">
-          <svg width="200" height="200" viewBox="0 0 200 200">
-            <path id="curve" d="M 100 100 m -75 0 a 75 75 0 1 1 150 0 a 75 75 0 1 1 -150 0" fill="transparent" />
-            <text class="text-[#ccff00] font-bold text-2xl uppercase tracking-widest fill-current">
-              <textPath href="#curve" startOffset="0">• NEW • NEW • NEW • NEW • NEW</textPath>
-            </text>
-          </svg>
-        </div>
       </header>
 
       <!-- Dashboard de Dados (Gráficos) -->
@@ -203,7 +194,6 @@
               <h3 class="text-xl sm:text-2xl font-black text-white uppercase tracking-widest flex items-center gap-2 font-garet">
                 <i data-lucide="map" class="text-[#ccff00] w-6 h-6"></i> Região
               </h3>
-              <!-- Indicador de UF Selecionada ao lado do título -->
               <span id="map-active-state" class="hidden bg-[#ccff00]/10 text-[#ccff00] px-2 py-0.5 rounded text-xs font-bold border border-[#ccff00]/30 uppercase tracking-widest animate-[fadeIn_0.2s_ease-out]"></span>
             </div>
             <button id="btn-clear-uf" onclick="setUF('Todos')" class="hidden text-[10px] sm:text-xs font-bold uppercase tracking-wider border border-[#ccff00]/40 text-[#ccff00] px-3 py-1 rounded-full hover:bg-[#ccff00] hover:text-black transition-colors flex items-center gap-1">
@@ -211,7 +201,6 @@
             </button>
           </div>
           
-          <!-- Contentor AUMENTADO para 180% e deslocado para a direita -->
           <div id="map-wrapper" class="flex-1 w-full min-h-[340px] lg:min-h-[320px] relative overflow-hidden rounded-xl">
              <div id="brazil-map-chart" class="absolute top-1/2 left-[58%] w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer">
                 <div id="map-loading" class="w-8 h-8 border-2 border-[#ccff00] border-t-transparent rounded-full animate-spin"></div>
@@ -236,7 +225,7 @@
           </div>
         </div>
 
-        <!-- Filtros Atualizados com Barra de Pesquisa no Topo -->
+        <!-- Filtros -->
         <div class="flex flex-col gap-4 mb-8 bg-[#111] p-4 sm:p-5 border border-gray-800 rounded-xl shadow-lg">
           
           <div class="w-full relative min-w-0">
@@ -250,7 +239,6 @@
                 <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px]"></i>
                 <select id="select-uf" class="w-full bg-black border border-gray-800 focus:border-[#ccff00] text-white pl-9 pr-8 py-3 outline-none transition-colors rounded-lg font-bold uppercase tracking-wider text-[10px] sm:text-xs appearance-none cursor-pointer">
                   <option value="Todos">Todos os Estados</option>
-                  <!-- Preenchido via JS -->
                 </select>
                 <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-[16px] h-[16px] pointer-events-none"></i>
               </div>
@@ -333,6 +321,7 @@
         </div>
 
         <form id="submit-form" class="space-y-6">
+          <!-- Form fields same as provided -->
           <div class="space-y-2">
             <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Artista <span class="text-[#ccff00]">*</span></label>
             <input required type="text" name="artist" placeholder="Nome do artista/banda" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors text-xl font-medium" />
@@ -450,19 +439,25 @@
   </main>
 
   <footer class="border-t border-gray-900 py-12 relative overflow-hidden flex flex-col items-center mt-auto">
-    <div class="absolute left-1/2 md:left-24 top-1/2 -translate-x-1/2 md:translate-x-0 -translate-y-1/2 opacity-10 pointer-events-none animate-[spin_10s_linear_infinite]">
-      <svg width="250" height="250" viewBox="0 0 200 200">
-        <path id="curve-footer" d="M 100 100 m -75 0 a 75 75 0 1 1 150 0 a 75 75 0 1 1 -150 0" fill="transparent" />
-        <text class="text-[#ccff00] font-bold text-3xl uppercase tracking-widest fill-current">
-          <textPath href="#curve-footer" startOffset="0">• NEW • NEW • NEW • NEW •</textPath>
-        </text>
-      </svg>
-    </div>
+    <div class="z-10 text-center text-gray-600 font-mono text-xs uppercase tracking-widest flex flex-col items-center w-full px-4">
+      
+      <!-- Logos Parceiros -->
+      <div class="flex items-center justify-center gap-6 sm:gap-10 mb-8 w-full max-w-xl">
+        <a href="https://minutoindie.com" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 hover:scale-105 transition-all" title="Minuto Indie">
+          <img src="https://raw.githubusercontent.com/ganwalk/guia2026/main/mi.png" alt="Minuto Indie" class="h-20 sm:h-24 w-auto object-contain">
+        </a>
+        
+        <!-- Linha Vertical -->
+        <div class="w-px h-20 sm:h-24 bg-gray-800"></div>
 
-    <div class="z-10 text-center text-gray-600 font-mono text-xs uppercase tracking-widest">
+        <a href="https://hitsperdidos.com" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 hover:scale-105 transition-all" title="Hits Perdidos">
+          <img src="https://raw.githubusercontent.com/ganwalk/guia2026/main/hits.png" alt="Hits Perdidos" class="h-20 sm:h-24 w-auto object-contain">
+        </a>
+      </div>
+
       <p class="text-white font-bold text-lg mb-2">Guia de Lançamentos Brasileiros 2026</p>
       <p class="mt-2 text-gray-500">Inspirado na curadoria de Alexandre Giglio e Rafael Chioccarello</p>
-      <p class="mt-2 text-gray-500">Desenvolvido por @ganwalk</p>
+      <p class="mt-2 text-gray-500">Desenvolvido por <a href="https://ganwalk.github.io/2026/" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#ccff00] transition-colors">@ganwalk</a></p>
     </div>
   </footer>
 
@@ -492,7 +487,6 @@
     const SEMESTERS_ORDER = ['1º Semestre', '2º Semestre', 'Sem data anunciada'];
     const UFS_LIST = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'];
 
-    // Mapeamento Inteligente: Transforma Cidades/Regiões da coluna CEP em siglas de Estados para o Mapa
     const mapLocationToUF = (locationStr) => {
         if (!locationStr) return 'Sem UF';
         const str = locationStr.toLowerCase();
@@ -527,12 +521,10 @@
             'tocantins': 'TO', 'palmas': 'TO'
         };
 
-        // Verifica no dicionário mapeado
         for (const [key, uf] of Object.entries(ufMap)) {
             if (str.includes(key)) return uf;
         }
 
-        // Verifica se tem alguma sigla exata (ex: "SP", "RJ")
         const words = locationStr.split(/[\s,/-]+/);
         for(let word of words) {
             let w = word.trim().toUpperCase();
@@ -542,10 +534,6 @@
         return 'Sem UF';
     };
 
-    // =========================================================================================
-    // COLE AQUI DENTRO AS SUAS 354 LINHAS DO ARQUIVO CSV
-    // (Abra o arquivo .csv no bloco de notas, copie tudo e cole substituindo os itens abaixo)
-    // =========================================================================================
     const RAW_CSV_DATA = `Artista,CEP,Disco ou EP?,Data de Lançamento,Título,Label / Via,Fonte,Release Link
 [26:15],Belo Horizonte,Disco,Março,Não Revelado,ONErpm,"Isabela D'Avila, Thiessa Torres e Andreia Pereira (ONErpm)",
 2freak,,Disco,Março,Não Revelado,Independente,Jow (No Corre),
@@ -928,7 +916,6 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       return { month, semester };
     };
 
-    // Parseador Inteligente de CSV (permite vírgulas dentro de aspas duplas)
     const parseCSVLine = (text) => {
         let ret = [];
         let curVal = '';
@@ -937,7 +924,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
             let char = text[i];
             if (inQuotes) {
                 if (char === '"') {
-                    if (text[i+1] === '"') { curVal += '"'; i++; } // Escaped quote
+                    if (text[i+1] === '"') { curVal += '"'; i++; }
                     else { inQuotes = false; }
                 } else { curVal += char; }
             } else {
@@ -950,11 +937,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         return ret;
     };
 
-    // Load and Parse CSV Data
     let lines = RAW_CSV_DATA.split('\n').filter(line => line.trim().length > 0);
     const isCSV = lines.length > 0 && (lines[0].includes('Data de Lançamento') || lines[0].includes(','));
-    
-    // Remove Cabeçalho se for detectado
     if (isCSV && lines[0].toLowerCase().includes('artista')) lines.shift(); 
 
     state.releases = lines.map((line, index) => {
@@ -968,23 +952,16 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
             const label = parts[5] || 'Independente';
             const fonte = parts[6] || 'N/A';
             const link = parts[7] || '';
-            
             const { month, semester } = parseDateInfo(dateStr);
             const uf = mapLocationToUF(locationStr);
-            
             return { id: `seed_${index}`, artist, type, date: dateStr, title, label, fonte, link, uf, month, semester, status: 'approved' };
         } else {
-            // Fallback (caso no futuro cole com | )
             const parts = line.split('|');
             const dateStr = parts[2]?.trim() || 'Não Revelada';
             const { month, semester } = parseDateInfo(dateStr);
             const artist = parts[0]?.trim() || 'Desconhecido';
             const uf = mapLocationToUF(artist);
-            return {
-              id: `seed_${index}`, artist, type: parts[1]?.trim() || 'Disco', date: dateStr,
-              title: parts[3]?.trim() || 'Não Revelado', label: parts[4]?.trim() || 'Independente',
-              fonte: parts[5]?.trim() || 'N/A', link: parts[6]?.trim() || '', uf, month, semester, status: 'approved'
-            };
+            return { id: `seed_${index}`, artist, type: parts[1]?.trim() || 'Disco', date: dateStr, title: parts[3]?.trim() || 'Não Revelado', label: parts[4]?.trim() || 'Independente', fonte: parts[5]?.trim() || 'N/A', link: parts[6]?.trim() || '', uf, month, semester, status: 'approved' };
         }
     });
 
@@ -1011,7 +988,6 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         if (tab === 'admin') activeBtn.classList.add('text-red-500');
         else activeBtn.classList.add('text-[#ccff00]');
       }
-
       if (tab === 'admin') window.renderAdmin();
       if (tab === 'home') {
           window.renderTimeline();
@@ -1061,20 +1037,14 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
 
     window.renderReleases = () => {
       let displayed = getBaseFilteredReleases();
-      
-      if (state.selectedPeriod !== 'Todos') {
-          displayed = displayed.filter(r => state.timelineMode === 'months' ? r.month === state.selectedPeriod : r.semester === state.selectedPeriod);
-      }
-      if (state.selectedUF !== 'Todos') {
-          displayed = displayed.filter(r => r.uf === state.selectedUF);
-      }
-
+      if (state.selectedPeriod !== 'Todos') displayed = displayed.filter(r => state.timelineMode === 'months' ? r.month === state.selectedPeriod : r.semester === state.selectedPeriod);
+      if (state.selectedUF !== 'Todos') displayed = displayed.filter(r => r.uf === state.selectedUF);
       displayed = displayed.sort((a, b) => {
         if (state.sortBy === 'nome') return a.artist.localeCompare(b.artist);
         if (state.sortBy === 'selo') return a.label.localeCompare(b.label);
         if (state.sortBy === 'fonte') return a.fonte.localeCompare(b.fonte);
         if (state.sortBy === 'data') {
-          const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro', 'Sem data anunciada'];
+          const months = MONTHS_ORDER;
           const aWeight = months.indexOf(a.month);
           const bWeight = months.indexOf(b.month);
           if (aWeight !== bWeight) return aWeight - bWeight;
@@ -1082,109 +1052,20 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         }
         return 0;
       });
-
       document.getElementById('hero-count').innerText = state.releases.filter(r => r.status === 'approved').length;
       document.getElementById('map-count').innerText = displayed.length;
-
       const container = document.getElementById('releases-container');
-      
-      if (state.viewMode === 'grid') {
-        container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
-      } else {
-        container.className = "flex flex-col gap-3";
-      }
-
+      container.className = state.viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" : "flex flex-col gap-3";
       if (displayed.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full text-center py-20 bg-[#0a0a0a] border border-gray-900 rounded-xl mt-4">
-            <p class="text-gray-500 text-xl font-light">Nenhum lançamento catalogado para este filtro.</p>
-            <button onclick="clearAllFilters()" class="mt-4 text-[#ccff00] hover:underline uppercase tracking-widest text-sm font-bold">Limpar todos os filtros</button>
-          </div>
-        `;
+        container.innerHTML = `<div class="col-span-full text-center py-20 bg-[#0a0a0a] border border-gray-900 rounded-xl mt-4"><p class="text-gray-500 text-xl font-light">Nenhum lançamento catalogado para este filtro.</p><button onclick="clearAllFilters()" class="mt-4 text-[#ccff00] hover:underline uppercase tracking-widest text-sm font-bold">Limpar todos os filtros</button></div>`;
       } else {
-        let html = '';
-        displayed.forEach(release => {
+        container.innerHTML = displayed.map(release => {
           if (state.viewMode === 'grid') {
-            html += `
-              <div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">
-                <div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
-                <div>
-                  <div class="flex justify-between items-start mb-3 gap-2">
-                    <div class="flex gap-2 shrink-0">
-                        <span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">
-                          ${release.type}
-                        </span>
-                        ${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}
-                    </div>
-                    <span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">
-                      ${formatNeonNumbers(release.date)}
-                    </span>
-                  </div>
-                  <h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">
-                    ${release.artist}
-                  </h3>
-                  <p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">
-                    "${release.title}"
-                  </p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3">
-                  <div class="flex items-center justify-between">
-                    <span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide">
-                      <i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> 
-                      <span class="truncate">${release.label || 'Independente'}</span>
-                    </span>
-                    ${(release.link && release.link.startsWith('http')) ? `
-                      <a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">
-                        Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i>
-                      </a>
-                    ` : ''}
-                  </div>
-                  <span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono">
-                    <i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span>
-                  </span>
-                </div>
-              </div>
-            `;
+            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]"><div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div><div class="flex justify-between items-start mb-3 gap-2"><div class="flex gap-2 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}</div><span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">${formatNeonNumbers(release.date)}</span></div><h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">${release.artist}</h3><p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">"${release.title}"</p></div><div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3"><div class="flex items-center justify-between"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i></a>` : ''}</div><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span></span></div></div>`;
           } else {
-            html += `
-              <div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-4 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">
-                <div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div>
-                <div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full z-10">
-                  <div class="flex items-center gap-3 md:w-56 shrink-0">
-                    <span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">
-                      ${release.type}
-                    </span>
-                    ${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}
-                    <span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm ml-auto md:ml-0">
-                      ${formatNeonNumbers(release.date)}
-                    </span>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <h3 class="text-xl font-black tracking-tight group-hover:text-[#ccff00] transition-colors truncate font-garet">
-                      ${release.artist}
-                    </h3>
-                    <p class="text-sm text-gray-400 italic truncate">"${release.title}"</p>
-                  </div>
-                  <div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 shrink-0 md:w-64">
-                    <span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide truncate">
-                      <i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> 
-                      <span class="truncate">${release.label || 'Independente'}</span>
-                    </span>
-                    <span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono truncate">
-                      <i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> <span class="truncate">${release.fonte || 'N/A'}</span>
-                    </span>
-                  </div>
-                </div>
-                ${(release.link && release.link.startsWith('http')) ? `
-                  <a href="${release.link}" target="_blank" class="shrink-0 mt-3 md:mt-0 z-10 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">
-                    Ouvir <i data-lucide="link" class="w-3 h-3"></i>
-                  </a>
-                ` : ''}
-              </div>
-            `;
+            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-4 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]"><div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full z-10"><div class="flex items-center gap-3 md:w-56 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}<span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm ml-auto md:ml-0">${formatNeonNumbers(release.date)}</span></div><div class="flex-1 min-w-0"><h3 class="text-xl font-black tracking-tight group-hover:text-[#ccff00] transition-colors truncate font-garet">${release.artist}</h3><p class="text-sm text-gray-400 italic truncate">"${release.title}"</p></div><div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 shrink-0 md:w-64"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide truncate"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono truncate"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> <span class="truncate">${release.fonte || 'N/A'}</span></span></div></div>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="shrink-0 mt-3 md:mt-0 z-10 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-3 h-3"></i></a>` : ''}</div>`;
           }
-        });
-        container.innerHTML = html;
+        }).join('');
       }
       if (window.lucide) lucide.createIcons();
     };
@@ -1220,7 +1101,6 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         badgePeriod.classList.add('hidden');
         document.getElementById('btn-clear-filter-timeline').classList.add('hidden');
       }
-
       if (state.selectedUF !== 'Todos') {
         badgeUF.innerHTML = `<i data-lucide="map-pin" class="w-3 h-3 sm:w-4 sm:h-4"></i> ${state.selectedUF}`;
         badgeUF.classList.remove('hidden');
@@ -1232,10 +1112,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         mapActiveState.classList.add('hidden');
         document.getElementById('btn-clear-uf').classList.add('hidden');
       }
-
       document.getElementById('btn-mode-months').className = `flex-1 sm:flex-none px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${state.timelineMode === 'months' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`;
       document.getElementById('btn-mode-semesters').className = `flex-1 sm:flex-none px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-md transition-colors ${state.timelineMode === 'semesters' ? 'bg-[#ccff00] text-black' : 'text-gray-500 hover:text-white'}`;
-
       document.getElementById('btn-view-grid').className = `shadow-sm flex-1 rounded-md transition-all flex items-center justify-center ${state.viewMode === 'grid' ? 'bg-[#ccff00] text-black' : 'bg-transparent text-gray-500 hover:text-white hover:bg-gray-900'}`;
       document.getElementById('btn-view-list').className = `shadow-sm flex-1 rounded-md transition-all flex items-center justify-center ${state.viewMode === 'list' ? 'bg-[#ccff00] text-black' : 'bg-transparent text-gray-500 hover:text-white hover:bg-gray-900'}`;
     };
@@ -1246,269 +1124,124 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       state.searchTerm = '';
       state.filterType = 'Todos';
       window.renderUI();
-    }
+    };
 
     window.renderTimeline = () => {
       const order = state.timelineMode === 'months' ? MONTHS_ORDER : SEMESTERS_ORDER;
       let baseList = getBaseFilteredReleases();
-      
-      if (state.selectedUF !== 'Todos') {
-          baseList = baseList.filter(r => r.uf === state.selectedUF);
-      }
-      
+      if (state.selectedUF !== 'Todos') baseList = baseList.filter(r => r.uf === state.selectedUF);
       const counts = {};
       order.forEach(p => counts[p] = 0);
-      baseList.forEach(r => {
-        const p = state.timelineMode === 'months' ? r.month : r.semester;
-        if (counts[p] !== undefined) counts[p] += 1;
-      });
-
+      baseList.forEach(r => { const p = state.timelineMode === 'months' ? r.month : r.semester; if (counts[p] !== undefined) counts[p] += 1; });
+      if (state.timelineMode === 'semesters') {
+        const maxCount = Math.max(1, ...Object.values(counts));
+        let html = '<div class="flex flex-col w-full h-full justify-center gap-6 sm:gap-8 max-w-4xl mx-auto py-4">';
+        order.forEach((period) => {
+          const count = counts[period] || 0;
+          const isActive = state.selectedPeriod === period;
+          const isFilterActive = state.selectedPeriod !== 'Todos';
+          let fillRatio = maxCount > 0 ? (count / maxCount) * 100 : 0;
+          if (count > 0 && fillRatio < 2) fillRatio = 2;
+          const opacityClass = (isFilterActive && !isActive) ? 'opacity-40 hover:opacity-100' : 'opacity-100';
+          const barColor = isActive ? 'bg-[#ccff00] shadow-[0_0_15px_#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600 transition-colors';
+          const textColor = isActive ? 'text-[#ccff00]' : 'text-gray-400 group-hover:text-gray-300';
+          const numColor = isActive ? 'text-[#ccff00]' : 'text-white';
+          html += `<div onclick="setPeriod('${period}')" class="group flex items-center gap-3 sm:gap-6 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="w-24 sm:w-40 text-right text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors ${textColor} break-words leading-tight">${period}</div><div class="flex-1 h-8 sm:h-12 bg-[#111] border border-gray-800 overflow-hidden relative shadow-inner"><div class="h-full transition-all duration-1000 ease-out ${barColor}" style="width: ${fillRatio}%"></div></div><div class="w-12 sm:w-20 font-black text-2xl sm:text-5xl text-right transition-colors ${numColor} font-garet">${count}</div></div>`;
+        });
+        html += '</div>';
+        document.getElementById('timeline-content').outerHTML = `<div id="timeline-content" class="w-full h-[300px] flex px-4">${html}</div>`;
+        return;
+      }
       const validPeriods = order.filter(p => p !== 'Sem data anunciada');
       const maxValidCount = Math.max(1, ...validPeriods.map(p => counts[p] || 0));
-
-      const colWidth = state.timelineMode === 'semesters' ? 160 : 112;
+      const colWidth = 112;
       const gap = 8;
       const paddingX = 16;
-      
       const svgWidth = paddingX * 2 + validPeriods.length * colWidth + (validPeriods.length - 1) * gap;
-
       const points = validPeriods.map((period, index) => {
         const count = counts[period] || 0;
         let barHeightPx = 10;
-        if (count > 0) {
-          const ratio = Math.min(count / maxValidCount, 1.2); 
-          barHeightPx = Math.max(ratio * 110, 15);
-        }
-        const peak = 57 + barHeightPx * 1.3 + 35;
-        const cy = 300 - peak; 
+        if (count > 0) barHeightPx = Math.max((Math.min(count / maxValidCount, 1.2)) * 110, 15);
+        const cy = 300 - (57 + barHeightPx * 1.3 + 35);
         const cx = paddingX + index * (colWidth + gap) + colWidth / 2;
         return { cx, cy };
       });
-
-      let d = "";
-      if (points.length > 0) {
-        d = `M ${points[0].cx} ${points[0].cy} `;
-        for (let i = 1; i < points.length; i++) {
-          const p0 = points[i-1], p1 = points[i];
-          const cpOffset = (p1.cx - p0.cx) / 2;
-          d += `C ${p0.cx + cpOffset} ${p0.cy}, ${p1.cx - cpOffset} ${p1.cy}, ${p1.cx} ${p1.cy} `;
-        }
-      }
-
-      let html = `
-        <svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line">
-          <path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">
-      `;
-
+      let d = points.length > 0 ? `M ${points[0].cx} ${points[0].cy} ` + points.slice(1).map((p, i) => { const p0 = points[i]; const cpOffset = (p.cx - p0.cx) / 2; return `C ${p0.cx + cpOffset} ${p0.cy}, ${p.cx - cpOffset} ${p.cy}, ${p.cx} ${p.cy}`; }).join(' ') : "";
+      let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line"><path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
       order.forEach((period) => {
         const isActive = state.selectedPeriod === period;
         const count = counts[period] || 0;
         const isSpecial = period === 'Sem data anunciada';
-        
-        let barHeightPx = 10;
-        if (count > 0) {
-          const ratio = count / maxValidCount;
-          barHeightPx = Math.max(Math.min(ratio, 1.3) * 110, 15);
-        }
-        
+        let barHeightPx = count > 0 ? Math.max(Math.min(count / maxValidCount, 1.3) * 110, 15) : 10;
         const opacityClass = (state.selectedPeriod !== 'Todos' && !isActive) ? 'opacity-40 hover:opacity-100' : 'opacity-100';
         const colorClassTop = isActive ? 'bg-[#ccff00] shadow-[0_0_15px_#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
         const colorClassBot = isActive ? 'bg-[#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
         const textClass = isActive ? 'text-[#ccff00] scale-110' : 'text-gray-500 group-hover:text-gray-300';
-        const spClass = isSpecial ? 'text-gray-400' : '';
-
-        if (isSpecial) {
-           html += `<div class="h-[140px] w-px border-l-2 border-dashed border-[#333] shrink-0 mx-[20px] mb-[30px] self-end hidden sm:block"></div>`;
-        }
-
-        html += `
-          <div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos">
-            <div class="relative flex flex-col items-center w-full z-10">
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">
-                ${count} registro(s)
-              </div>
-              <div style="height: ${barHeightPx}px" class="w-8 sm:w-10 rounded-t-sm transition-all duration-300 mb-[1px] ${colorClassTop}"></div>
-              <div style="height: calc(${barHeightPx}px * 0.3)" class="w-8 sm:w-10 rounded-b-sm transition-all duration-300 opacity-30 ${colorClassBot}"></div>
-            </div>
-            <div class="mt-4 h-10 flex items-start justify-center w-full z-10">
-              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${spClass}">${period}</span>
-            </div>
-          </div>
-        `;
+        if (isSpecial) html += `<div class="h-[140px] w-px border-l-2 border-dashed border-[#333] shrink-0 mx-[20px] mb-[30px] self-end hidden sm:block"></div>`;
+        html += `<div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="relative flex flex-col items-center w-full z-10"><div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">${count} registro(s)</div><div style="height: ${barHeightPx}px" class="w-8 sm:w-10 transition-all duration-300 mb-[1px] ${colorClassTop}"></div><div style="height: calc(${barHeightPx}px * 0.3)" class="w-8 sm:w-10 transition-all duration-300 opacity-30 ${colorClassBot}"></div></div><div class="mt-4 h-10 flex items-start justify-center w-full z-10"><span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${isSpecial ? 'text-gray-400' : ''}">${period}</span></div></div>`;
       });
       html += `</div>`;
       document.getElementById('timeline-content').outerHTML = `<div id="timeline-content">${html}</div>`;
     };
 
-    // Google Chart Map
     let mapInstance = null;
     let globalMapCounts = {}; 
-
     window.renderMap = () => {
-      if (!window.isGeoChartLoaded || typeof google === 'undefined' || !google.visualization || !google.visualization.GeoChart) {
-          return;
-      }
-      
+      if (!window.isGeoChartLoaded || typeof google === 'undefined' || !google.visualization || !google.visualization.GeoChart) return;
       const container = document.getElementById('brazil-map-chart');
       if (!container) return;
-
       const loadingEl = document.getElementById('map-loading');
       if (loadingEl) loadingEl.classList.add('hidden');
-
       let baseList = getBaseFilteredReleases();
-      if (state.selectedPeriod !== 'Todos') {
-          baseList = baseList.filter(r => state.timelineMode === 'months' ? r.month === state.selectedPeriod : r.semester === state.selectedPeriod);
-      }
-      
+      if (state.selectedPeriod !== 'Todos') baseList = baseList.filter(r => state.timelineMode === 'months' ? r.month === state.selectedPeriod : r.semester === state.selectedPeriod);
       const counts = {};
       UFS_LIST.forEach(uf => counts[uf] = 0);
       baseList.forEach(r => { if (r.uf && counts[r.uf] !== undefined) counts[r.uf] += 1; });
       globalMapCounts = counts; 
-      
       const maxCount = Math.max(1, ...Object.values(counts));
-
       const dataTable = [['State', 'Lançamentos', {role: 'tooltip', p: {html: true}}]];
-
       UFS_LIST.forEach(uf => {
          const count = counts[uf] || 0;
-         
-         // Valor puramente para a lógica do gráfico não bloquear.
-         // A tooltip é desenhada pelo nosso CSS e JS personalizados agora
-         if (state.selectedUF === 'Todos') {
-             dataTable.push([{v: 'BR-' + uf, f: uf}, count, '']);
-         } else {
-             if (state.selectedUF === uf) {
-                 dataTable.push([{v: 'BR-' + uf, f: uf}, 1, '']); 
-             } else {
-                 dataTable.push([{v: 'BR-' + uf, f: uf}, 0, '']); 
-             }
-         }
+         const val = state.selectedUF === 'Todos' ? count : (state.selectedUF === uf ? 1 : 0);
+         dataTable.push([{v: 'BR-' + uf, f: uf}, val, '']);
       });
-
       const data = google.visualization.arrayToDataTable(dataTable);
-
       const options = {
-        region: 'BR',
-        resolution: 'provinces',
-        backgroundColor: 'transparent',
-        datalessRegionColor: 'transparent', 
-        defaultColor: '#1a1a1a',
-        colorAxis: {
-            colors: ['#1a1a1a', '#3a4d00', '#ccff00'], 
-            minValue: 0,
-            maxValue: maxCount > 0 ? maxCount : 1
-        },
-        legend: 'none',
-        keepAspectRatio: true,
-        tooltip: { trigger: 'none' } // Desabilita a tooltip padrão do Google!
+        region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent', defaultColor: '#1a1a1a', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
+        colorAxis: state.selectedUF === 'Todos' ? { colors: ['#1a1a1a', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount } : { colors: ['#0f0f0f', '#ccff00'], values: [0, 1] }
       };
-
-      if (state.selectedUF !== 'Todos') {
-          options.colorAxis = {
-              colors: ['#0f0f0f', '#ccff00'], 
-              values: [0, 1]
-          };
-      }
-
       if (!mapInstance) {
           mapInstance = new google.visualization.GeoChart(container);
-          
-          google.visualization.events.addListener(mapInstance, 'select', () => {
-              mapInstance.setSelection([]);
-          });
-
-          google.visualization.events.addListener(mapInstance, 'regionClick', (eventData) => {
-              const clickedUF = eventData.region.replace('BR-', '');
-              window.setUF(clickedUF);
-          });
-
+          google.visualization.events.addListener(mapInstance, 'select', () => mapInstance.setSelection([]));
+          google.visualization.events.addListener(mapInstance, 'regionClick', (eventData) => window.setUF(eventData.region.replace('BR-', '')));
           google.visualization.events.addListener(mapInstance, 'onmouseover', (eventData) => {
               const uf = UFS_LIST[eventData.row];
               if(!uf) return;
-              
               const count = globalMapCounts[uf] || 0;
               const customTooltip = document.getElementById('custom-map-tooltip');
-              
-              if (state.selectedUF === uf) {
-                 customTooltip.innerHTML = `<span class="text-[#ccff00] font-black text-xl leading-none">${uf}</span><div class="mt-1 font-bold">${count} Reg.</div><div class="text-[9px] text-[#ccff00] mt-1 opacity-80 uppercase tracking-widest">(Selecionado)</div>`;
-              } else {
-                 customTooltip.innerHTML = `<span class="text-white font-black text-xl leading-none">${uf}</span><div class="mt-1 text-gray-400">${count} Reg.</div>`;
-              }
-              
+              customTooltip.innerHTML = state.selectedUF === uf ? `<span class="text-[#ccff00] font-black text-xl leading-none">${uf}</span><div class="mt-1 font-bold">${count} Reg.</div><div class="text-[9px] text-[#ccff00] mt-1 opacity-80 uppercase tracking-widest">(Selecionado)</div>` : `<span class="text-white font-black text-xl leading-none">${uf}</span><div class="mt-1 text-gray-400">${count} Reg.</div>`;
               customTooltip.classList.remove('hidden');
           });
-
-          google.visualization.events.addListener(mapInstance, 'onmouseout', () => {
-              document.getElementById('custom-map-tooltip').classList.add('hidden');
-          });
+          google.visualization.events.addListener(mapInstance, 'onmouseout', () => document.getElementById('custom-map-tooltip').classList.add('hidden'));
       }
-
       mapInstance.draw(data, options);
     };
 
-    // Hover Mouse Move Listener (Move a tooltip)
     document.addEventListener('mousemove', (e) => {
         const tooltip = document.getElementById('custom-map-tooltip');
-        if (tooltip && !tooltip.classList.contains('hidden')) {
-            tooltip.style.left = e.clientX + 'px';
-            tooltip.style.top = (e.clientY - 25) + 'px';
-        }
+        if (tooltip && !tooltip.classList.contains('hidden')) { tooltip.style.left = e.clientX + 'px'; tooltip.style.top = (e.clientY - 25) + 'px'; }
     });
 
-    window.addEventListener('resize', () => {
-       if (state.activeTab === 'home' && window.isGeoChartLoaded && typeof google !== 'undefined' && google.visualization) {
-           window.renderMap();
-       }
-    });
+    window.addEventListener('resize', () => { if (state.activeTab === 'home' && window.isGeoChartLoaded) window.renderMap(); });
 
     window.renderAdmin = () => {
       const pending = state.releases.filter(r => r.status === 'pending');
       document.getElementById('admin-count').innerText = pending.length;
-      
       const container = document.getElementById('admin-container');
       if (pending.length === 0) {
-        container.innerHTML = `
-          <div class="bg-[#111] border border-gray-800 p-12 text-center flex flex-col items-center">
-            <i data-lucide="check" class="text-gray-600 w-12 h-12 mb-4"></i>
-            <h3 class="text-2xl font-bold text-gray-400 font-garet">Fila Limpa!</h3>
-            <p class="text-gray-500 mt-2">Nenhum lançamento pendente de aprovação no momento.</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="bg-[#111] border border-gray-800 p-12 text-center flex flex-col items-center"><i data-lucide="check" class="text-gray-600 w-12 h-12 mb-4"></i><h3 class="text-2xl font-bold text-gray-400 font-garet">Fila Limpa!</h3><p class="text-gray-500 mt-2">Nenhum lançamento pendente de aprovação no momento.</p></div>`;
       } else {
-        let html = '';
-        pending.forEach(release => {
-          html += `
-            <div class="bg-[#111] border border-gray-800 p-4 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group hover:border-gray-600 transition-colors">
-              <div class="flex-1 w-full">
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-2 py-0.5 text-xs font-bold uppercase tracking-wider">Pendente</span>
-                  <span class="text-gray-500 text-sm flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> ${release.fonte}</span>
-                </div>
-                <h3 class="text-2xl font-black text-white flex items-center gap-2 font-garet">
-                  ${release.artist} <span class="text-gray-600 font-light text-lg">"${release.title}"</span>
-                </h3>
-                <div class="mt-3 flex flex-wrap gap-4 text-sm font-mono text-gray-400">
-                  <span class="flex items-center gap-1"><i data-lucide="disc" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.type}</span>
-                  ${release.uf && release.uf !== 'Sem UF' ? `<span class="flex items-center gap-1"><i data-lucide="map-pin" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.uf}</span>` : ''}
-                  <span class="flex items-center gap-1"><i data-lucide="calendar" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.date}</span>
-                  <span class="flex items-center gap-1"><i data-lucide="music" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.label}</span>
-                  ${release.link ? `<a href="${release.link}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:underline"><i data-lucide="link" class="w-3.5 h-3.5"></i> Link Fornecido</a>` : ''}
-                </div>
-              </div>
-              <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto">
-                <button onclick="adminAction('${release.id}', 'approve')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-[#ccff00] text-black font-bold uppercase tracking-wider py-2 px-6 hover:bg-white transition-colors">
-                  <i data-lucide="check" class="w-4 h-4"></i> Aprovar
-                </button>
-                <button onclick="adminAction('${release.id}', 'reject')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-transparent border border-red-900 text-red-500 hover:bg-red-900/20 font-bold uppercase tracking-wider py-2 px-6 transition-colors">
-                  <i data-lucide="x" class="w-4 h-4"></i> Descartar
-                </button>
-              </div>
-            </div>
-          `;
-        });
-        container.innerHTML = html;
+        container.innerHTML = pending.map(release => `<div class="bg-[#111] border border-gray-800 p-4 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group hover:border-gray-600 transition-colors"><div class="flex-1 w-full"><div class="flex items-center gap-3 mb-2"><span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-2 py-0.5 text-xs font-bold uppercase tracking-wider">Pendente</span><span class="text-gray-500 text-sm flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> ${release.fonte}</span></div><h3 class="text-2xl font-black text-white flex items-center gap-2 font-garet">${release.artist} <span class="text-gray-600 font-light text-lg">"${release.title}"</span></h3><div class="mt-3 flex flex-wrap gap-4 text-sm font-mono text-gray-400"><span class="flex items-center gap-1"><i data-lucide="disc" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="flex items-center gap-1"><i data-lucide="map-pin" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.uf}</span>` : ''}<span class="flex items-center gap-1"><i data-lucide="calendar" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.date}</span><span class="flex items-center gap-1"><i data-lucide="music" class="text-[#ccff00] w-3.5 h-3.5"></i> ${release.label}</span>${release.link ? `<a href="${release.link}" target="_blank" class="flex items-center gap-1 text-blue-400 hover:underline"><i data-lucide="link" class="w-3.5 h-3.5"></i> Link Fornecido</a>` : ''}</div></div><div class="flex flex-row md:flex-col gap-3 w-full md:w-auto"><button onclick="adminAction('${release.id}', 'approve')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-[#ccff00] text-black font-bold uppercase tracking-wider py-2 px-6 hover:bg-white transition-colors"><i data-lucide="check" class="w-4 h-4"></i> Aprovar</button><button onclick="adminAction('${release.id}', 'reject')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-transparent border border-red-900 text-red-500 hover:bg-red-900/20 font-bold uppercase tracking-wider py-2 px-6 transition-colors"><i data-lucide="x" class="w-4 h-4"></i> Descartar</button></div></div>`).join('');
       }
       if(window.lucide) lucide.createIcons();
     };
@@ -1516,27 +1249,13 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.adminAction = async (id, action) => {
       if (state.db && state.user && id.startsWith('sub_') && state.isAdmin) {
         try {
-          const collectionPath = typeof __firebase_config !== 'undefined' 
-            ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
-            : ['submissions2026'];
-            
-          const submissionRef = doc(state.db, ...collectionPath, id);
-          if (action === 'approve') await updateDoc(submissionRef, { status: 'approved' });
-          else if (action === 'reject') await deleteDoc(submissionRef);
-        } catch (e) {
-          console.error("Firebase falhou, alterando dados localmente", e);
-          updateLocal();
-        }
-      } else {
-        updateLocal();
-      }
-
+          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
+          const ref = doc(state.db, ...col, id);
+          if (action === 'approve') await updateDoc(ref, { status: 'approved' }); else await deleteDoc(ref);
+        } catch (e) { updateLocal(); }
+      } else { updateLocal(); }
       function updateLocal() {
-        if (action === 'approve') {
-          state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
-        } else {
-          state.releases = state.releases.filter(r => r.id !== id);
-        }
+        if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r); else state.releases = state.releases.filter(r => r.id !== id);
         window.renderUI();
       }
     };
@@ -1544,228 +1263,77 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.renderUI = () => {
       window.updateFiltersUI();
       window.renderTimeline();
-      if(window.isGeoChartLoaded && state.activeTab === 'home' && typeof google !== 'undefined' && google.visualization) {
-          window.renderMap();
-      }
+      if(window.isGeoChartLoaded && state.activeTab === 'home' && typeof google !== 'undefined') window.renderMap();
       window.renderReleases();
       if(window.lucide) lucide.createIcons();
     };
 
-    // 2. RENDERIZAR INTERFACE IMEDIATAMENTE
     window.renderUI();
-
-    // 3. LISTENERS GERAIS
     document.getElementById('input-search').addEventListener('input', (e) => { state.searchTerm = e.target.value; window.renderUI(); });
     document.getElementById('select-type').addEventListener('change', (e) => { state.filterType = e.target.value; window.renderUI(); });
     document.getElementById('select-sort').addEventListener('change', (e) => { state.sortBy = e.target.value; window.renderUI(); });
-    document.getElementById('select-period').addEventListener('change', (e) => { window.setPeriod(e.target.value); });
-    document.getElementById('select-uf').addEventListener('change', (e) => { window.setUF(e.target.value); });
-
-    document.getElementById('input-admin-pwd').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') { window.submitAdminLogin(); }
-    });
+    document.getElementById('select-period').addEventListener('change', (e) => window.setPeriod(e.target.value));
+    document.getElementById('select-uf').addEventListener('change', (e) => window.setUF(e.target.value));
+    document.getElementById('input-admin-pwd').addEventListener('keypress', (e) => { if (e.key === 'Enter') window.submitAdminLogin(); });
 
     const timelineEl = document.getElementById('timeline-scroll');
     let isDragging = false, startX, scrollLeft;
     timelineEl.addEventListener('mousedown', (e) => { isDragging = true; startX = e.pageX - timelineEl.offsetLeft; scrollLeft = timelineEl.scrollLeft; });
-    timelineEl.addEventListener('mouseleave', () => { isDragging = false; });
-    timelineEl.addEventListener('mouseup', () => { isDragging = false; });
-    timelineEl.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - timelineEl.offsetLeft;
-      const walk = (x - startX) * 2;
-      timelineEl.scrollLeft = scrollLeft - walk;
-    });
+    timelineEl.addEventListener('mouseleave', () => isDragging = false);
+    timelineEl.addEventListener('mouseup', () => isDragging = false);
+    timelineEl.addEventListener('mousemove', (e) => { if (!isDragging) return; e.preventDefault(); const walk = ((e.pageX - timelineEl.offsetLeft) - startX) * 2; timelineEl.scrollLeft = scrollLeft - walk; });
 
     document.getElementById('submit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-      
-      const btn = document.getElementById('btn-submit');
-      const errEl = document.getElementById('submit-error');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
-      errEl.classList.add('hidden');
-
+      const form = e.target, formData = new FormData(form), data = Object.fromEntries(formData.entries());
+      const btn = document.getElementById('btn-submit'), errEl = document.getElementById('submit-error');
+      btn.disabled = true; btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
       const { month, semester } = parseDateInfo(data.date);
       const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
-
       try {
         if (state.db && state.user) {
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const collectionPath = typeof __firebase_config !== 'undefined' 
-            ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
-            : ['submissions2026'];
-          const submissionRef = doc(state.db, ...collectionPath, newId);
-          await setDoc(submissionRef, newRelease);
-        } else {
-          state.releases.push({ id: Date.now().toString(), ...newRelease });
-        }
-        
-        form.reset();
-        document.getElementById('submit-form').classList.add('hidden');
-        document.getElementById('submit-success').classList.remove('hidden');
-        document.getElementById('submit-success').classList.add('flex');
+          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
+          await setDoc(doc(state.db, ...col, newId), newRelease);
+        } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
+        form.reset(); document.getElementById('submit-form').classList.add('hidden'); document.getElementById('submit-success').classList.replace('hidden', 'flex');
         window.renderUI();
-        
-        setTimeout(() => {
-          document.getElementById('submit-success').classList.add('hidden');
-          document.getElementById('submit-success').classList.remove('flex');
-          document.getElementById('submit-form').classList.remove('hidden');
-        }, 3000);
-      } catch (err) {
-        console.error(err);
-        errEl.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>';
-        if(window.lucide) lucide.createIcons();
-      }
+        setTimeout(() => { document.getElementById('submit-success').classList.replace('flex', 'hidden'); document.getElementById('submit-form').classList.remove('hidden'); }, 3000);
+      } catch (err) { errEl.classList.remove('hidden'); } finally { btn.disabled = false; btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>'; if(window.lucide) lucide.createIcons(); }
     });
 
-    // 4. FIREBASE INITIALIZATION & SYNC
-    let fbConfig = null;
-    let authObj = null;
-    
     if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-      fbConfig = JSON.parse(__firebase_config);
-    } else {
-      /* fbConfig = {
-        apiKey: "SUA_API_KEY",
-        authDomain: "seu-projeto.firebaseapp.com",
-        projectId: "seu-projeto",
-        storageBucket: "seu-projeto.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "1:123456:web:123456"
-      };
-      */
-    }
-
-    if (fbConfig) {
       try {
-        const fbApp = initializeApp(fbConfig);
-        authObj = getAuth(fbApp);
+        const fbApp = initializeApp(JSON.parse(__firebase_config));
+        const authObj = getAuth(fbApp);
         state.db = getFirestore(fbApp);
-
-        const initAuth = async () => {
-          try {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-              await signInWithCustomToken(authObj, __initial_auth_token);
-            } else {
-              await signInAnonymously(authObj);
-            }
-          } catch (err) {
-            console.error("Erro na Autenticação Firebase:", err);
-          }
-        };
+        const initAuth = async () => { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(authObj, __initial_auth_token); else await signInAnonymously(authObj); };
         initAuth();
-
         onAuthStateChanged(authObj, (currentUser) => {
           state.user = currentUser;
-          
           if (currentUser && state.db) {
             document.getElementById('loading-spinner').classList.remove('hidden');
-            
-            const collectionPath = typeof __firebase_config !== 'undefined' 
-              ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4']
-              : ['submissions2026'];
-              
-            const submissionsRef = collection(state.db, ...collectionPath);
-            
-            onSnapshot(submissionsRef, (snapshot) => {
-              const submittedData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-              const localData = state.releases.filter(r => r.id.startsWith('seed_'));
-              
-              state.releases = [...localData, ...submittedData];
+            const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
+            onSnapshot(collection(state.db, ...col), (snapshot) => {
+              state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))];
               document.getElementById('loading-spinner').classList.add('hidden');
               window.renderUI();
-            }, (error) => {
-              console.error("Erro a ler Firebase:", error);
-              document.getElementById('loading-spinner').classList.add('hidden');
             });
           }
         });
-      } catch(e) {
-        console.error("Ocorreu um erro a configurar o Firebase. A usar modo Offline.", e);
-      }
+        window.submitAdminLogin = () => {
+          const pwd = document.getElementById('input-admin-pwd').value;
+          document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
+          signInWithEmailAndPassword(authObj, "admin@guia26.com", pwd).then(() => { window.closeAdminModal(); state.isAdmin = true; const btn = document.getElementById('nav-btn-admin'); btn.classList.replace('hidden', 'flex'); window.switchTab('admin'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; }).catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
+        };
+        window.confirmAdminLogout = () => { signOut(authObj); window.closeLogoutModal(); state.isAdmin = false; document.getElementById('nav-btn-admin').classList.replace('flex', 'hidden'); window.switchTab('home'); signInAnonymously(authObj); };
+      } catch(e) {}
     }
 
-    // 5. JANELAS MODAIS E LOGIN SECRETO
-    window.closeAdminModal = () => {
-      document.getElementById('modal-admin-login').classList.add('hidden');
-      document.getElementById('input-admin-pwd').value = '';
-    };
-
-    window.closeLogoutModal = () => {
-      document.getElementById('modal-admin-logout').classList.add('hidden');
-    };
-
-    window.submitAdminLogin = () => {
-      const pwd = document.getElementById('input-admin-pwd').value;
-      const errorMsg = document.getElementById('admin-login-error');
-      const adminEmail = "admin@guia26.com"; 
-
-      if (!authObj) {
-         alert("Firebase não configurado. Por favor insira as suas chaves no código.");
-         return;
-      }
-
-      document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
-
-      signInWithEmailAndPassword(authObj, adminEmail, pwd)
-        .then((userCredential) => {
-          window.closeAdminModal();
-          state.isAdmin = true;
-          const adminBtn = document.getElementById('nav-btn-admin');
-          adminBtn.classList.remove('hidden');
-          adminBtn.classList.add('flex');
-          window.switchTab('admin');
-          document.getElementById('btn-admin-entrar').innerHTML = 'Entrar';
-        })
-        .catch((error) => {
-          errorMsg.classList.remove('hidden');
-          document.getElementById('btn-admin-entrar').innerHTML = 'Entrar';
-        });
-    };
-
-    window.confirmAdminLogout = () => {
-      if(authObj) signOut(authObj);
-      window.closeLogoutModal();
-      state.isAdmin = false; 
-      const adminBtn = document.getElementById('nav-btn-admin');
-      adminBtn.classList.add('hidden');
-      adminBtn.classList.remove('flex');
-      window.switchTab('home');
-      if(authObj) signInAnonymously(authObj);
-    };
-
-    let clickCount = 0;
-    let clickTimeout = null;
-
-    window.secretAdminLogin = () => {
-      clickCount++;
-      if (clickTimeout) clearTimeout(clickTimeout);
-      
-      if (clickCount === 4) {
-        clickCount = 0; 
-        
-        if (state.isAdmin) {
-            document.getElementById('modal-admin-logout').classList.remove('hidden');
-            return;
-        }
-
-        document.getElementById('input-admin-pwd').value = '';
-        document.getElementById('admin-login-error').classList.add('hidden');
-        document.getElementById('modal-admin-login').classList.remove('hidden');
-        setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100);
-      } else {
-        clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); 
-      }
-    };
-
+    window.closeAdminModal = () => document.getElementById('modal-admin-login').classList.add('hidden');
+    window.closeLogoutModal = () => document.getElementById('modal-admin-logout').classList.add('hidden');
+    let clickCount = 0, clickTimeout = null;
+    window.secretAdminLogin = () => { clickCount++; if (clickTimeout) clearTimeout(clickTimeout); if (clickCount === 4) { clickCount = 0; if (state.isAdmin) document.getElementById('modal-admin-logout').classList.remove('hidden'); else { document.getElementById('modal-admin-login').classList.remove('hidden'); setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100); } } else { clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); } };
   </script>
 </body>
 </html>
