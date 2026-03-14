@@ -7,9 +7,12 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Configuração do Firebase (preencha firebase-config.js com suas credenciais) -->
+  <script src="firebase-config.js"></script>
 
   <!-- Google Charts API -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -465,7 +468,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
     import { getAuth, signInAnonymously, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, query, where } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     const state = {
       activeTab: 'home',
@@ -1262,15 +1265,15 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.adminAction = async (id, action) => {
       if (state.db && state.user && id.startsWith('sub_') && state.isAdmin) {
         try {
-          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-          const ref = doc(state.db, ...col, id);
-          if (action === 'approve') await updateDoc(ref, { status: 'approved' }); else await deleteDoc(ref);
-        } catch (e) { updateLocal(); }
-      } else { updateLocal(); }
-      function updateLocal() {
-        if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r); else state.releases = state.releases.filter(r => r.id !== id);
-        window.renderUI();
+          const ref = doc(state.db, 'submissions2026_v4', id);
+          if (action === 'approve') await updateDoc(ref, { status: 'approved' });
+          else await deleteDoc(ref);
+          return;
+        } catch (e) { /* fall through to local update */ }
       }
+      if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
+      else state.releases = state.releases.filter(r => r.id !== id);
+      window.renderUI();
     };
 
     window.renderUI = () => {
@@ -1306,8 +1309,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       try {
         if (state.db && state.user) {
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-          await setDoc(doc(state.db, ...col, newId), newRelease);
+          await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
         } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
         form.reset(); document.getElementById('submit-form').classList.add('hidden'); document.getElementById('submit-success').classList.replace('hidden', 'flex');
         window.renderUI();
@@ -1315,32 +1317,56 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       } catch (err) { errEl.classList.remove('hidden'); } finally { btn.disabled = false; btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>'; if(window.lucide) lucide.createIcons(); }
     });
 
-    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+    if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey !== 'PREENCHA_AQUI') {
       try {
-        const fbApp = initializeApp(JSON.parse(__firebase_config));
+        const fbApp = initializeApp(window.FIREBASE_CONFIG);
         const authObj = getAuth(fbApp);
         state.db = getFirestore(fbApp);
-        const initAuth = async () => { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(authObj, __initial_auth_token); else await signInAnonymously(authObj); };
-        initAuth();
+        const adminEmail = window.ADMIN_EMAIL || 'admin@guia26.com';
+
+        // Guarda referência para cancelar o listener anterior ao trocar de conta
+        let releaseUnsubscribe = null;
+
+        const startReleaseListener = (currentUser) => {
+          if (releaseUnsubscribe) { releaseUnsubscribe(); releaseUnsubscribe = null; }
+          const isAdmin = currentUser && currentUser.email === adminEmail;
+          const col = collection(state.db, 'submissions2026_v4');
+          // Usuários comuns veem apenas lançamentos aprovados; admin vê todos
+          const q = isAdmin ? col : query(col, where('status', '==', 'approved'));
+          document.getElementById('loading-spinner').classList.remove('hidden');
+          releaseUnsubscribe = onSnapshot(q, (snapshot) => {
+            state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(d => ({ id: d.id, ...d.data() }))];
+            document.getElementById('loading-spinner').classList.add('hidden');
+            window.renderUI();
+          }, () => { document.getElementById('loading-spinner').classList.add('hidden'); });
+        };
+
+        signInAnonymously(authObj).catch(() => {});
+
         onAuthStateChanged(authObj, (currentUser) => {
           state.user = currentUser;
-          if (currentUser && state.db) {
-            document.getElementById('loading-spinner').classList.remove('hidden');
-            const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-            onSnapshot(collection(state.db, ...col), (snapshot) => {
-              state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))];
-              document.getElementById('loading-spinner').classList.add('hidden');
-              window.renderUI();
-            });
-          }
+          const isAdmin = currentUser && currentUser.email === adminEmail;
+          state.isAdmin = isAdmin;
+          const adminBtn = document.getElementById('nav-btn-admin');
+          if (isAdmin) adminBtn.classList.replace('hidden', 'flex');
+          else adminBtn.classList.replace('flex', 'hidden');
+          if (currentUser && state.db) startReleaseListener(currentUser);
         });
+
         window.submitAdminLogin = () => {
           const pwd = document.getElementById('input-admin-pwd').value;
           document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
-          signInWithEmailAndPassword(authObj, "admin@guia26.com", pwd).then(() => { window.closeAdminModal(); state.isAdmin = true; const btn = document.getElementById('nav-btn-admin'); btn.classList.replace('hidden', 'flex'); window.switchTab('admin'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; }).catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
+          signInWithEmailAndPassword(authObj, adminEmail, pwd)
+            .then(() => { window.closeAdminModal(); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; })
+            .catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
         };
-        window.confirmAdminLogout = () => { signOut(authObj); window.closeLogoutModal(); state.isAdmin = false; document.getElementById('nav-btn-admin').classList.replace('flex', 'hidden'); window.switchTab('home'); signInAnonymously(authObj); };
-      } catch(e) {}
+
+        window.confirmAdminLogout = () => {
+          signOut(authObj).then(() => signInAnonymously(authObj).catch(() => {}));
+          window.closeLogoutModal();
+          window.switchTab('home');
+        };
+      } catch(e) { console.error('Firebase init error:', e); }
     }
 
     window.closeAdminModal = () => document.getElementById('modal-admin-login').classList.add('hidden');
