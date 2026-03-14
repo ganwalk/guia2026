@@ -483,6 +483,7 @@
       sortBy: 'nome',
       viewMode: 'grid',
       db: null,
+      auth: null,
       appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
     };
 
@@ -1307,7 +1308,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const { month, semester } = parseDateInfo(data.date);
       const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
       try {
-        if (state.db && state.user) {
+        if (state.db) {
+          if (!state.user && state.auth) { try { await signInAnonymously(state.auth); } catch(e) {} }
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
         } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
@@ -1321,6 +1323,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       try {
         const fbApp = initializeApp(window.FIREBASE_CONFIG);
         const authObj = getAuth(fbApp);
+        state.auth = authObj;
         state.db = getFirestore(fbApp);
         const adminEmail = window.ADMIN_EMAIL || 'admin@guia26.com';
 
@@ -1341,8 +1344,6 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           }, () => { document.getElementById('loading-spinner').classList.add('hidden'); });
         };
 
-        signInAnonymously(authObj).catch(() => {});
-
         onAuthStateChanged(authObj, (currentUser) => {
           state.user = currentUser;
           const isAdmin = currentUser && currentUser.email === adminEmail;
@@ -1350,7 +1351,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           const adminBtn = document.getElementById('nav-btn-admin');
           if (isAdmin) adminBtn.classList.replace('hidden', 'flex');
           else adminBtn.classList.replace('flex', 'hidden');
-          if (currentUser && state.db) startReleaseListener(currentUser);
+          if (state.db) startReleaseListener(currentUser);
         });
 
         window.submitAdminLogin = () => {
@@ -1362,7 +1363,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         };
 
         window.confirmAdminLogout = () => {
-          signOut(authObj).then(() => signInAnonymously(authObj).catch(() => {}));
+          signOut(authObj);
           window.closeLogoutModal();
           window.switchTab('home');
         };
