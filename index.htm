@@ -107,9 +107,10 @@
   <!-- Admin Login Modal -->
   <div id="modal-admin-login" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
     <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-      <h3 class="text-2xl font-black text-[#ccff00] mb-2 font-garet uppercase tracking-wide">Acesso Restrito</h3>
-      <p class="text-gray-400 text-sm mb-5">Insira a palavra-passe de curadoria.</p>
-      <input type="password" id="input-admin-pwd" placeholder="Palavra-passe" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-4 text-center tracking-[0.2em] font-mono" />
+      <h3 class="text-2xl font-black text-[#ccff00] mb-2 font-garet uppercase tracking-wide">Login Admin</h3>
+      <p class="text-gray-400 text-sm mb-5">Acesso restrito à curadoria.</p>
+      <input type="email" id="input-admin-email" placeholder="E-mail" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-3 font-mono" />
+      <input type="password" id="input-admin-pwd" placeholder="Senha" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-4 font-mono" />
       <div class="flex gap-3">
         <button onclick="closeAdminModal()" class="flex-1 py-3 text-gray-500 hover:text-white hover:bg-gray-900 rounded-lg font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
         <button id="btn-admin-entrar" onclick="submitAdminLogin()" class="flex-1 bg-[#ccff00] text-black font-bold uppercase tracking-wider text-sm py-3 rounded-lg hover:bg-white transition-colors">Entrar</button>
@@ -1355,9 +1356,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         });
 
         window.submitAdminLogin = () => {
+          const email = document.getElementById('input-admin-email').value.trim() || adminEmail;
           const pwd = document.getElementById('input-admin-pwd').value;
           document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
-          signInWithEmailAndPassword(authObj, adminEmail, pwd)
+          signInWithEmailAndPassword(authObj, email, pwd)
             .then(() => { window.closeAdminModal(); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; })
             .catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
         };
@@ -1370,7 +1372,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       } catch(e) { console.error('Firebase init error:', e); }
     }
 
-    window.closeAdminModal = () => document.getElementById('modal-admin-login').classList.add('hidden');
+    window.closeAdminModal = () => { document.getElementById('modal-admin-login').classList.add('hidden'); document.getElementById('input-admin-email').value = ''; document.getElementById('input-admin-pwd').value = ''; document.getElementById('admin-login-error').classList.add('hidden'); };
     window.closeLogoutModal = () => document.getElementById('modal-admin-logout').classList.add('hidden');
     let clickCount = 0, clickTimeout = null;
     window.secretAdminLogin = () => { clickCount++; if (clickTimeout) clearTimeout(clickTimeout); if (clickCount === 4) { clickCount = 0; if (state.isAdmin) document.getElementById('modal-admin-logout').classList.remove('hidden'); else { document.getElementById('modal-admin-login').classList.remove('hidden'); setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100); } } else { clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); } };
