@@ -13,12 +13,13 @@
 // =====================================================
 
 window.FIREBASE_CONFIG = {
-  apiKey:            "PREENCHA_AQUI",
-  authDomain:        "SEU-PROJETO.firebaseapp.com",
-  projectId:         "SEU-PROJETO",
-  storageBucket:     "SEU-PROJETO.appspot.com",
-  messagingSenderId: "000000000000",
-  appId:             "1:000000000000:web:000000000000000000000000"
+  apiKey:            "AIzaSyCcCSdA2xbhvgQ3CVEpmCvcSeuOuftG5mY",
+  authDomain:        "guia-lancamentos-2026.firebaseapp.com",
+  projectId:         "guia-lancamentos-2026",
+  storageBucket:     "guia-lancamentos-2026.firebasestorage.app",
+  messagingSenderId: "960734419489",
+  appId:             "1:960734419489:web:be219f03f81bff021ae160",
+  measurementId:     "G-X4TSLH7CV7"
 };
 
 // E-mail do administrador registrado no Firebase Authentication
