@@ -429,13 +429,81 @@
           <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase flex items-center gap-3 font-garet">
             <i data-lucide="settings" class="text-[#ccff00] w-9 h-9"></i> Painel de Curadoria
           </h2>
-          <p class="text-gray-400 mt-2 text-sm sm:text-base">Aprove ou rejeite as submissões do público.</p>
+          <p class="text-gray-400 mt-2 text-sm sm:text-base">Aprove submissões ou adicione lançamentos diretamente.</p>
         </div>
-        <div class="text-left sm:text-right">
-          <div id="admin-count" class="text-3xl font-black text-[#ccff00]">0</div>
-          <div class="text-xs uppercase tracking-widest text-gray-500 font-bold">Pendentes</div>
+        <div class="flex items-center gap-6">
+          <div class="text-left sm:text-right">
+            <div id="admin-count" class="text-3xl font-black text-[#ccff00]">0</div>
+            <div class="text-xs uppercase tracking-widest text-gray-500 font-bold">Pendentes</div>
+          </div>
+          <button onclick="toggleAdminAddForm()" class="flex items-center gap-2 bg-[#ccff00] text-black font-bold uppercase tracking-wider text-sm py-2 px-5 hover:bg-white transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar
+          </button>
         </div>
       </div>
+
+      <!-- Formulário de adição direta pelo admin -->
+      <div id="admin-add-form-wrapper" class="hidden mb-8">
+        <div class="bg-[#111] border border-[#ccff00]/30 p-6 sm:p-8 relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ccff00] to-green-600"></div>
+          <h3 class="text-lg font-black uppercase tracking-wider text-[#ccff00] mb-6 flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i> Adicionar Lançamento Direto
+          </h3>
+          <form id="admin-add-form" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Artista <span class="text-[#ccff00]">*</span></label>
+              <input required type="text" name="artist" placeholder="Nome do artista/banda" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Título <span class="text-[#ccff00]">*</span></label>
+              <input required type="text" name="title" placeholder="Nome do disco/EP ou 'Não Revelado'" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors italic" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Estado (UF) <span class="text-[#ccff00]">*</span></label>
+              <div class="relative">
+                <select name="uf" required class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-3 py-2 outline-none transition-colors rounded font-bold uppercase tracking-wider text-sm appearance-none cursor-pointer">
+                  <option value="" disabled selected>Selecione...</option>
+                  <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                  <option value="Sem UF">Nacional / Sem UF</option>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none"></i>
+              </div>
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Data de Lançamento <span class="text-[#ccff00]">*</span></label>
+              <input required type="text" name="date" placeholder="Ex: 24/02, Março, Não Revelada..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Tipo <span class="text-[#ccff00]">*</span></label>
+              <div class="flex gap-4 mt-1">
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="Disco" checked class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Disco</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="EP" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">EP</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="Single" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Single</span></label>
+              </div>
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Label / Via <span class="text-[#ccff00]">*</span></label>
+              <input required type="text" name="label" placeholder="Ex: Independente, Deck, ONErpm..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Fonte <span class="text-[#ccff00]">*</span></label>
+              <input required type="text" name="fonte" placeholder="Ex: Curadoria, Assessoria, Próprio Artista" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Link (opcional)</label>
+              <input type="url" name="link" placeholder="https://..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors text-blue-400" />
+            </div>
+            <div class="sm:col-span-2 flex gap-3 pt-2">
+              <button type="submit" id="btn-admin-add" class="flex-1 bg-[#ccff00] text-black font-black uppercase tracking-widest py-3 hover:bg-white transition-colors disabled:opacity-50 flex justify-center items-center gap-2">
+                <i data-lucide="check" class="w-5 h-5"></i> Publicar Direto
+              </button>
+              <button type="button" onclick="toggleAdminAddForm()" class="px-6 py-3 border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
+            </div>
+            <p id="admin-add-error" class="hidden sm:col-span-2 text-red-500 text-sm text-center">Erro ao publicar. Tente novamente.</p>
+          </form>
+        </div>
+      </div>
+
       <div id="admin-container" class="space-y-4">
         <!-- Rendered via JS -->
       </div>
@@ -1265,24 +1333,58 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     };
 
     window.adminAction = async (id, action) => {
-      if (state.db && state.user && id.startsWith('sub_') && state.isAdmin) {
-        try {
-          const ref = doc(state.db, 'submissions2026_v4', id);
-          if (action === 'approve') await updateDoc(ref, { status: 'approved' });
-          else await deleteDoc(ref);
-          return;
-        } catch (e) { /* fall through to local update */ }
+      if (!state.db || !state.user || !state.isAdmin) {
+        alert('Sessão expirada. Faça login novamente.'); return;
       }
-      if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
-      else state.releases = state.releases.filter(r => r.id !== id);
-      window.renderUI();
+      const btn = document.querySelector(`button[onclick="adminAction('${id}','${action}')"]`) || document.querySelector(`button[onclick="adminAction('${id}', '${action}')"]`);
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
+      try {
+        const ref = doc(state.db, 'submissions2026_v4', id);
+        if (action === 'approve') await updateDoc(ref, { status: 'approved' });
+        else await deleteDoc(ref);
+      } catch (e) {
+        console.error('adminAction error:', e);
+        alert('Erro ao processar: ' + (e.message || e.code || e));
+        if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+      }
     };
+
+    window.toggleAdminAddForm = () => {
+      const wrapper = document.getElementById('admin-add-form-wrapper');
+      wrapper.classList.toggle('hidden');
+      if (!wrapper.classList.contains('hidden') && window.lucide) lucide.createIcons();
+    };
+
+    document.getElementById('admin-add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!state.db || !state.user || !state.isAdmin) { alert('Sessão expirada.'); return; }
+      const form = e.target, data = Object.fromEntries(new FormData(form).entries());
+      const btn = document.getElementById('btn-admin-add'), errEl = document.getElementById('admin-add-error');
+      btn.disabled = true; btn.innerHTML = '<div class="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
+      errEl.classList.add('hidden');
+      const { month, semester } = parseDateInfo(data.date);
+      const newRelease = { ...data, month, semester, status: 'approved', timestamp: new Date().toISOString() };
+      try {
+        const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
+        form.reset();
+        document.getElementById('admin-add-form-wrapper').classList.add('hidden');
+      } catch (err) {
+        console.error('admin-add error:', err);
+        errEl.textContent = 'Erro ao publicar: ' + (err.message || err.code || err);
+        errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> Publicar Direto';
+        if (window.lucide) lucide.createIcons();
+      }
+    });
 
     window.renderUI = () => {
       window.updateFiltersUI();
       window.renderTimeline();
       if(window.isGeoChartLoaded && state.activeTab === 'home' && typeof google !== 'undefined') window.renderMap();
       window.renderReleases();
+      if(state.activeTab === 'admin') window.renderAdmin();
       if(window.lucide) lucide.createIcons();
     };
 
