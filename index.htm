@@ -131,6 +131,68 @@
     </div>
   </div>
 
+  <!-- Admin Edit Modal -->
+  <div id="modal-admin-edit" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
+    <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-black text-white uppercase tracking-wide font-garet flex items-center gap-2"><i data-lucide="pencil" class="text-[#ccff00] w-5 h-5"></i> Editar Lançamento</h3>
+        <button onclick="closeEditModal()" class="text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+      </div>
+      <form id="admin-edit-form" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <input type="hidden" name="id" />
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Artista <span class="text-[#ccff00]">*</span></label>
+          <input required type="text" name="artist" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Título <span class="text-[#ccff00]">*</span></label>
+          <input required type="text" name="title" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors italic" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Estado (UF) <span class="text-[#ccff00]">*</span></label>
+          <div class="relative">
+            <select name="uf" required class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-3 py-2 outline-none transition-colors rounded font-bold uppercase tracking-wider text-sm appearance-none cursor-pointer">
+              <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+              <option value="Sem UF">Nacional / Sem UF</option>
+            </select>
+            <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none"></i>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Data <span class="text-[#ccff00]">*</span></label>
+          <input required type="text" name="date" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Tipo <span class="text-[#ccff00]">*</span></label>
+          <div class="flex gap-4 mt-1">
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="Disco" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Disco</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="EP" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">EP</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" value="Single" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Single</span></label>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Label / Via <span class="text-[#ccff00]">*</span></label>
+          <input required type="text" name="label" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Fonte <span class="text-[#ccff00]">*</span></label>
+          <input required type="text" name="fonte" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Link (opcional)</label>
+          <input type="url" name="link" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors text-blue-400" />
+        </div>
+        <div class="sm:col-span-2 flex gap-3 pt-2">
+          <button type="submit" id="btn-admin-edit-save" class="flex-1 bg-[#ccff00] text-black font-black uppercase tracking-widest py-3 hover:bg-white transition-colors disabled:opacity-50 flex justify-center items-center gap-2">
+            <i data-lucide="save" class="w-5 h-5"></i> Salvar
+          </button>
+          <button type="button" onclick="closeEditModal()" class="px-6 py-3 border border-gray-700 text-gray-400 hover:text-white font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
+        </div>
+        <p id="admin-edit-error" class="hidden sm:col-span-2 text-red-500 text-sm text-center"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- Navigation Header -->
   <nav class="sticky top-0 z-50 border-b border-[#333] bg-black/90 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
@@ -1125,7 +1187,21 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         }
         return 0;
       });
-      document.getElementById('hero-count').innerText = state.releases.filter(r => r.status === 'approved').length;
+      const heroCountEl = document.getElementById('hero-count');
+      const targetCount = state.releases.filter(r => r.status === 'approved').length;
+      const currentCount = parseInt(heroCountEl.innerText) || 0;
+      if (currentCount !== targetCount) {
+        const step = targetCount > currentCount ? 1 : -1;
+        const duration = Math.min(800, Math.abs(targetCount - currentCount) * 20);
+        const steps = Math.abs(targetCount - currentCount);
+        const interval = steps > 0 ? duration / steps : 0;
+        let current = currentCount;
+        const timer = setInterval(() => {
+          current += step;
+          heroCountEl.innerText = current;
+          if (current === targetCount) clearInterval(timer);
+        }, interval);
+      }
       document.getElementById('map-count').innerText = displayed.length;
       const container = document.getElementById('releases-container');
       container.className = state.viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" : "flex flex-col gap-3";
@@ -1133,10 +1209,11 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         container.innerHTML = `<div class="col-span-full text-center py-20 bg-[#0a0a0a] border border-gray-900 rounded-xl mt-4"><p class="text-gray-500 text-xl font-light">Nenhum lançamento catalogado para este filtro.</p><button onclick="clearAllFilters()" class="mt-4 text-[#ccff00] hover:underline uppercase tracking-widest text-sm font-bold">Limpar todos os filtros</button></div>`;
       } else {
         container.innerHTML = displayed.map(release => {
+          const adminBtns = state.isAdmin ? `<div class="absolute top-2 right-2 hidden group-hover:flex gap-1 z-20"><button onclick="adminEditRelease('${release.id}')" class="bg-black/80 border border-gray-700 hover:border-[#ccff00] text-gray-400 hover:text-[#ccff00] p-1.5 rounded transition-colors" title="Editar"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button onclick="adminDeleteRelease('${release.id}')" class="bg-black/80 border border-gray-700 hover:border-red-500 text-gray-400 hover:text-red-500 p-1.5 rounded transition-colors" title="Deletar"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>` : '';
           if (state.viewMode === 'grid') {
-            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]"><div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div><div class="flex justify-between items-start mb-3 gap-2"><div class="flex gap-2 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}</div><span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">${formatNeonNumbers(release.date)}</span></div><h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">${release.artist}</h3><p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">"${release.title}"</p></div><div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3"><div class="flex items-center justify-between"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i></a>` : ''}</div><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span></span></div></div>`;
+            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">${adminBtns}<div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div><div class="flex justify-between items-start mb-3 gap-2"><div class="flex gap-2 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}</div><span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">${formatNeonNumbers(release.date)}</span></div><h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">${release.artist}</h3><p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">"${release.title}"</p></div><div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3"><div class="flex items-center justify-between"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i></a>` : ''}</div><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span></span></div></div>`;
           } else {
-            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-4 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]"><div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full z-10"><div class="flex items-center gap-3 md:w-56 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}<span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm ml-auto md:ml-0">${formatNeonNumbers(release.date)}</span></div><div class="flex-1 min-w-0"><h3 class="text-xl font-black tracking-tight group-hover:text-[#ccff00] transition-colors truncate font-garet">${release.artist}</h3><p class="text-sm text-gray-400 italic truncate">"${release.title}"</p></div><div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 shrink-0 md:w-64"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide truncate"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono truncate"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> <span class="truncate">${release.fonte || 'N/A'}</span></span></div></div>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="shrink-0 mt-3 md:mt-0 z-10 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-3 h-3"></i></a>` : ''}</div>`;
+            return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-4 flex flex-col md:flex-row items-start md:items-center gap-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">${adminBtns}<div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div class="flex-1 flex flex-col md:flex-row md:items-center gap-4 w-full z-10"><div class="flex items-center gap-3 md:w-56 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}<span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm ml-auto md:ml-0">${formatNeonNumbers(release.date)}</span></div><div class="flex-1 min-w-0"><h3 class="text-xl font-black tracking-tight group-hover:text-[#ccff00] transition-colors truncate font-garet">${release.artist}</h3><p class="text-sm text-gray-400 italic truncate">"${release.title}"</p></div><div class="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 shrink-0 md:w-64"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide truncate"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono truncate"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> <span class="truncate">${release.fonte || 'N/A'}</span></span></div></div>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="shrink-0 mt-3 md:mt-0 z-10 bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-3 h-3"></i></a>` : ''}</div>`;
           }
         }).join('');
       }
@@ -1348,6 +1425,60 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         if (btn) { btn.disabled = false; btn.style.opacity = ''; }
       }
     };
+
+    window.adminEditRelease = (id) => {
+      const release = state.releases.find(r => r.id === id);
+      if (!release) return;
+      const form = document.getElementById('admin-edit-form');
+      form.elements['id'].value = id;
+      form.elements['artist'].value = release.artist || '';
+      form.elements['title'].value = release.title || '';
+      form.elements['uf'].value = release.uf || '';
+      form.elements['date'].value = release.date || '';
+      form.elements['label'].value = release.label || '';
+      form.elements['fonte'].value = release.fonte || '';
+      form.elements['link'].value = release.link || '';
+      const typeRadio = form.querySelector(`input[name="type"][value="${release.type}"]`);
+      if (typeRadio) typeRadio.checked = true;
+      document.getElementById('admin-edit-error').classList.add('hidden');
+      document.getElementById('modal-admin-edit').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    };
+
+    window.closeEditModal = () => document.getElementById('modal-admin-edit').classList.add('hidden');
+
+    window.adminDeleteRelease = async (id) => {
+      if (!state.db || !state.user || !state.isAdmin) { alert('Sessão expirada.'); return; }
+      if (!confirm('Deletar este lançamento permanentemente?')) return;
+      try {
+        await deleteDoc(doc(state.db, 'submissions2026_v4', id));
+      } catch (e) {
+        console.error('adminDeleteRelease error:', e);
+        alert('Erro ao deletar: ' + (e.message || e.code || e));
+      }
+    };
+
+    document.getElementById('admin-edit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!state.db || !state.user || !state.isAdmin) { alert('Sessão expirada.'); return; }
+      const form = e.target, data = Object.fromEntries(new FormData(form).entries());
+      const id = data.id; delete data.id;
+      const btn = document.getElementById('btn-admin-edit-save'), errEl = document.getElementById('admin-edit-error');
+      btn.disabled = true; btn.innerHTML = '<div class="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
+      errEl.classList.add('hidden');
+      const { month, semester } = parseDateInfo(data.date);
+      try {
+        await updateDoc(doc(state.db, 'submissions2026_v4', id), { ...data, month, semester });
+        window.closeEditModal();
+      } catch (err) {
+        console.error('admin-edit-save error:', err);
+        errEl.textContent = 'Erro ao salvar: ' + (err.message || err.code || err);
+        errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i> Salvar';
+        if (window.lucide) lucide.createIcons();
+      }
+    });
 
     window.toggleAdminAddForm = () => {
       const wrapper = document.getElementById('admin-add-form-wrapper');
