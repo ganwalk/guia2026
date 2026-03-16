@@ -18,10 +18,9 @@ service cloud.firestore {
       // Apenas admins podem ler os pendentes.
       allow read: if resource.data.status == 'approved' || isAdmin();
 
-      // Admin pode criar com qualquer status; outros só podem criar com 'pending'.
+      // Admin pode criar com qualquer status; qualquer um pode submeter com 'pending'.
       allow create: if isAdmin()
-                    || (request.auth != null
-                        && request.resource.data.status == 'pending'
+                    || (request.resource.data.status == 'pending'
                         && request.resource.data.keys().hasAll([
                              'artist', 'uf', 'type', 'date',
                              'title', 'label', 'fonte', 'timestamp'

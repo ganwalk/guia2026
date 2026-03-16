@@ -1543,7 +1543,6 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
       try {
         if (state.db) {
-          if (!state.user && state.auth) { try { await signInAnonymously(state.auth); } catch(e) {} }
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
         } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
