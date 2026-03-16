@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "submissions2026_v4",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "artist", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "submissions2026_v4",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "month",  "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

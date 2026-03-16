@@ -7,9 +7,12 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Configuração do Firebase (preencha firebase-config.js com suas credenciais) -->
+  <script src="firebase-config.js"></script>
 
   <!-- Google Charts API -->
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -104,9 +107,10 @@
   <!-- Admin Login Modal -->
   <div id="modal-admin-login" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
     <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-      <h3 class="text-2xl font-black text-[#ccff00] mb-2 font-garet uppercase tracking-wide">Acesso Restrito</h3>
-      <p class="text-gray-400 text-sm mb-5">Insira a palavra-passe de curadoria.</p>
-      <input type="password" id="input-admin-pwd" placeholder="Palavra-passe" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-4 text-center tracking-[0.2em] font-mono" />
+      <h3 class="text-2xl font-black text-[#ccff00] mb-2 font-garet uppercase tracking-wide">Login Admin</h3>
+      <p class="text-gray-400 text-sm mb-5">Acesso restrito à curadoria.</p>
+      <input type="email" id="input-admin-email" placeholder="E-mail" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-3 font-mono" />
+      <input type="password" id="input-admin-pwd" placeholder="Senha" class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-4 py-3 outline-none transition-colors rounded-lg mb-4 font-mono" />
       <div class="flex gap-3">
         <button onclick="closeAdminModal()" class="flex-1 py-3 text-gray-500 hover:text-white hover:bg-gray-900 rounded-lg font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
         <button id="btn-admin-entrar" onclick="submitAdminLogin()" class="flex-1 bg-[#ccff00] text-black font-bold uppercase tracking-wider text-sm py-3 rounded-lg hover:bg-white transition-colors">Entrar</button>
@@ -465,7 +469,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
     import { getAuth, signInAnonymously, signInWithEmailAndPassword, signInWithCustomToken, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+    import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, query, where } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     const state = {
       activeTab: 'home',
@@ -480,6 +484,7 @@
       sortBy: 'nome',
       viewMode: 'grid',
       db: null,
+      auth: null,
       appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
     };
 
@@ -1262,15 +1267,15 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.adminAction = async (id, action) => {
       if (state.db && state.user && id.startsWith('sub_') && state.isAdmin) {
         try {
-          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-          const ref = doc(state.db, ...col, id);
-          if (action === 'approve') await updateDoc(ref, { status: 'approved' }); else await deleteDoc(ref);
-        } catch (e) { updateLocal(); }
-      } else { updateLocal(); }
-      function updateLocal() {
-        if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r); else state.releases = state.releases.filter(r => r.id !== id);
-        window.renderUI();
+          const ref = doc(state.db, 'submissions2026_v4', id);
+          if (action === 'approve') await updateDoc(ref, { status: 'approved' });
+          else await deleteDoc(ref);
+          return;
+        } catch (e) { /* fall through to local update */ }
       }
+      if (action === 'approve') state.releases = state.releases.map(r => r.id === id ? { ...r, status: 'approved' } : r);
+      else state.releases = state.releases.filter(r => r.id !== id);
+      window.renderUI();
     };
 
     window.renderUI = () => {
@@ -1304,10 +1309,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const { month, semester } = parseDateInfo(data.date);
       const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
       try {
-        if (state.db && state.user) {
+        if (state.db) {
+          if (!state.user && state.auth) { try { await signInAnonymously(state.auth); } catch(e) {} }
           const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-          await setDoc(doc(state.db, ...col, newId), newRelease);
+          await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
         } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
         form.reset(); document.getElementById('submit-form').classList.add('hidden'); document.getElementById('submit-success').classList.replace('hidden', 'flex');
         window.renderUI();
@@ -1315,35 +1320,59 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       } catch (err) { errEl.classList.remove('hidden'); } finally { btn.disabled = false; btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>'; if(window.lucide) lucide.createIcons(); }
     });
 
-    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+    if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey !== 'PREENCHA_AQUI') {
       try {
-        const fbApp = initializeApp(JSON.parse(__firebase_config));
+        const fbApp = initializeApp(window.FIREBASE_CONFIG);
         const authObj = getAuth(fbApp);
+        state.auth = authObj;
         state.db = getFirestore(fbApp);
-        const initAuth = async () => { if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(authObj, __initial_auth_token); else await signInAnonymously(authObj); };
-        initAuth();
+        const adminEmail = window.ADMIN_EMAIL || 'admin@guia26.com';
+
+        // Guarda referência para cancelar o listener anterior ao trocar de conta
+        let releaseUnsubscribe = null;
+
+        const startReleaseListener = (currentUser) => {
+          if (releaseUnsubscribe) { releaseUnsubscribe(); releaseUnsubscribe = null; }
+          const isAdmin = currentUser && currentUser.email === adminEmail;
+          const col = collection(state.db, 'submissions2026_v4');
+          // Usuários comuns veem apenas lançamentos aprovados; admin vê todos
+          const q = isAdmin ? col : query(col, where('status', '==', 'approved'));
+          document.getElementById('loading-spinner').classList.remove('hidden');
+          releaseUnsubscribe = onSnapshot(q, (snapshot) => {
+            state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(d => ({ id: d.id, ...d.data() }))];
+            document.getElementById('loading-spinner').classList.add('hidden');
+            window.renderUI();
+          }, () => { document.getElementById('loading-spinner').classList.add('hidden'); });
+        };
+
         onAuthStateChanged(authObj, (currentUser) => {
           state.user = currentUser;
-          if (currentUser && state.db) {
-            document.getElementById('loading-spinner').classList.remove('hidden');
-            const col = typeof __firebase_config !== 'undefined' ? ['artifacts', state.appId, 'public', 'data', 'submissions2026_v4'] : ['submissions2026'];
-            onSnapshot(collection(state.db, ...col), (snapshot) => {
-              state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))];
-              document.getElementById('loading-spinner').classList.add('hidden');
-              window.renderUI();
-            });
-          }
+          const isAdmin = currentUser && currentUser.email === adminEmail;
+          state.isAdmin = isAdmin;
+          const adminBtn = document.getElementById('nav-btn-admin');
+          if (isAdmin) adminBtn.classList.replace('hidden', 'flex');
+          else adminBtn.classList.replace('flex', 'hidden');
+          if (state.db) startReleaseListener(currentUser);
         });
+
         window.submitAdminLogin = () => {
+          const email = document.getElementById('input-admin-email').value.trim() || adminEmail;
           const pwd = document.getElementById('input-admin-pwd').value;
           document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
-          signInWithEmailAndPassword(authObj, "admin@guia26.com", pwd).then(() => { window.closeAdminModal(); state.isAdmin = true; const btn = document.getElementById('nav-btn-admin'); btn.classList.replace('hidden', 'flex'); window.switchTab('admin'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; }).catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
+          signInWithEmailAndPassword(authObj, email, pwd)
+            .then(() => { window.closeAdminModal(); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; })
+            .catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
         };
-        window.confirmAdminLogout = () => { signOut(authObj); window.closeLogoutModal(); state.isAdmin = false; document.getElementById('nav-btn-admin').classList.replace('flex', 'hidden'); window.switchTab('home'); signInAnonymously(authObj); };
-      } catch(e) {}
+
+        window.confirmAdminLogout = () => {
+          signOut(authObj);
+          window.closeLogoutModal();
+          window.switchTab('home');
+        };
+      } catch(e) { console.error('Firebase init error:', e); }
     }
 
-    window.closeAdminModal = () => document.getElementById('modal-admin-login').classList.add('hidden');
+    window.closeAdminModal = () => { document.getElementById('modal-admin-login').classList.add('hidden'); document.getElementById('input-admin-email').value = ''; document.getElementById('input-admin-pwd').value = ''; document.getElementById('admin-login-error').classList.add('hidden'); };
     window.closeLogoutModal = () => document.getElementById('modal-admin-logout').classList.add('hidden');
     let clickCount = 0, clickTimeout = null;
     window.secretAdminLogin = () => { clickCount++; if (clickTimeout) clearTimeout(clickTimeout); if (clickCount === 4) { clickCount = 0; if (state.isAdmin) document.getElementById('modal-admin-logout').classList.remove('hidden'); else { document.getElementById('modal-admin-login').classList.remove('hidden'); setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100); } } else { clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); } };
