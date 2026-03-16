@@ -3,29 +3,33 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email in [
+               'rafael.lopezc@gmail.com',
+               'minutoindie@gmail.com',
+               'armandocustodio0@gmail.com'
+             ];
+    }
+
     match /submissions2026_v4/{docId} {
 
       // Qualquer um pode ler lançamentos aprovados.
-      // Apenas o admin pode ler os pendentes.
-      allow read: if resource.data.status == 'approved'
-                  || (request.auth != null
-                      && request.auth.token.email == 'admin@guia26.com');
+      // Apenas admins podem ler os pendentes.
+      allow read: if resource.data.status == 'approved' || isAdmin();
 
-      // Qualquer usuário autenticado (incluindo anônimo) pode criar
-      // uma submissão — mas apenas com status 'pending' e campos obrigatórios.
-      allow create: if request.auth != null
-                    && request.resource.data.status == 'pending'
-                    && request.resource.data.keys().hasAll([
-                         'artist', 'uf', 'type', 'date',
-                         'title', 'label', 'fonte', 'timestamp'
-                       ]);
+      // Admin pode criar com qualquer status; outros só podem criar com 'pending'.
+      allow create: if isAdmin()
+                    || (request.auth != null
+                        && request.resource.data.status == 'pending'
+                        && request.resource.data.keys().hasAll([
+                             'artist', 'uf', 'type', 'date',
+                             'title', 'label', 'fonte', 'timestamp'
+                           ]));
 
-      // Apenas o admin pode aprovar (update) ou descartar (delete).
-      allow update: if request.auth != null
-                    && request.auth.token.email == 'admin@guia26.com';
-
-      allow delete: if request.auth != null
-                    && request.auth.token.email == 'admin@guia26.com';
+      // Apenas admins podem aprovar (update) ou descartar (delete).
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
   }
