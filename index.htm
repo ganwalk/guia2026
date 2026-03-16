@@ -1351,8 +1351,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           const isAdmin = checkIsAdmin(currentUser);
           state.isAdmin = isAdmin;
           const adminBtn = document.getElementById('nav-btn-admin');
-          if (isAdmin) adminBtn.classList.replace('hidden', 'flex');
-          else adminBtn.classList.replace('flex', 'hidden');
+          if (isAdmin) { adminBtn.classList.remove('hidden'); adminBtn.classList.add('flex'); }
+          else { adminBtn.classList.remove('flex'); adminBtn.classList.add('hidden'); }
           if (state.db) startReleaseListener(currentUser);
         });
 
@@ -1373,6 +1373,9 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
                 errEl.classList.remove('hidden');
               } else {
                 window.closeAdminModal();
+                const adminBtn = document.getElementById('nav-btn-admin');
+                adminBtn.classList.remove('hidden'); adminBtn.classList.add('flex');
+                if (window.switchTab) window.switchTab('admin');
               }
               btn.innerHTML = 'Entrar'; btn.disabled = false;
             })
