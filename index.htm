@@ -1370,8 +1370,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       });
       const data = google.visualization.arrayToDataTable(dataTable);
       const options = {
-        region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent', defaultColor: '#3a3a3a', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
-        colorAxis: state.selectedUF === 'Todos' ? { colors: ['#3a3a3a', '#4a6600', '#ccff00'], minValue: 0, maxValue: maxCount } : { colors: ['#2a2a2a', '#ccff00'], values: [0, 1] }
+        region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent', defaultColor: '#272727', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
+        colorAxis: state.selectedUF === 'Todos' ? { colors: ['#272727', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount } : { colors: ['#1c1c1c', '#ccff00'], values: [0, 1] }
       };
       if (!mapInstance) {
           mapInstance = new google.visualization.GeoChart(container);
