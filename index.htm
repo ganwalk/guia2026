@@ -1326,14 +1326,15 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         const authObj = getAuth(fbApp);
         state.auth = authObj;
         state.db = getFirestore(fbApp);
-        const adminEmail = window.ADMIN_EMAIL || 'admin@guia26.com';
+        const adminEmails = window.ADMIN_EMAILS || [];
+        const checkIsAdmin = (user) => user && adminEmails.includes(user.email);
 
         // Guarda referência para cancelar o listener anterior ao trocar de conta
         let releaseUnsubscribe = null;
 
         const startReleaseListener = (currentUser) => {
           if (releaseUnsubscribe) { releaseUnsubscribe(); releaseUnsubscribe = null; }
-          const isAdmin = currentUser && currentUser.email === adminEmail;
+          const isAdmin = checkIsAdmin(currentUser);
           const col = collection(state.db, 'submissions2026_v4');
           // Usuários comuns veem apenas lançamentos aprovados; admin vê todos
           const q = isAdmin ? col : query(col, where('status', '==', 'approved'));
@@ -1347,7 +1348,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
 
         onAuthStateChanged(authObj, (currentUser) => {
           state.user = currentUser;
-          const isAdmin = currentUser && currentUser.email === adminEmail;
+          const isAdmin = checkIsAdmin(currentUser);
           state.isAdmin = isAdmin;
           const adminBtn = document.getElementById('nav-btn-admin');
           if (isAdmin) adminBtn.classList.replace('hidden', 'flex');
@@ -1356,12 +1357,30 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         });
 
         window.submitAdminLogin = () => {
-          const email = document.getElementById('input-admin-email').value.trim() || adminEmail;
+          const email = document.getElementById('input-admin-email').value.trim();
           const pwd = document.getElementById('input-admin-pwd').value;
-          document.getElementById('btn-admin-entrar').innerHTML = 'Aguarde...';
+          const errEl = document.getElementById('admin-login-error');
+          const btn = document.getElementById('btn-admin-entrar');
+          errEl.classList.add('hidden');
+          if (!email || !pwd) { errEl.textContent = 'Preencha e-mail e senha.'; errEl.classList.remove('hidden'); return; }
+          btn.innerHTML = 'Aguarde...';
+          btn.disabled = true;
           signInWithEmailAndPassword(authObj, email, pwd)
-            .then(() => { window.closeAdminModal(); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; })
-            .catch(() => { document.getElementById('admin-login-error').classList.remove('hidden'); document.getElementById('btn-admin-entrar').innerHTML = 'Entrar'; });
+            .then((cred) => {
+              if (!checkIsAdmin(cred.user)) {
+                signOut(authObj);
+                errEl.textContent = 'Este e-mail não tem acesso admin.';
+                errEl.classList.remove('hidden');
+              } else {
+                window.closeAdminModal();
+              }
+              btn.innerHTML = 'Entrar'; btn.disabled = false;
+            })
+            .catch((e) => {
+              const msg = (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') ? 'E-mail ou senha incorretos.' : 'Erro ao fazer login. Tente novamente.';
+              errEl.textContent = msg; errEl.classList.remove('hidden');
+              btn.innerHTML = 'Entrar'; btn.disabled = false;
+            });
         };
 
         window.confirmAdminLogout = () => {

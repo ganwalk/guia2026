@@ -22,5 +22,9 @@ window.FIREBASE_CONFIG = {
   measurementId:     "G-X4TSLH7CV7"
 };
 
-// E-mail do administrador registrado no Firebase Authentication
-window.ADMIN_EMAIL = "admin@guia26.com";
+// E-mails dos administradores registrados no Firebase Authentication
+window.ADMIN_EMAILS = [
+  "rafael.lopezc@gmail.com",
+  "minutoindie@gmail.com",
+  "armandocustodio0@gmail.com"
+];
