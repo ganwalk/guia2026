@@ -63,6 +63,11 @@
       animation: reveal-line 6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
+    @keyframes grow-bar {
+      from { height: 0; opacity: 0; }
+      to { height: var(--bar-h); opacity: 1; }
+    }
+
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -636,8 +641,10 @@
       viewMode: 'grid',
       db: null,
       auth: null,
-      appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default',
+      isIntroPlaying: true
     };
+    setTimeout(() => { state.isIntroPlaying = false; }, 5000);
 
     const MONTHS_ORDER = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro', 'Sem data anunciada'];
     const SEMESTERS_ORDER = ['1º Semestre', '2º Semestre', 'Sem data anunciada'];
@@ -1213,7 +1220,9 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const currentCount = parseInt(heroCountEl.innerText) || 0;
       if (currentCount !== targetCount) {
         const step = targetCount > currentCount ? 1 : -1;
-        const duration = Math.min(800, Math.abs(targetCount - currentCount) * 20);
+        const duration = state.isIntroPlaying
+          ? Math.min(3000, Math.abs(targetCount - currentCount) * 10)
+          : Math.min(800, Math.abs(targetCount - currentCount) * 20);
         const steps = Math.abs(targetCount - currentCount);
         const interval = steps > 0 ? duration / steps : 0;
         let current = currentCount;
@@ -1352,6 +1361,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       });
       let d = points.length > 0 ? `M ${points[0].cx} ${points[0].cy} ` + points.slice(1).map((p, i) => { const p0 = points[i]; const cpOffset = (p.cx - p0.cx) / 2; return `C ${p0.cx + cpOffset} ${p0.cy}, ${p.cx - cpOffset} ${p.cy}, ${p.cx} ${p.cy}`; }).join(' ') : "";
       let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line"><path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
+      let colIdx = 0;
       order.forEach((period) => {
         const isActive = state.selectedPeriod === period;
         const count = counts[period] || 0;
@@ -1361,8 +1371,16 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         const colorClassTop = isActive ? 'bg-[#ccff00] shadow-[0_0_15px_#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
         const colorClassBot = isActive ? 'bg-[#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
         const textClass = isActive ? 'text-[#ccff00] scale-110' : 'text-gray-500 group-hover:text-gray-300';
+        const introDelay = (0.2 + colIdx * 0.06).toFixed(2);
+        const barStyle = (state.isIntroPlaying && !isSpecial)
+          ? `--bar-h: ${barHeightPx}px; height: 0; animation: grow-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${introDelay}s forwards;`
+          : `height: ${barHeightPx}px`;
+        const reflectStyle = (state.isIntroPlaying && !isSpecial)
+          ? `--bar-h: ${Math.round(barHeightPx * 0.3)}px; height: 0; animation: grow-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${introDelay}s forwards;`
+          : `height: calc(${barHeightPx}px * 0.3)`;
+        if (!isSpecial) colIdx++;
         if (isSpecial) html += `<div class="h-[140px] w-px border-l-2 border-dashed border-[#333] shrink-0 mx-[20px] mb-[30px] self-end hidden sm:block"></div>`;
-        html += `<div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="relative flex flex-col items-center w-full z-10"><div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">${count} registro(s)</div><div style="height: ${barHeightPx}px" class="w-8 sm:w-10 transition-all duration-300 mb-[1px] ${colorClassTop}"></div><div style="height: calc(${barHeightPx}px * 0.3)" class="w-8 sm:w-10 transition-all duration-300 opacity-30 ${colorClassBot}"></div></div><div class="mt-4 h-10 flex items-start justify-center w-full z-10"><span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${isSpecial ? 'text-gray-400' : ''}">${period}</span></div></div>`;
+        html += `<div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="relative flex flex-col items-center w-full z-10"><div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">${count} registro(s)</div><div style="${barStyle}" class="w-8 sm:w-10 transition-all duration-300 mb-[1px] ${colorClassTop}"></div><div style="${reflectStyle}" class="w-8 sm:w-10 transition-all duration-300 opacity-30 ${colorClassBot}"></div></div><div class="mt-4 h-10 flex items-start justify-center w-full z-10"><span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${isSpecial ? 'text-gray-400' : ''}">${period}</span></div></div>`;
       });
       html += `</div>`;
       document.getElementById('timeline-content').outerHTML = `<div id="timeline-content">${html}</div>`;
