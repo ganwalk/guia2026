@@ -641,10 +641,10 @@
       viewMode: 'grid',
       db: null,
       auth: null,
-      appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default',
-      isIntroPlaying: true
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'guia-br-2026-default'
     };
-    setTimeout(() => { state.isIntroPlaying = false; }, 5000);
+    let introTimelineDone = false;
+    let introCounterDone = false;
 
     const MONTHS_ORDER = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro', 'Sem data anunciada'];
     const SEMESTERS_ORDER = ['1º Semestre', '2º Semestre', 'Sem data anunciada'];
@@ -1220,7 +1220,9 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const currentCount = parseInt(heroCountEl.innerText) || 0;
       if (currentCount !== targetCount) {
         const step = targetCount > currentCount ? 1 : -1;
-        const duration = state.isIntroPlaying
+        const isSlowCount = !introCounterDone && targetCount > 0;
+        if (isSlowCount) introCounterDone = true;
+        const duration = isSlowCount
           ? Math.min(3000, Math.abs(targetCount - currentCount) * 10)
           : Math.min(800, Math.abs(targetCount - currentCount) * 20);
         const steps = Math.abs(targetCount - currentCount);
@@ -1360,7 +1362,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         return { cx, cy };
       });
       let d = points.length > 0 ? `M ${points[0].cx} ${points[0].cy} ` + points.slice(1).map((p, i) => { const p0 = points[i]; const cpOffset = (p.cx - p0.cx) / 2; return `C ${p0.cx + cpOffset} ${p0.cy}, ${p.cx - cpOffset} ${p.cy}, ${p.cx} ${p.cy}`; }).join(' ') : "";
-      let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible animate-reveal-line"><path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
+      const hasData = order.some(p => (counts[p] || 0) > 0);
+      const doIntroAnim = !introTimelineDone && hasData;
+      if (doIntroAnim) introTimelineDone = true;
+      let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible ${doIntroAnim ? 'animate-reveal-line' : ''}"><path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
       let colIdx = 0;
       order.forEach((period) => {
         const isActive = state.selectedPeriod === period;
@@ -1372,10 +1377,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         const colorClassBot = isActive ? 'bg-[#ccff00]' : 'bg-gray-800 group-hover:bg-gray-600';
         const textClass = isActive ? 'text-[#ccff00] scale-110' : 'text-gray-500 group-hover:text-gray-300';
         const introDelay = (0.2 + colIdx * 0.06).toFixed(2);
-        const barStyle = (state.isIntroPlaying && !isSpecial)
+        const barStyle = (doIntroAnim && !isSpecial)
           ? `--bar-h: ${barHeightPx}px; height: 0; animation: grow-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${introDelay}s forwards;`
           : `height: ${barHeightPx}px`;
-        const reflectStyle = (state.isIntroPlaying && !isSpecial)
+        const reflectStyle = (doIntroAnim && !isSpecial)
           ? `--bar-h: ${Math.round(barHeightPx * 0.3)}px; height: 0; animation: grow-bar 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${introDelay}s forwards;`
           : `height: calc(${barHeightPx}px * 0.3)`;
         if (!isSpecial) colIdx++;
