@@ -1250,17 +1250,17 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.toggleTheme = () => {
       const isLight = document.documentElement.classList.toggle('light');
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      const icon = document.querySelector('#btn-theme-toggle i[data-lucide]');
-      if (icon) { icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun'); if (window.lucide) lucide.createIcons(); }
+      const btn = document.getElementById('btn-theme-toggle');
+      if (btn) { btn.innerHTML = `<i data-lucide="${isLight ? 'moon' : 'sun'}" class="w-4 h-4 sm:w-[18px] sm:h-[18px]"></i>`; if (window.lucide) lucide.createIcons({ nodes: [btn] }); }
       window.renderTimeline();
       if (window.isGeoChartLoaded && mapInstance) window.renderMap();
     };
 
-    // Aplica ícone correto ao carregar
+    // Aplica ícone correto ao carregar (antes do lucide processar)
     (function() {
-      const icon = document.querySelector('#btn-theme-toggle i[data-lucide]');
+      const btn = document.getElementById('btn-theme-toggle');
       const isLight = document.documentElement.classList.contains('light');
-      if (icon) icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+      if (btn && isLight) btn.innerHTML = `<i data-lucide="moon" class="w-4 h-4 sm:w-[18px] sm:h-[18px]"></i>`;
     })();
 
     window.switchTab = (tab) => {
