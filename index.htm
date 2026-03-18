@@ -1349,9 +1349,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       }
       const validPeriods = order.filter(p => p !== 'Sem data anunciada');
       const maxValidCount = Math.max(1, ...validPeriods.map(p => counts[p] || 0));
-      const colWidth = 112;
-      const gap = 8;
-      const paddingX = 16;
+      const isMobile = window.innerWidth < 640;
+      const colWidth = isMobile ? 68 : 112;
+      const gap = isMobile ? 4 : 8;
+      const paddingX = isMobile ? 8 : 16;
       const svgWidth = paddingX * 2 + validPeriods.length * colWidth + (validPeriods.length - 1) * gap;
       const points = validPeriods.map((period, index) => {
         const count = counts[period] || 0;
@@ -1381,7 +1382,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           : `height: ${barHeightPx}px`;
         if (!isSpecial) colIdx++;
         if (isSpecial) html += `<div class="h-[140px] w-px border-l-2 border-dashed border-[#333] shrink-0 mx-[20px] mb-[30px] self-end hidden sm:block"></div>`;
-        html += `<div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="relative flex flex-col items-center w-full z-10"><div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">${count} registro(s)</div><div style="${barStyle}" class="w-8 sm:w-10 ${colorClass}"></div></div><div class="mt-4 h-10 flex items-start justify-center w-full z-10"><span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${isSpecial ? 'text-gray-400' : ''}">${period}</span></div></div>`;
+        const barWidthClass = isMobile ? 'w-6' : 'w-8 sm:w-10';
+        html += `<div onclick="setPeriod('${period}')" style="width: ${colWidth}px" class="group relative flex flex-col items-center justify-end h-full flex-shrink-0 cursor-pointer transition-all duration-300 ${opacityClass}" title="${count} Lançamentos"><div class="relative flex flex-col items-center w-full z-10"><div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-[#ccff00] text-black text-xs font-bold px-2 py-1 rounded pointer-events-none z-20 whitespace-nowrap shadow-lg">${count} registro(s)</div><div style="${barStyle}" class="${barWidthClass} ${colorClass}"></div></div><div class="mt-4 h-10 flex items-start justify-center w-full z-10"><span class="text-[10px] font-bold uppercase tracking-wider text-center transition-colors break-words w-full ${textClass} ${isSpecial ? 'text-gray-400' : ''}">${period}</span></div></div>`;
       });
       html += `</div>`;
       document.getElementById('timeline-content').outerHTML = `<div id="timeline-content">${html}</div>`;
@@ -1435,7 +1437,16 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         if (tooltip && !tooltip.classList.contains('hidden')) { tooltip.style.left = e.clientX + 'px'; tooltip.style.top = (e.clientY - 25) + 'px'; }
     });
 
-    window.addEventListener('resize', () => { if (state.activeTab === 'home' && window.isGeoChartLoaded) window.renderMap(); });
+    let _resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        if (state.activeTab === 'home') {
+          window.renderTimeline();
+          if (window.isGeoChartLoaded) window.renderMap();
+        }
+      }, 200);
+    });
 
     window.renderAdmin = () => {
       const pending = state.releases.filter(r => r.status === 'pending');
