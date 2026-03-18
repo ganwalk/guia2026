@@ -180,6 +180,18 @@
     html.light #brazil-map-chart path:not([fill="transparent"]):not([fill="none"]) {
       stroke: #e8e8e8 !important;
     }
+
+    /* Acento #ccff00: substituir por verde escuro no modo claro para contraste */
+    /* bg-[#ccff00] (botões sólidos) é mantido — já tem texto preto, contraste OK */
+    html.light .text-\[\#ccff00\]              { color: #4d7200 !important; }
+    html.light .hover\:text-\[\#ccff00\]:hover { color: #4d7200 !important; }
+    html.light .border-\[\#ccff00\]            { border-color: #4d7200 !important; }
+    html.light .border-\[\#ccff00\]\/40        { border-color: rgba(77,114,0,0.5) !important; }
+    html.light .border-\[\#ccff00\]\/30        { border-color: rgba(77,114,0,0.4) !important; }
+    html.light .border-\[\#ccff00\]\/20        { border-color: rgba(77,114,0,0.25) !important; }
+    html.light .bg-\[\#ccff00\]\/10            { background-color: rgba(77,114,0,0.08) !important; }
+    html.light .focus\:border-\[\#ccff00\]:focus { border-color: #4d7200 !important; }
+    html.light .stroke-\[\#ccff00\]            { stroke: #4d7200 !important; }
   </style>
 </head>
 <body class="min-h-screen bg-black text-white selection:bg-[#ccff00] selection:text-black pb-20 overflow-x-hidden flex flex-col">
@@ -1441,7 +1453,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const hasData = order.some(p => (counts[p] || 0) > 0);
       const doIntroAnim = !introTimelineDone && hasData;
       if (doIntroAnim) introTimelineDone = true;
-      let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible ${doIntroAnim ? 'animate-reveal-line' : ''}"><path d="${d}" fill="none" stroke="#ccff00" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
+      const lineColor = document.documentElement.classList.contains('light') ? '#4d7200' : '#ccff00';
+      let html = `<svg style="width: ${svgWidth}px; height: 300px;" class="absolute top-0 left-0 pointer-events-none z-0 overflow-visible ${doIntroAnim ? 'animate-reveal-line' : ''}"><path d="${d}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="relative flex items-end gap-2 w-max min-w-full px-4 h-[300px]">`;
       let colIdx = 0;
       order.forEach((period) => {
         const isActive = state.selectedPeriod === period;
