@@ -47,7 +47,11 @@
   </script>
 
   <!-- Aplica tema antes do render para evitar flash -->
-  <script>if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light');</script>
+  <script>
+    const _saved = localStorage.getItem('theme');
+    if (_saved === 'light' || (!_saved && window.matchMedia('(prefers-color-scheme: light)').matches))
+      document.documentElement.classList.add('light');
+  </script>
 
   <style>
     @import url('https://fonts.cdnfonts.com/css/garet');
