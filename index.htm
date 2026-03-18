@@ -1390,7 +1390,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     };
 
     let mapInstance = null;
-    let globalMapCounts = {}; 
+    let globalMapCounts = {};
+    let _mapSvgClone = null;
     window.renderMap = () => {
       if (!window.isGeoChartLoaded || typeof google === 'undefined' || !google.visualization || !google.visualization.GeoChart) return;
       const container = document.getElementById('brazil-map-chart');
@@ -1402,7 +1403,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const counts = {};
       UFS_LIST.forEach(uf => counts[uf] = 0);
       baseList.forEach(r => { if (r.uf && counts[r.uf] !== undefined) counts[r.uf] += 1; });
-      globalMapCounts = counts; 
+      globalMapCounts = counts;
       const maxCount = Math.max(1, ...Object.values(counts));
       const dataTable = [['State', 'Lançamentos', {role: 'tooltip', p: {html: true}}]];
       UFS_LIST.forEach(uf => {
@@ -1428,6 +1429,23 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
               customTooltip.classList.remove('hidden');
           });
           google.visualization.events.addListener(mapInstance, 'onmouseout', () => document.getElementById('custom-map-tooltip').classList.add('hidden'));
+          google.visualization.events.addListener(mapInstance, 'ready', () => {
+              if (_mapSvgClone) { _mapSvgClone.remove(); _mapSvgClone = null; }
+          });
+      }
+      // Snapshot the current SVG before redraw to avoid blank flash
+      const existingSvg = container.querySelector('svg');
+      if (existingSvg) {
+          if (_mapSvgClone) _mapSvgClone.remove();
+          const wrapper = document.getElementById('map-wrapper');
+          const svgRect = existingSvg.getBoundingClientRect();
+          const wrapperRect = wrapper.getBoundingClientRect();
+          const clone = existingSvg.cloneNode(true);
+          clone.style.cssText = `position:absolute;top:0;left:0;width:100%;height:100%;`;
+          _mapSvgClone = document.createElement('div');
+          _mapSvgClone.style.cssText = `position:absolute;top:${svgRect.top - wrapperRect.top}px;left:${svgRect.left - wrapperRect.left}px;width:${svgRect.width}px;height:${svgRect.height}px;z-index:5;pointer-events:none;overflow:hidden;`;
+          _mapSvgClone.appendChild(clone);
+          wrapper.appendChild(_mapSvgClone);
       }
       mapInstance.draw(data, options);
     };
