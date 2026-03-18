@@ -182,7 +182,6 @@
     }
 
     /* Acento #ccff00: substituir por verde escuro no modo claro para contraste */
-    /* bg-[#ccff00] (botões sólidos) é mantido — já tem texto preto, contraste OK */
     html.light .text-\[\#ccff00\]              { color: #4d7200 !important; }
     html.light .hover\:text-\[\#ccff00\]:hover { color: #4d7200 !important; }
     html.light .border-\[\#ccff00\]            { border-color: #4d7200 !important; }
@@ -192,6 +191,30 @@
     html.light .bg-\[\#ccff00\]\/10            { background-color: rgba(77,114,0,0.08) !important; }
     html.light .focus\:border-\[\#ccff00\]:focus { border-color: #4d7200 !important; }
     html.light .stroke-\[\#ccff00\]            { stroke: #4d7200 !important; }
+
+    /* Botões sólidos com fundo lime → verde escuro + texto branco */
+    html.light .bg-\[\#ccff00\]               { background-color: #4d7200 !important; }
+    html.light .bg-\[\#ccff00\].text-black    { color: #ffffff !important; }
+    html.light .bg-\[\#ccff00\] .text-black   { color: #ffffff !important; }
+
+    /* Hover com fundo lime → verde escuro + texto branco */
+    html.light .hover\:bg-\[\#ccff00\]:hover  { background-color: #4d7200 !important; }
+    html.light .hover\:text-black:hover        { color: #ffffff !important; }
+
+    /* Remove brilho neon das barras da timeline */
+    html.light .shadow-\[0_0_15px_\#ccff00\]  { box-shadow: none !important; }
+
+    /* Seleção de texto */
+    html.light ::selection { background-color: #4d7200 !important; color: #ffffff !important; }
+
+    /* Glow do estado selecionado no mapa → sem neon */
+    html.light #map-wrapper.has-selection #brazil-map-chart path[fill="#4d7200" i],
+    html.light #map-wrapper.has-selection #brazil-map-chart path[fill="#ccff00" i] {
+      stroke: #4d7200 !important;
+      stroke-width: 2px !important;
+      filter: none !important;
+      opacity: 1 !important;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-black text-white selection:bg-[#ccff00] selection:text-black pb-20 overflow-x-hidden flex flex-col">
@@ -1504,8 +1527,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent',
         defaultColor: isLight ? '#cccccc' : '#272727', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
         colorAxis: state.selectedUF === 'Todos'
-          ? { colors: isLight ? ['#cccccc', '#88aa00', '#ccff00'] : ['#272727', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount }
-          : { colors: isLight ? ['#d5d5d5', '#ccff00'] : ['#1c1c1c', '#ccff00'], values: [0, 1] }
+          ? { colors: isLight ? ['#cccccc', '#7aaa00', '#4d7200'] : ['#272727', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount }
+          : { colors: isLight ? ['#d5d5d5', '#4d7200'] : ['#1c1c1c', '#ccff00'], values: [0, 1] }
       };
       if (!mapInstance) {
           mapInstance = new google.visualization.GeoChart(container);
