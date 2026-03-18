@@ -297,7 +297,6 @@
              <div id="brazil-map-chart" class="absolute top-1/2 left-[58%] w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer">
                 <div id="map-loading" class="w-8 h-8 border-2 border-[#ccff00] border-t-transparent rounded-full animate-spin"></div>
              </div>
-             <div id="map-redraw-cover" class="absolute inset-0 z-10 bg-[#0a0a0a] pointer-events-none rounded-xl" style="opacity:0;transition:none;"></div>
           </div>
         </section>
 
@@ -1391,7 +1390,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     };
 
     let mapInstance = null;
-    let globalMapCounts = {}; 
+    let globalMapCounts = {};
+    let _mapSvgClone = null;
     window.renderMap = () => {
       if (!window.isGeoChartLoaded || typeof google === 'undefined' || !google.visualization || !google.visualization.GeoChart) return;
       const container = document.getElementById('brazil-map-chart');
@@ -1403,7 +1403,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const counts = {};
       UFS_LIST.forEach(uf => counts[uf] = 0);
       baseList.forEach(r => { if (r.uf && counts[r.uf] !== undefined) counts[r.uf] += 1; });
-      globalMapCounts = counts; 
+      globalMapCounts = counts;
       const maxCount = Math.max(1, ...Object.values(counts));
       const dataTable = [['State', 'Lançamentos', {role: 'tooltip', p: {html: true}}]];
       UFS_LIST.forEach(uf => {
@@ -1430,12 +1430,23 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           });
           google.visualization.events.addListener(mapInstance, 'onmouseout', () => document.getElementById('custom-map-tooltip').classList.add('hidden'));
           google.visualization.events.addListener(mapInstance, 'ready', () => {
-              const cover = document.getElementById('map-redraw-cover');
-              if (cover) { cover.style.transition = 'opacity 0.25s ease'; cover.style.opacity = '0'; }
+              if (_mapSvgClone) { _mapSvgClone.remove(); _mapSvgClone = null; }
           });
       }
-      const cover = document.getElementById('map-redraw-cover');
-      if (cover) { cover.style.transition = 'none'; cover.style.opacity = '1'; }
+      // Snapshot the current SVG before redraw to avoid blank flash
+      const existingSvg = container.querySelector('svg');
+      if (existingSvg) {
+          if (_mapSvgClone) _mapSvgClone.remove();
+          const wrapper = document.getElementById('map-wrapper');
+          const svgRect = existingSvg.getBoundingClientRect();
+          const wrapperRect = wrapper.getBoundingClientRect();
+          const clone = existingSvg.cloneNode(true);
+          clone.style.cssText = `position:absolute;top:0;left:0;width:100%;height:100%;`;
+          _mapSvgClone = document.createElement('div');
+          _mapSvgClone.style.cssText = `position:absolute;top:${svgRect.top - wrapperRect.top}px;left:${svgRect.left - wrapperRect.left}px;width:${svgRect.width}px;height:${svgRect.height}px;z-index:5;pointer-events:none;overflow:hidden;`;
+          _mapSvgClone.appendChild(clone);
+          wrapper.appendChild(_mapSvgClone);
+      }
       mapInstance.draw(data, options);
     };
 
