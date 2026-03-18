@@ -297,6 +297,7 @@
              <div id="brazil-map-chart" class="absolute top-1/2 left-[58%] w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer">
                 <div id="map-loading" class="w-8 h-8 border-2 border-[#ccff00] border-t-transparent rounded-full animate-spin"></div>
              </div>
+             <div id="map-redraw-cover" class="absolute inset-0 z-10 bg-[#0a0a0a] pointer-events-none rounded-xl" style="opacity:0;transition:none;"></div>
           </div>
         </section>
 
@@ -1428,7 +1429,13 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
               customTooltip.classList.remove('hidden');
           });
           google.visualization.events.addListener(mapInstance, 'onmouseout', () => document.getElementById('custom-map-tooltip').classList.add('hidden'));
+          google.visualization.events.addListener(mapInstance, 'ready', () => {
+              const cover = document.getElementById('map-redraw-cover');
+              if (cover) { cover.style.transition = 'opacity 0.25s ease'; cover.style.opacity = '0'; }
+          });
       }
+      const cover = document.getElementById('map-redraw-cover');
+      if (cover) { cover.style.transition = 'none'; cover.style.opacity = '1'; }
       mapInstance.draw(data, options);
     };
 
