@@ -218,6 +218,9 @@
     /* Gradiente from-[#ccff00] → verde escuro no modo claro */
     html.light .from-\[\#ccff00\] { --tw-gradient-from: #4d7200 !important; }
 
+    /* Linha SVG da timeline (atributo inline stroke="#ccff00" não responde a CSS de classe) */
+    html.light #timeline-content svg path { stroke: #4d7200 !important; }
+
     /* Hover nos cards em modo claro */
     html.light .hover\:border-\[\#ccff00\]:hover            { border-color: #4d7200 !important; }
     html.light .group:hover .group-hover\:text-\[\#ccff00\] { color: #4d7200 !important; }
