@@ -46,6 +46,9 @@
     });
   </script>
 
+  <!-- Aplica tema antes do render para evitar flash -->
+  <script>if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light');</script>
+
   <style>
     @import url('https://fonts.cdnfonts.com/css/garet');
     
@@ -122,6 +125,60 @@
       stroke-width: 2px !important;
       filter: drop-shadow(0 0 15px rgba(204, 255, 0, 0.8)) !important;
       opacity: 1 !important;
+    }
+
+    /* =====================
+       MODO CLARO
+    ===================== */
+    html.light body { background-color: #f0f0f0 !important; color: #111111 !important; }
+
+    /* Tailwind: classes de cor padrão */
+    html.light .bg-black       { background-color: #f0f0f0 !important; }
+    html.light .bg-gray-800    { background-color: #e0e0e0 !important; }
+    html.light .bg-gray-900    { background-color: #e8e8e8 !important; }
+    html.light .text-white     { color: #111111 !important; }
+    html.light .text-gray-300  { color: #444444 !important; }
+    html.light .text-gray-400  { color: #555555 !important; }
+    html.light .text-gray-500  { color: #777777 !important; }
+    html.light .text-gray-600  { color: #888888 !important; }
+    html.light .border-gray-700 { border-color: #d0d0d0 !important; }
+    html.light .border-gray-800 { border-color: #e0e0e0 !important; }
+    html.light .border-gray-900 { border-color: #ebebeb !important; }
+
+    /* Tailwind: classes de cor com valor arbitrário */
+    html.light .bg-\[\#111\]        { background-color: #ffffff !important; }
+    html.light .bg-\[\#0a0a0a\]    { background-color: #ebebeb !important; }
+    html.light .border-\[\#333\]    { border-color: #d5d5d5 !important; }
+
+    /* Tailwind: variantes com opacidade */
+    html.light .bg-black\/80        { background-color: rgba(0,0,0,0.4) !important; }
+    html.light .bg-black\/90        { background-color: rgba(240,240,240,0.96) !important; }
+    html.light .bg-\[\#0a0a0a\]\/60 { background-color: rgba(235,235,235,0.9) !important; }
+
+    /* Inputs e selects */
+    html.light input:not([type="radio"]):not([type="checkbox"]),
+    html.light select {
+      background-color: #ffffff !important;
+      color: #111111 !important;
+    }
+    html.light input::placeholder,
+    html.light .placeholder-gray-500::placeholder { color: #aaaaaa !important; }
+
+    /* Hover states com cores escuras */
+    html.light .hover\:text-white:hover  { color: #111111 !important; }
+    html.light .hover\:bg-gray-900:hover { background-color: #e5e5e5 !important; }
+    html.light .hover\:bg-gray-800:hover { background-color: #d5d5d5 !important; }
+
+    /* Tooltip do mapa */
+    html.light #custom-map-tooltip {
+      background-color: #ffffff !important;
+      border-color: #dddddd !important;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12) !important;
+    }
+
+    /* Bordas dos estados no mapa */
+    html.light #brazil-map-chart path:not([fill="transparent"]):not([fill="none"]) {
+      stroke: #e8e8e8 !important;
     }
   </style>
 </head>
@@ -230,6 +287,9 @@
         <button onclick="switchTab('submit')" data-tab="submit" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400">Ficou de Fora?</button>
         <button onclick="switchTab('admin')" id="nav-btn-admin" data-tab="admin" class="hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
           <i data-lucide="shield-alert" class="w-4 h-4 sm:w-4 sm:h-4"></i> <span class="hidden sm:inline">Admin</span>
+        </button>
+        <button onclick="toggleTheme()" id="btn-theme-toggle" title="Alternar tema" class="p-1.5 text-gray-400 hover:text-[#ccff00] transition-colors">
+          <i data-lucide="sun" class="w-4 h-4 sm:w-[18px] sm:h-[18px]"></i>
         </button>
       </div>
     </div>
@@ -1133,6 +1193,21 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       return String(dateStr).replace(/(\d+)/g, '<span class="text-[#ccff00] font-bold">$1</span>');
     };
 
+    window.toggleTheme = () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      const icon = document.querySelector('#btn-theme-toggle i[data-lucide]');
+      if (icon) { icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun'); if (window.lucide) lucide.createIcons(); }
+      if (window.isGeoChartLoaded && mapInstance) window.renderMap();
+    };
+
+    // Aplica ícone correto ao carregar
+    (function() {
+      const icon = document.querySelector('#btn-theme-toggle i[data-lucide]');
+      const isLight = document.documentElement.classList.contains('light');
+      if (icon) icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+    })();
+
     window.switchTab = (tab) => {
       state.activeTab = tab;
       document.getElementById('view-home').classList.add('hidden');
@@ -1411,9 +1486,13 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
          dataTable.push([{v: 'BR-' + uf, f: uf}, val, '']);
       });
       const data = google.visualization.arrayToDataTable(dataTable);
+      const isLight = document.documentElement.classList.contains('light');
       const options = {
-        region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent', defaultColor: '#272727', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
-        colorAxis: state.selectedUF === 'Todos' ? { colors: ['#272727', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount } : { colors: ['#1c1c1c', '#ccff00'], values: [0, 1] }
+        region: 'BR', resolution: 'provinces', backgroundColor: 'transparent', datalessRegionColor: 'transparent',
+        defaultColor: isLight ? '#cccccc' : '#272727', legend: 'none', keepAspectRatio: true, tooltip: { trigger: 'none' },
+        colorAxis: state.selectedUF === 'Todos'
+          ? { colors: isLight ? ['#cccccc', '#88aa00', '#ccff00'] : ['#272727', '#3a4d00', '#ccff00'], minValue: 0, maxValue: maxCount }
+          : { colors: isLight ? ['#d5d5d5', '#ccff00'] : ['#1c1c1c', '#ccff00'], values: [0, 1] }
       };
       if (!mapInstance) {
           mapInstance = new google.visualization.GeoChart(container);
