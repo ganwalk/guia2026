@@ -18,12 +18,19 @@ service cloud.firestore {
       // Apenas admins podem ler os pendentes.
       allow read: if resource.data.status == 'approved' || isAdmin();
 
-      // Admin pode criar com qualquer status; qualquer um pode submeter com 'pending'.
+      // Admin pode criar com qualquer status; qualquer um pode submeter nova inclusão ou solicitar alteração.
       allow create: if isAdmin()
                     || (request.resource.data.status == 'pending'
                         && request.resource.data.keys().hasAll([
                              'artist', 'uf', 'type', 'date',
                              'title', 'label', 'fonte', 'timestamp'
+                           ]))
+                    || (request.resource.data.status == 'pending'
+                        && request.resource.data.requestType == 'change'
+                        && request.resource.data.keys().hasAll([
+                             'artist', 'uf', 'type', 'date',
+                             'title', 'label', 'fonte', 'timestamp',
+                             'requestType', 'originalId', 'motivo'
                            ]));
 
       // Apenas admins podem aprovar (update) ou descartar (delete).
