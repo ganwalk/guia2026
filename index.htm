@@ -542,7 +542,20 @@
             <button type="button" onclick="setSubmitMode('new')" id="sf-mode-new" class="flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors bg-[#ccff00] text-black">Novo Lançamento</button>
             <button type="button" onclick="setSubmitMode('change')" id="sf-mode-change" class="flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors text-gray-500 hover:text-white border-l border-gray-800">Solicitar Alteração</button>
           </div>
-          <!-- Form fields same as provided -->
+
+          <!-- Release search (change mode only) -->
+          <div id="sf-search-wrapper" class="hidden space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Lançamento a corrigir <span class="text-[#ccff00]">*</span></label>
+            <div class="relative">
+              <input type="text" id="sf-search" autocomplete="off" placeholder="Buscar por artista ou título..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors" />
+              <div id="sf-search-results" class="hidden absolute z-50 w-full bg-[#1a1a1a] border border-gray-700 mt-1 max-h-60 overflow-y-auto shadow-xl"></div>
+            </div>
+            <div id="sf-selected-release" class="hidden items-center gap-2 py-2 px-3 bg-[#ccff00]/10 border border-[#ccff00]/30 text-sm">
+              <i data-lucide="check-circle" class="text-[#ccff00] w-4 h-4 shrink-0"></i>
+              <span id="sf-selected-label" class="text-white font-medium flex-1 truncate"></span>
+              <button type="button" onclick="clearSelectedRelease()" class="text-gray-500 hover:text-white transition-colors shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+          </div>
           <div class="space-y-2">
             <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Artista <span class="text-[#ccff00]">*</span></label>
             <input required type="text" name="artist" placeholder="Nome do artista/banda" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors text-xl font-medium" />
@@ -1796,14 +1809,21 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         : 'Preencha as informações do seu lançamento e coloque sua música no mapa!';
       const motivoWrapper = document.getElementById('sf-motivo-wrapper');
       const motivoInput = document.getElementById('sf-motivo');
+      const searchWrapper = document.getElementById('sf-search-wrapper');
       if (isChange) {
         motivoWrapper.classList.remove('hidden');
         motivoInput.required = true;
+        searchWrapper.classList.remove('hidden');
       } else {
         motivoWrapper.classList.add('hidden');
         motivoInput.required = false;
         motivoInput.value = '';
+        searchWrapper.classList.add('hidden');
         document.getElementById('sf-original-id').value = '';
+        document.getElementById('sf-search').value = '';
+        document.getElementById('sf-search').classList.remove('hidden');
+        document.getElementById('sf-search-results').classList.add('hidden');
+        document.getElementById('sf-selected-release').classList.add('hidden');
       }
       const btn = document.getElementById('btn-submit');
       btn.innerHTML = isChange
@@ -1817,10 +1837,15 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       const form = e.target;
       const data = Object.fromEntries(new FormData(form).entries());
       const originalId = document.getElementById('sf-original-id').value;
-      const isChangeRequest = !!originalId;
+      const isChangeRequest = document.getElementById('sf-mode-change').classList.contains('bg-[#ccff00]');
       const btn = document.getElementById('btn-submit'), errEl = document.getElementById('submit-error');
-      btn.disabled = true; btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
       errEl.classList.add('hidden');
+      if (isChangeRequest && !originalId) {
+        errEl.textContent = 'Selecione um lançamento existente para solicitar a alteração.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      btn.disabled = true; btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
       const { month, semester } = parseDateInfo(data.date);
       try {
         if (isChangeRequest) {
@@ -1851,6 +1876,10 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           : 'Seu lançamento foi para a fila de aprovação da nossa curadoria.';
         form.reset();
         document.getElementById('sf-original-id').value = '';
+        document.getElementById('sf-search').value = '';
+        document.getElementById('sf-search').classList.remove('hidden');
+        document.getElementById('sf-search-results').classList.add('hidden');
+        document.getElementById('sf-selected-release').classList.add('hidden');
         document.getElementById('submit-form').classList.add('hidden');
         document.getElementById('submit-success').classList.replace('hidden', 'flex');
         setTimeout(() => {
@@ -1942,7 +1971,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       } catch(e) { console.error('Firebase init error:', e); }
     }
 
-    window.openChangeRequest = (id) => {
+    window.selectReleaseForChange = (id) => {
       const release = state.releases.find(r => r.id === id);
       if (!release) return;
       document.getElementById('sf-original-id').value = id;
@@ -1954,12 +1983,58 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       form.querySelector('[name="label"]').value = release.label || '';
       form.querySelector('[name="fonte"]').value = release.fonte || '';
       form.querySelector('[name="link"]').value = release.link || '';
-      document.getElementById('sf-motivo').value = '';
       const typeRadio = form.querySelector(`input[name="type"][value="${release.type}"]`);
       if (typeRadio) typeRadio.checked = true;
+      document.getElementById('sf-search').value = '';
+      document.getElementById('sf-search').classList.add('hidden');
+      document.getElementById('sf-search-results').classList.add('hidden');
+      document.getElementById('sf-selected-label').textContent = `${release.artist} — "${release.title}"`;
+      document.getElementById('sf-selected-release').classList.remove('hidden');
+      document.getElementById('sf-selected-release').classList.add('flex');
+      if (window.lucide) lucide.createIcons();
+    };
+
+    window.clearSelectedRelease = () => {
+      document.getElementById('sf-original-id').value = '';
+      document.getElementById('sf-selected-release').classList.add('hidden');
+      document.getElementById('sf-selected-release').classList.remove('flex');
+      document.getElementById('sf-search').classList.remove('hidden');
+      document.getElementById('sf-search').value = '';
+      document.getElementById('sf-search-results').classList.add('hidden');
+      const form = document.getElementById('submit-form');
+      ['artist','title','date','label','fonte','link'].forEach(n => { form.querySelector(`[name="${n}"]`).value = ''; });
+    };
+
+    document.getElementById('sf-search').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      const results = document.getElementById('sf-search-results');
+      if (!q) { results.classList.add('hidden'); return; }
+      const matches = state.releases
+        .filter(r => r.status === 'approved' && (r.artist.toLowerCase().includes(q) || (r.title || '').toLowerCase().includes(q)))
+        .slice(0, 10);
+      if (matches.length === 0) {
+        results.innerHTML = '<div class="px-4 py-3 text-gray-500 text-sm">Nenhum lançamento encontrado.</div>';
+      } else {
+        results.innerHTML = matches.map(r =>
+          `<button type="button" onclick="selectReleaseForChange('${r.id}')" class="w-full text-left px-4 py-3 hover:bg-[#ccff00]/10 transition-colors border-b border-gray-800 last:border-0">
+            <div class="text-white font-medium text-sm">${r.artist}</div>
+            <div class="text-gray-400 text-xs italic">"${r.title}" · ${r.type} · ${r.uf || '—'}</div>
+          </button>`
+        ).join('');
+      }
+      results.classList.remove('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('sf-search-wrapper').contains(e.target)) {
+        document.getElementById('sf-search-results').classList.add('hidden');
+      }
+    });
+
+    window.openChangeRequest = (id) => {
       setSubmitMode('change');
       switchTab('submit');
-      setTimeout(() => document.getElementById('view-submit').scrollIntoView({ behavior: 'smooth' }), 100);
+      setTimeout(() => { selectReleaseForChange(id); document.getElementById('view-submit').scrollIntoView({ behavior: 'smooth' }); }, 100);
     };
 
     window.closeChangeRequestModal = () => setSubmitMode('new');
