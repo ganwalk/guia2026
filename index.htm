@@ -334,75 +334,6 @@
     </div>
   </div>
 
-  <!-- Modal: Solicitar Alteração (público) -->
-  <div id="modal-change-request" class="hidden fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
-    <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-xl font-black text-white uppercase tracking-wide font-garet flex items-center gap-2"><i data-lucide="file-pen" class="text-[#ccff00] w-5 h-5"></i> Solicitar Alteração</h3>
-        <button onclick="closeChangeRequestModal()" class="text-gray-500 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
-      </div>
-      <p class="text-gray-500 text-sm mb-6">Preencha com os dados <strong class="text-white">corretos</strong> e envie. Um curador irá revisar e aplicar a alteração.</p>
-      <form id="change-request-form" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <input type="hidden" id="cr-original-id" />
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Artista <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-artist" name="artist" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Título <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-title" name="title" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors italic" />
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Estado (UF) <span class="text-[#ccff00]">*</span></label>
-          <div class="relative">
-            <select id="cr-uf" name="uf" required class="w-full bg-black border border-gray-700 focus:border-[#ccff00] text-white px-3 py-2 outline-none transition-colors rounded font-bold uppercase tracking-wider text-sm appearance-none cursor-pointer">
-              <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-              <option value="Sem UF">Nacional / Sem UF</option>
-            </select>
-            <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none"></i>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Data <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-date" name="date" placeholder="Ex: 24/02, Março, Não Revelada..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Tipo <span class="text-[#ccff00]">*</span></label>
-          <div class="flex gap-4 mt-1">
-            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" id="cr-type-disco" value="Disco" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Disco</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" id="cr-type-ep" value="EP" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">EP</span></label>
-            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="type" id="cr-type-single" value="Single" class="w-4 h-4 accent-[#ccff00]" /><span class="text-sm">Single</span></label>
-          </div>
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Label / Via <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-label" name="label" class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Fonte <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-fonte" name="fonte" placeholder="Ex: Próprio Artista, Assessoria..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
-        </div>
-        <div class="space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Link (opcional)</label>
-          <input type="url" id="cr-link" name="link" placeholder="https://..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors text-[#ccff00]" />
-        </div>
-        <div class="sm:col-span-2 space-y-1">
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Motivo da alteração <span class="text-[#ccff00]">*</span></label>
-          <input required type="text" id="cr-motivo" name="motivo" placeholder="Ex: Data incorreta, nome do artista errado, link desatualizado..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-2 text-white outline-none transition-colors" />
-        </div>
-        <div id="cr-success" class="hidden sm:col-span-2 bg-[#ccff00]/10 border border-[#ccff00]/30 p-4 text-center flex items-center justify-center gap-2 text-[#ccff00] font-bold">
-          <i data-lucide="check-circle" class="w-5 h-5"></i> Solicitação enviada! Um curador irá revisar em breve.
-        </div>
-        <div class="sm:col-span-2 flex gap-3 pt-2" id="cr-buttons">
-          <button type="submit" id="btn-cr-submit" class="flex-1 bg-[#ccff00] text-black font-black uppercase tracking-widest py-3 hover:bg-white transition-colors disabled:opacity-50 flex justify-center items-center gap-2">
-            <i data-lucide="send" class="w-5 h-5"></i> Enviar Solicitação
-          </button>
-          <button type="button" onclick="closeChangeRequestModal()" class="px-6 py-3 border border-gray-700 text-gray-400 hover:text-white font-bold uppercase tracking-wider text-sm transition-colors">Cancelar</button>
-        </div>
-        <p id="cr-error" class="hidden sm:col-span-2 text-red-500 text-sm text-center">Erro ao enviar. Tente novamente.</p>
-      </form>
-    </div>
-  </div>
 
   <!-- Navigation Header -->
   <nav class="sticky top-0 z-50 border-b border-[#333] bg-black/90 backdrop-blur-md">
@@ -412,7 +343,10 @@
       </div>
       <div class="flex gap-2 sm:gap-6 items-center flex-wrap" id="nav-buttons">
         <button onclick="switchTab('home')" data-tab="home" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-[#ccff00]">O Guia</button>
-        <button onclick="switchTab('submit')" data-tab="submit" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400">Ficou de Fora?</button>
+        <button onclick="switchTab('submit')" data-tab="submit" class="relative overflow-hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400 group" style="height:1.4em">
+          <span class="block transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0 leading-none">Ficou de Fora?</span>
+          <span class="absolute inset-0 flex items-center justify-center transition-all duration-300 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 whitespace-nowrap leading-none">ENVIE SUA MÚSICA!</span>
+        </button>
         <button onclick="switchTab('admin')" id="nav-btn-admin" data-tab="admin" class="hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
           <i data-lucide="shield-alert" class="w-4 h-4 sm:w-4 sm:h-4"></i> <span class="hidden sm:inline">Admin</span>
         </button>
@@ -578,10 +512,10 @@
     <!-- === SUBMIT VIEW === -->
     <div id="view-submit" class="hidden max-w-2xl mx-auto animate-[fadeIn_0.5s_ease-out]">
       <div class="mb-10 text-center sm:text-left">
-        <h2 class="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-[#ccff00] uppercase leading-none mb-4 font-garet">
+        <h2 id="sf-heading" class="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-[#ccff00] uppercase leading-none mb-4 font-garet">
           Ficou<br/>De Fora?
         </h2>
-        <p class="text-base sm:text-xl text-gray-300 font-light">
+        <p id="sf-subheading" class="text-base sm:text-xl text-gray-300 font-light">
           Preencha as informações do lançamento de acordo com as colunas do nosso mapa.
         </p>
       </div>
@@ -594,13 +528,19 @@
             <i data-lucide="check" class="text-black w-10 h-10"></i>
           </div>
           <h3 class="text-3xl font-black mb-2 text-white font-garet">ENVIADO COM SUCESSO!</h3>
-          <p class="text-gray-400">Seu lançamento foi para a fila de aprovação da nossa curadoria.</p>
+          <p id="sf-success-msg" class="text-gray-400">Seu lançamento foi para a fila de aprovação da nossa curadoria.</p>
           <button onclick="switchTab('home')" class="mt-8 px-6 py-3 bg-transparent border-2 border-[#ccff00] text-[#ccff00] font-bold uppercase tracking-wider hover:bg-[#ccff00] hover:text-black transition-colors">
             Voltar para o Guia
           </button>
         </div>
 
         <form id="submit-form" class="space-y-6">
+          <input type="hidden" id="sf-original-id" />
+          <!-- Mode toggle -->
+          <div class="flex border border-gray-800 overflow-hidden mb-2" id="sf-mode-toggle">
+            <button type="button" onclick="setSubmitMode('new')" id="sf-mode-new" class="flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors bg-[#ccff00] text-black">Novo Lançamento</button>
+            <button type="button" onclick="setSubmitMode('change')" id="sf-mode-change" class="flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors text-gray-500 hover:text-white border-l border-gray-800">Solicitar Alteração</button>
+          </div>
           <!-- Form fields same as provided -->
           <div class="space-y-2">
             <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Artista <span class="text-[#ccff00]">*</span></label>
@@ -688,6 +628,11 @@
               Link do Smartlink / Spotify <i data-lucide="link" class="w-3.5 h-3.5"></i>
             </label>
             <input type="url" name="link" placeholder="https://..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors text-blue-400" />
+          </div>
+
+          <div id="sf-motivo-wrapper" class="hidden space-y-2">
+            <label class="block text-sm font-bold uppercase tracking-wider text-gray-300">Motivo da alteração <span class="text-[#ccff00]">*</span></label>
+            <input type="text" id="sf-motivo" name="motivo" placeholder="Ex: Data incorreta, nome do artista errado, link desatualizado..." class="w-full bg-transparent border-b border-gray-700 focus:border-[#ccff00] py-3 text-white outline-none transition-colors" />
           </div>
 
           <button type="submit" id="btn-submit" class="w-full bg-[#ccff00] text-black font-black text-xl py-4 mt-8 hover:bg-white transition-colors uppercase tracking-widest disabled:opacity-50 flex justify-center items-center gap-2">
@@ -1446,7 +1391,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       } else {
         container.innerHTML = displayed.map(release => {
           const adminBtns = state.isAdmin ? `<div class="absolute top-2 right-2 hidden group-hover:flex gap-1 z-20"><button onclick="adminEditRelease('${release.id}')" class="bg-black/80 border border-gray-700 hover:border-[#ccff00] text-gray-400 hover:text-[#ccff00] p-1.5 rounded transition-colors" title="Editar"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button><button onclick="adminDeleteRelease('${release.id}')" class="bg-black/80 border border-gray-700 hover:border-red-500 text-gray-400 hover:text-red-500 p-1.5 rounded transition-colors" title="Deletar"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>` : '';
-          const changeReqBtn = !state.isAdmin ? `<button onclick="openChangeRequest('${release.id}')" class="mt-2 flex items-center gap-1 text-[10px] text-gray-600 hover:text-[#ccff00] font-mono transition-colors uppercase tracking-wider group/cr"><i data-lucide="file-pen" class="w-2.5 h-2.5 shrink-0"></i> Solicitar alteração</button>` : '';
+          const changeReqBtn = '';
           if (state.viewMode === 'grid') {
             return `<div class="group bg-[#111] border border-gray-800 hover:border-[#ccff00] transition-colors p-5 flex flex-col justify-between h-full relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">${adminBtns}<div class="absolute inset-0 bg-[#ccff00] opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none"></div><div><div class="flex justify-between items-start mb-3 gap-2"><div class="flex gap-2 shrink-0"><span class="px-2 py-1 bg-black text-[#ccff00] text-[10px] font-bold uppercase tracking-widest border border-gray-800">${release.type}</span>${release.uf && release.uf !== 'Sem UF' ? `<span class="px-2 py-1 bg-gray-800 text-white text-[10px] font-bold uppercase tracking-widest border border-gray-700">${release.uf}</span>` : ''}</div><span class="text-gray-500 text-[10px] font-mono uppercase bg-black px-2 py-1 rounded-sm text-right leading-tight">${formatNeonNumbers(release.date)}</span></div><h3 class="text-2xl font-black tracking-tight mb-1 group-hover:text-[#ccff00] transition-colors leading-tight font-garet">${release.artist}</h3><p class="text-sm text-gray-400 font-medium mb-4 italic line-clamp-2">"${release.title}"</p></div><div class="mt-4 pt-3 border-t border-gray-800 flex flex-col gap-3"><div class="flex items-center justify-between gap-2"><span class="flex items-center gap-1 font-bold text-xs text-gray-400 uppercase tracking-wide min-w-0 flex-1"><i data-lucide="disc" class="text-[#ccff00] w-3 h-3 shrink-0"></i> <span class="truncate">${release.label || 'Independente'}</span></span>${(release.link && release.link.startsWith('http')) ? `<a href="${release.link}" target="_blank" class="bg-[#ccff00]/10 hover:bg-[#ccff00] text-[#ccff00] hover:text-black transition-colors flex items-center gap-1 shrink-0 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-[#ccff00]/20 hover:border-[#ccff00]">Ouvir <i data-lucide="link" class="w-2.5 h-2.5"></i></a>` : ''}</div><span class="flex items-center gap-1 text-[10px] text-gray-600 font-mono"><i data-lucide="info" class="w-2.5 h-2.5 shrink-0"></i> Fonte: <span class="truncate" title="${release.fonte}">${release.fonte || 'N/A'}</span></span>${changeReqBtn}</div></div>`;
           } else {
@@ -1836,22 +1781,89 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     timelineEl.addEventListener('mouseup', () => isDragging = false);
     timelineEl.addEventListener('mousemove', (e) => { if (!isDragging) return; e.preventDefault(); const walk = ((e.pageX - timelineEl.offsetLeft) - startX) * 2; timelineEl.scrollLeft = scrollLeft - walk; });
 
+    window.setSubmitMode = (mode) => {
+      const isChange = mode === 'change';
+      const btnNew = document.getElementById('sf-mode-new');
+      const btnChange = document.getElementById('sf-mode-change');
+      const active = 'flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors bg-[#ccff00] text-black';
+      const inactive = 'flex-1 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors text-gray-500 hover:text-white border-l border-gray-800';
+      btnNew.className = isChange ? inactive : active;
+      btnChange.className = isChange ? active : inactive;
+      document.getElementById('sf-heading').innerHTML = isChange ? 'Solicitar<br/>Alteração' : 'Ficou<br/>De Fora?';
+      document.getElementById('sf-subheading').textContent = isChange
+        ? 'Preencha com os dados corretos. Um curador irá revisar e aplicar a alteração.'
+        : 'Preencha as informações do lançamento de acordo com as colunas do nosso mapa.';
+      const motivoWrapper = document.getElementById('sf-motivo-wrapper');
+      const motivoInput = document.getElementById('sf-motivo');
+      if (isChange) {
+        motivoWrapper.classList.remove('hidden');
+        motivoInput.required = true;
+      } else {
+        motivoWrapper.classList.add('hidden');
+        motivoInput.required = false;
+        motivoInput.value = '';
+        document.getElementById('sf-original-id').value = '';
+      }
+      const btn = document.getElementById('btn-submit');
+      btn.innerHTML = isChange
+        ? '<span>Enviar Solicitação</span> <i data-lucide="send" class="w-5 h-5"></i>'
+        : '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>';
+      if (window.lucide) lucide.createIcons();
+    };
+
     document.getElementById('submit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = e.target, formData = new FormData(form), data = Object.fromEntries(formData.entries());
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const originalId = document.getElementById('sf-original-id').value;
+      const isChangeRequest = !!originalId;
       const btn = document.getElementById('btn-submit'), errEl = document.getElementById('submit-error');
       btn.disabled = true; btn.innerHTML = '<div class="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>';
+      errEl.classList.add('hidden');
       const { month, semester } = parseDateInfo(data.date);
-      const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
       try {
-        if (state.db) {
-          const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
-        } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
-        form.reset(); document.getElementById('submit-form').classList.add('hidden'); document.getElementById('submit-success').classList.replace('hidden', 'flex');
-        window.renderUI();
-        setTimeout(() => { document.getElementById('submit-success').classList.replace('flex', 'hidden'); document.getElementById('submit-form').classList.remove('hidden'); }, 3000);
-      } catch (err) { errEl.classList.remove('hidden'); } finally { btn.disabled = false; btn.innerHTML = '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>'; if(window.lucide) lucide.createIcons(); }
+        if (isChangeRequest) {
+          const originalRelease = state.releases.find(r => r.id === originalId);
+          const changeReqDoc = {
+            ...data, month, semester, status: 'pending', requestType: 'change', originalId,
+            originalData: originalRelease ? {
+              artist: originalRelease.artist, title: originalRelease.title,
+              uf: originalRelease.uf, date: originalRelease.date, type: originalRelease.type,
+              label: originalRelease.label, fonte: originalRelease.fonte, link: originalRelease.link || ''
+            } : {},
+            timestamp: new Date().toISOString()
+          };
+          if (state.db) {
+            const newId = `cr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            await setDoc(doc(state.db, 'submissions2026_v4', newId), changeReqDoc);
+          }
+        } else {
+          const newRelease = { ...data, month, semester, status: 'pending', timestamp: new Date().toISOString() };
+          if (state.db) {
+            const newId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            await setDoc(doc(state.db, 'submissions2026_v4', newId), newRelease);
+          } else { state.releases.push({ id: Date.now().toString(), ...newRelease }); }
+          window.renderUI();
+        }
+        document.getElementById('sf-success-msg').textContent = isChangeRequest
+          ? 'Sua solicitação foi enviada! Um curador irá revisar e aplicar a alteração.'
+          : 'Seu lançamento foi para a fila de aprovação da nossa curadoria.';
+        form.reset();
+        document.getElementById('sf-original-id').value = '';
+        document.getElementById('submit-form').classList.add('hidden');
+        document.getElementById('submit-success').classList.replace('hidden', 'flex');
+        setTimeout(() => {
+          document.getElementById('submit-success').classList.replace('flex', 'hidden');
+          document.getElementById('submit-form').classList.remove('hidden');
+          setSubmitMode('new');
+        }, 3000);
+      } catch (err) { errEl.classList.remove('hidden'); } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalId
+          ? '<span>Enviar Solicitação</span> <i data-lucide="send" class="w-5 h-5"></i>'
+          : '<span>Enviar Lançamento</span> <i data-lucide="send" class="w-5 h-5"></i>';
+        if (window.lucide) lucide.createIcons();
+      }
     });
 
     if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey !== 'PREENCHA_AQUI') {
@@ -1932,66 +1944,24 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.openChangeRequest = (id) => {
       const release = state.releases.find(r => r.id === id);
       if (!release) return;
-      document.getElementById('cr-original-id').value = id;
-      document.getElementById('cr-artist').value = release.artist || '';
-      document.getElementById('cr-title').value = release.title || '';
-      document.getElementById('cr-uf').value = release.uf || '';
-      document.getElementById('cr-date').value = release.date || '';
-      document.getElementById('cr-label').value = release.label || '';
-      document.getElementById('cr-fonte').value = release.fonte || '';
-      document.getElementById('cr-link').value = release.link || '';
-      document.getElementById('cr-motivo').value = '';
-      const typeRadio = document.querySelector(`#change-request-form input[name="type"][value="${release.type}"]`);
+      document.getElementById('sf-original-id').value = id;
+      const form = document.getElementById('submit-form');
+      form.querySelector('[name="artist"]').value = release.artist || '';
+      form.querySelector('[name="title"]').value = release.title || '';
+      form.querySelector('[name="uf"]').value = release.uf || '';
+      form.querySelector('[name="date"]').value = release.date || '';
+      form.querySelector('[name="label"]').value = release.label || '';
+      form.querySelector('[name="fonte"]').value = release.fonte || '';
+      form.querySelector('[name="link"]').value = release.link || '';
+      document.getElementById('sf-motivo').value = '';
+      const typeRadio = form.querySelector(`input[name="type"][value="${release.type}"]`);
       if (typeRadio) typeRadio.checked = true;
-      document.getElementById('cr-error').classList.add('hidden');
-      document.getElementById('cr-success').classList.add('hidden');
-      document.getElementById('cr-buttons').classList.remove('hidden');
-      document.getElementById('modal-change-request').classList.remove('hidden');
-      if (window.lucide) lucide.createIcons();
+      setSubmitMode('change');
+      switchTab('submit');
+      setTimeout(() => document.getElementById('view-submit').scrollIntoView({ behavior: 'smooth' }), 100);
     };
 
-    window.closeChangeRequestModal = () => document.getElementById('modal-change-request').classList.add('hidden');
-
-    document.getElementById('change-request-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const originalId = document.getElementById('cr-original-id').value;
-      const form = e.target;
-      const data = Object.fromEntries(new FormData(form).entries());
-      const btn = document.getElementById('btn-cr-submit');
-      const errEl = document.getElementById('cr-error');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
-      errEl.classList.add('hidden');
-      const { month, semester } = parseDateInfo(data.date);
-      const originalRelease = state.releases.find(r => r.id === originalId);
-      const changeReqDoc = {
-        ...data, month, semester,
-        status: 'pending',
-        requestType: 'change',
-        originalId,
-        originalData: originalRelease ? {
-          artist: originalRelease.artist, title: originalRelease.title,
-          uf: originalRelease.uf, date: originalRelease.date, type: originalRelease.type,
-          label: originalRelease.label, fonte: originalRelease.fonte, link: originalRelease.link || ''
-        } : {},
-        timestamp: new Date().toISOString()
-      };
-      try {
-        if (state.db) {
-          const newId = `cr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          await setDoc(doc(state.db, 'submissions2026_v4', newId), changeReqDoc);
-        }
-        document.getElementById('cr-success').classList.remove('hidden');
-        document.getElementById('cr-buttons').classList.add('hidden');
-        setTimeout(() => { window.closeChangeRequestModal(); }, 3000);
-      } catch (err) {
-        errEl.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> Enviar Solicitação';
-        if (window.lucide) lucide.createIcons();
-      }
-    });
+    window.closeChangeRequestModal = () => setSubmitMode('new');
 
     window.closeAdminModal = () => { document.getElementById('modal-admin-login').classList.add('hidden'); document.getElementById('input-admin-email').value = ''; document.getElementById('input-admin-pwd').value = ''; document.getElementById('admin-login-error').classList.add('hidden'); };
     window.closeLogoutModal = () => document.getElementById('modal-admin-logout').classList.add('hidden');
