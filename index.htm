@@ -1699,9 +1699,21 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
         const changeReq = state.releases.find(r => r.id === id && r.requestType === 'change');
         if (action === 'approve') {
           if (changeReq) {
-            // Solicitação de alteração: atualiza o lançamento original e deleta a solicitação
+            // Solicitação de alteração: cria ou substitui o lançamento original e deleta a solicitação
             const { artist, title, uf, date, type, label, fonte, link, month, semester } = changeReq;
-            await updateDoc(doc(state.db, 'submissions2026_v4', changeReq.originalId), { artist, title, uf, date, type, label, fonte, link: link || '', month, semester });
+            const originalRelease = state.releases.find(r => r.id === changeReq.originalId);
+            const fullData = {
+              ...(originalRelease || {}),
+              ...(changeReq.originalData || {}),
+              artist, title, uf, date, type, label, fonte,
+              link: link || '', month, semester,
+              status: 'approved'
+            };
+            delete fullData.id;
+            delete fullData.requestType;
+            delete fullData.originalId;
+            delete fullData.originalData;
+            await setDoc(doc(state.db, 'submissions2026_v4', changeReq.originalId), fullData);
             await deleteDoc(ref);
           } else {
             await updateDoc(ref, { status: 'approved' });
@@ -1862,7 +1874,8 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
           const q = isAdmin ? col : query(col, where('status', '==', 'approved'));
           document.getElementById('loading-spinner').classList.remove('hidden');
           releaseUnsubscribe = onSnapshot(q, (snapshot) => {
-            state.releases = [...state.releases.filter(r => r.id.startsWith('seed_')), ...snapshot.docs.map(d => ({ id: d.id, ...d.data() }))];
+            const firestoreIds = new Set(snapshot.docs.map(d => d.id));
+            state.releases = [...state.releases.filter(r => r.id.startsWith('seed_') && !firestoreIds.has(r.id)), ...snapshot.docs.map(d => ({ id: d.id, ...d.data() }))];
             document.getElementById('loading-spinner').classList.add('hidden');
             window.renderUI();
           }, () => { document.getElementById('loading-spinner').classList.add('hidden'); });
