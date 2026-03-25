@@ -344,8 +344,9 @@
       <div class="flex gap-2 sm:gap-6 items-center flex-wrap" id="nav-buttons">
         <button onclick="switchTab('home')" data-tab="home" class="text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-[#ccff00]">O Guia</button>
         <button onclick="switchTab('submit')" data-tab="submit" class="relative overflow-hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#ccff00] text-gray-400 group" style="height:1.4em">
-          <span class="block transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0 leading-none">Ficou de Fora?</span>
-          <span class="absolute inset-0 flex items-center justify-center transition-all duration-300 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 whitespace-nowrap leading-none">ENVIE SUA MÚSICA!</span>
+          <span aria-hidden="true" class="invisible pointer-events-none whitespace-nowrap">ENVIE SUA MÚSICA!</span>
+          <span class="absolute inset-0 flex items-center justify-center transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0 leading-none whitespace-nowrap">Ficou de Fora?</span>
+          <span class="absolute inset-0 flex items-center justify-center transition-all duration-300 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 leading-none whitespace-nowrap">ENVIE SUA MÚSICA!</span>
         </button>
         <button onclick="switchTab('admin')" id="nav-btn-admin" data-tab="admin" class="hidden text-[10px] sm:text-sm font-bold uppercase tracking-wider items-center gap-1 transition-colors hover:text-[#ccff00] text-gray-600" title="Acesso Administrativo">
           <i data-lucide="shield-alert" class="w-4 h-4 sm:w-4 sm:h-4"></i> <span class="hidden sm:inline">Admin</span>
@@ -516,7 +517,7 @@
           Ficou<br/>De Fora?
         </h2>
         <p id="sf-subheading" class="text-base sm:text-xl text-gray-300 font-light">
-          Preencha as informações do lançamento de acordo com as colunas do nosso mapa.
+          Preencha as informações do seu lançamento e coloque sua música no mapa!
         </p>
       </div>
 
@@ -1792,7 +1793,7 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
       document.getElementById('sf-heading').innerHTML = isChange ? 'Solicitar<br/>Alteração' : 'Ficou<br/>De Fora?';
       document.getElementById('sf-subheading').textContent = isChange
         ? 'Preencha com os dados corretos. Um curador irá revisar e aplicar a alteração.'
-        : 'Preencha as informações do lançamento de acordo com as colunas do nosso mapa.';
+        : 'Preencha as informações do seu lançamento e coloque sua música no mapa!';
       const motivoWrapper = document.getElementById('sf-motivo-wrapper');
       const motivoInput = document.getElementById('sf-motivo');
       if (isChange) {
