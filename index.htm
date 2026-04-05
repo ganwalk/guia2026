@@ -358,6 +358,12 @@
     </div>
   </nav>
 
+  <!-- === BANNER ROTATIVO SUPERIOR === -->
+  <div class="w-full bg-black overflow-hidden relative" id="banner-top" style="aspect-ratio:16/9;max-height:320px;">
+    <video id="bv-top-0" class="absolute inset-0 w-full h-full object-cover" style="transition:opacity .7s" src="5bandas.mp4" autoplay muted playsinline loop></video>
+    <video id="bv-top-1" class="absolute inset-0 w-full h-full object-cover" style="transition:opacity .7s;opacity:0" src="GANWALK.mp4" autoplay muted playsinline loop></video>
+  </div>
+
   <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full relative">
     
     <!-- === HOME VIEW === -->
@@ -744,6 +750,12 @@
       </div>
     </div>
   </main>
+
+  <!-- === BANNER ROTATIVO INFERIOR === -->
+  <div class="w-full bg-black overflow-hidden relative" id="banner-bot" style="aspect-ratio:16/9;max-height:320px;">
+    <video id="bv-bot-0" class="absolute inset-0 w-full h-full object-cover" style="transition:opacity .7s" src="5bandas.mp4" autoplay muted playsinline loop></video>
+    <video id="bv-bot-1" class="absolute inset-0 w-full h-full object-cover" style="transition:opacity .7s;opacity:0" src="GANWALK.mp4" autoplay muted playsinline loop></video>
+  </div>
 
   <footer class="border-t border-gray-900 py-12 relative overflow-hidden flex flex-col items-center mt-auto">
     <div class="z-10 text-center text-gray-600 font-mono text-xs uppercase tracking-widest flex flex-col items-center w-full px-4">
@@ -2132,6 +2144,29 @@ ZéVitor,Minas Gerais,Disco,Primeiro Semestre,Gandaia,Independente,Adriana Bueno
     window.closeLogoutModal = () => document.getElementById('modal-admin-logout').classList.add('hidden');
     let clickCount = 0, clickTimeout = null;
     window.secretAdminLogin = () => { clickCount++; if (clickTimeout) clearTimeout(clickTimeout); if (clickCount === 4) { clickCount = 0; if (state.isAdmin) document.getElementById('modal-admin-logout').classList.remove('hidden'); else { document.getElementById('modal-admin-login').classList.remove('hidden'); setTimeout(() => document.getElementById('input-admin-pwd').focus(), 100); } } else { clickTimeout = setTimeout(() => { clickCount = 0; }, 2000); } };
+  </script>
+
+  <!-- Rotação dos banners: alterna a cada 10 segundos -->
+  <script>
+    (function () {
+      var INTERVAL = 10000;
+      var pairs = [
+        ['bv-top-0', 'bv-top-1'],
+        ['bv-bot-0', 'bv-bot-1']
+      ];
+      function startBanner(ids) {
+        var current = 0;
+        setInterval(function () {
+          var next = (current + 1) % ids.length;
+          document.getElementById(ids[current]).style.opacity = '0';
+          document.getElementById(ids[next]).style.opacity = '1';
+          current = next;
+        }, INTERVAL);
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        pairs.forEach(startBanner);
+      });
+    })();
   </script>
 </body>
 </html>
