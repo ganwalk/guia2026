@@ -1,13 +1,14 @@
 # Vídeo convite — Guia 26
 
-Vídeo de 33 s (1920×1080, 30 fps) chamando artistas e toda a cadeia da música (bandas, selos,
+Vídeo de 33 s, sem áudio, chamando artistas e toda a cadeia da música (bandas, selos,
 assessorias, produtoras, jornalistas) para colocar seus lançamentos no guia. Tom lúdico:
-adesivos que pulam com mola, vinil girando, pins caindo no mapa, confete e trilha pop.
+adesivos que pulam com mola, vinil girando, pins caindo no mapa e confete.
 É uma composição HTML com linha do tempo determinística, renderizada quadro a quadro.
 
-- **`guia26-promo.mp4`** — vídeo final, com trilha.
-- **`video.html`** — a composição. Aberta no navegador, roda em loop (clique para tocar com som, espaço pausa).
-- **`trilha.py`** — sintetiza a trilha (120 BPM, Dó maior, marimba + efeitos sincronizados com as animações).
+- **`guia26-16x9.mp4`** — horizontal 1920×1080 (YouTube, site, apresentações).
+- **`guia26-9x16.mp4`** — vertical 1080×1920 (Reels, TikTok, Stories, Shorts). Textos e elementos
+  importantes ficam longe das áreas cobertas pela interface dos apps no topo e na base.
+- **`video.html`** — a composição. Aberta no navegador, roda em loop; `?formato=vertical` mostra a versão 9:16.
 - **`render.js`** — captura os quadros com Playwright e monta o MP4 com ffmpeg.
 - **`telas/`** — capturas reais do site em modo escuro (desktop, lista, formulário e mobile).
 
@@ -30,8 +31,9 @@ adesivos que pulam com mola, vinil girando, pins caindo no mapa, confete e trilh
 
 ```bash
 python3 -m http.server 8765 &          # na raiz do repositório
-node promo/render.js promo/guia26-promo.mp4 30
-# prévia de quadros soltos (PNG): node promo/render.js /tmp/prev 30 1.5 12 31
+node promo/render.js promo/guia26-16x9.mp4 horizontal 30
+node promo/render.js promo/guia26-9x16.mp4 vertical 30
+# prévia de quadros soltos (PNG): node promo/render.js /tmp/prev vertical 30 1.5 12 31
 ```
 
-Requer Node com `playwright`, Chromium, Python 3 com `numpy` e `ffmpeg`.
+Requer Node com `playwright`, Chromium e `ffmpeg`.
