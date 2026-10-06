@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guia 26 — Vídeo promocional</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.cdnfonts.com/css/garet');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=block');
+
+  :root { --lime: #ccff00; --ink: #000; --paper: #fff; --panel: #0d0d0d; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; overflow: hidden; height: 100%; }
+  body { display: grid; place-items: center; font-family: 'Inter', system-ui, sans-serif; color: var(--paper); }
+
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #000; transform-origin: center; }
+  .scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+  .garet { font-family: 'Garet', 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.04em; line-height: .86; }
+  .lime { color: var(--lime); }
+  .abs { position: absolute; }
+  .mask { overflow: hidden; display: block; padding-bottom: .08em; }
+  .mask > span { display: block; will-change: transform; }
+  .mono { font-family: 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; }
+
+  /* Overlays globais */
+  #grain { position: absolute; inset: -50%; pointer-events: none; opacity: .07; mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
+  #flash { position: absolute; inset: 0; background: var(--lime); opacity: 0; pointer-events: none; }
+  #hud { position: absolute; left: 64px; right: 64px; top: 48px; display: flex; justify-content: space-between; font-size: 18px; color: #8a8a8a; pointer-events: none; }
+  #hud b { color: var(--lime); font-family: 'Garet'; font-weight: 900; letter-spacing: -0.03em; font-size: 28px; }
+  #hud b span { color: #fff; }
+  #bar { position: absolute; left: 0; bottom: 0; height: 6px; background: var(--lime); width: 0; }
+
+  /* Mockups */
+  .browser { position: absolute; border-radius: 18px; overflow: hidden; background: #111; border: 1px solid #2a2a2a;
+    box-shadow: 0 60px 140px rgba(0,0,0,.8), 0 0 0 1px rgba(204,255,0,.06), 0 0 120px rgba(204,255,0,.10); }
+  .browser .chrome { height: 46px; background: #161616; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid #262626; }
+  .browser .dot { width: 13px; height: 13px; border-radius: 50%; background: #333; }
+  .browser .url { margin-left: 18px; flex: 1; height: 28px; border-radius: 8px; background: #0b0b0b; color: #9a9a9a; font-size: 15px; display: flex; align-items: center; padding: 0 14px; gap: 8px; }
+  .browser .url i { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); display: inline-block; }
+  .browser .view { position: relative; overflow: hidden; }
+  .browser .view img { display: block; width: 100%; will-change: transform; }
+
+  .phone { position: absolute; width: 430px; height: 900px; border-radius: 64px; background: #050505; padding: 16px;
+    box-shadow: 0 0 0 3px #2b2b2b, 0 0 0 9px #0d0d0d, 0 80px 160px rgba(0,0,0,.9), 0 0 160px rgba(204,255,0,.14); }
+  .phone .screen { width: 100%; height: 100%; border-radius: 50px; overflow: hidden; position: relative; background: #000; }
+  .phone .screen img { width: 100%; display: block; will-change: transform; }
+  .phone .notch { position: absolute; top: 14px; left: 50%; width: 120px; height: 34px; margin-left: -60px; border-radius: 20px; background: #000; z-index: 2; }
+
+  .pill { display: inline-flex; align-items: center; gap: 14px; border: 2px solid var(--lime); color: var(--lime); border-radius: 999px; padding: 16px 30px; font-weight: 800; font-size: 30px; letter-spacing: .02em; }
+  .tile { position: absolute; width: 420px; height: 230px; border: 1px solid #2a2a2a; background: #0b0b0b; border-radius: 22px; padding: 34px; }
+  .tile .n { font-size: 104px; }
+  .tile .l { margin-top: 18px; font-size: 22px; color: #9a9a9a; }
+  .cap { font-size: 30px; color: #bdbdbd; font-weight: 300; line-height: 1.35; }
+  .cap b { color: #fff; font-weight: 600; }
+  #preview-hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: #777; font: 13px Inter, sans-serif; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- S1 · 2026 -->
+  <section class="scene" id="s1">
+    <div class="abs" id="s1-line" style="left:0; top:538px; height:4px; background:var(--lime); width:0"></div>
+    <div class="abs garet" id="s1-year" style="left:0; right:0; top:250px; text-align:center; font-size:560px; color:#fff">2026</div>
+    <div class="abs mono" id="s1-sub" style="left:0; right:0; top:820px; text-align:center; font-size:26px; color:var(--lime)">Guia de lançamentos da música brasileira</div>
+  </section>
+
+  <!-- S2 · Discos. EPs. Singles. Tudo. -->
+  <section class="scene" id="s2">
+    <div class="abs garet" id="s2-word" style="left:0; right:0; top:0; bottom:0; display:flex; align-items:center; justify-content:center; font-size:300px"></div>
+    <div class="abs mono" id="s2-kicker" style="left:0; right:0; top:820px; text-align:center; font-size:24px; color:#777"></div>
+  </section>
+
+  <!-- S3 · Rajada de artistas -->
+  <section class="scene" id="s3">
+    <div class="abs mono" style="left:120px; top:200px; font-size:24px; color:#777">Quem vai lançar em 2026?</div>
+    <div class="abs garet" id="s3-name" style="left:110px; right:110px; top:300px; height:480px; display:flex; align-items:center; font-size:190px"></div>
+    <div class="abs mono" id="s3-meta" style="left:120px; top:830px; font-size:24px; color:var(--lime)"></div>
+    <div class="abs garet" id="s3-count" style="right:120px; top:820px; font-size:64px; color:#2c2c2c"></div>
+  </section>
+
+  <!-- S4 · Números -->
+  <section class="scene" id="s4">
+    <div class="abs garet lime" id="s4-num" style="left:120px; top:150px; font-size:420px">0</div>
+    <div class="abs" id="s4-label" style="left:132px; top:560px; font-size:58px; font-weight:800; letter-spacing:-.02em">lançamentos mapeados<span class="lime">.</span></div>
+    <div class="tile" id="s4-t1" style="left:120px; top:720px"><div class="n garet">90+</div><div class="l">cidades no mapa</div></div>
+    <div class="tile" id="s4-t2" style="left:570px; top:720px"><div class="n garet">120+</div><div class="l">fontes e curadores</div></div>
+    <div class="tile" id="s4-t3" style="left:1020px; top:720px; background:var(--lime); border-color:var(--lime); color:#000"><div class="n garet">1</div><div class="l" style="color:#000">guia. tudo num só lugar.</div></div>
+  </section>
+
+  <!-- S5 · Revelação do site -->
+  <section class="scene" id="s5" style="perspective:2200px">
+    <div class="abs" style="left:110px; top:330px; width:640px">
+      <span class="mask"><span class="garet" id="s5-a" style="font-size:118px">Tudo</span></span>
+      <span class="mask"><span class="garet" id="s5-b" style="font-size:118px">num só</span></span>
+      <span class="mask"><span class="garet lime" id="s5-c" style="font-size:118px">lugar.</span></span>
+      <p class="cap" id="s5-cap" style="margin-top:40px; max-width:540px">Discos, EPs e singles mais esperados da <b>música brasileira</b>, atualizados o ano inteiro.</p>
+    </div>
+    <div class="browser" id="s5-browser" style="left:800px; top:150px; width:1240px; transform-style:preserve-3d">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url"><i></i>guiadelancamentos.com.br</div></div>
+      <div class="view" style="height:775px"><img id="s5-img" src="telas/hero.jpg" alt=""></div>
+    </div>
+  </section>
+
+  <!-- S6 · Quando (frequência) e onde (mapa) -->
+  <section class="scene" id="s6">
+    <div class="abs" id="s6-card" style="left:110px; top:250px; width:1160px; height:720px; border-radius:28px; overflow:hidden; border:1px solid #262626; box-shadow:0 0 140px rgba(204,255,0,.10)">
+      <img id="s6-img" src="telas/hero.jpg" alt="" class="abs" style="left:0; top:0; width:2400px; transform-origin:0 0">
+    </div>
+    <div class="abs mono" id="s6-kick" style="left:1350px; top:300px; font-size:24px; color:#777"></div>
+    <div class="abs" style="left:1340px; top:350px; width:520px">
+      <span class="mask"><span class="garet" id="s6-a" style="font-size:112px">Saiba</span></span>
+      <span class="mask"><span class="garet lime" id="s6-b" style="font-size:112px"></span></span>
+      <span class="mask"><span class="garet" id="s6-c" style="font-size:112px"></span></span>
+    </div>
+    <div class="abs" id="s6-ticker" style="left:0; top:1000px; white-space:nowrap; font-size:30px; font-weight:800; color:#3a3a3a; letter-spacing:.04em"></div>
+  </section>
+
+  <!-- S7 · Lista filtrável -->
+  <section class="scene" id="s7" style="perspective:2400px">
+    <div class="abs" id="s7-plane" style="left:340px; top:-260px; width:1600px; transform-style:preserve-3d">
+      <img id="s7-img" src="telas/lista.jpg" alt="" style="width:1600px; display:block; border-radius:24px; box-shadow:0 0 0 1px #2a2a2a">
+      <img src="telas/lista.jpg" alt="" style="width:1600px; display:block; border-radius:24px; margin-top:10px; box-shadow:0 0 0 1px #2a2a2a">
+    </div>
+    <div class="abs" style="inset:0; background:linear-gradient(90deg, #000 0%, rgba(0,0,0,.92) 32%, rgba(0,0,0,0) 62%)"></div>
+    <div class="abs" style="left:110px; top:330px; width:760px">
+      <span class="mask"><span class="garet" id="s7-a" style="font-size:118px">Filtre.</span></span>
+      <span class="mask"><span class="garet" id="s7-b" style="font-size:118px">Busque.</span></span>
+      <span class="mask"><span class="garet lime" id="s7-c" style="font-size:118px">Descubra.</span></span>
+      <p class="cap" id="s7-cap" style="margin-top:40px; max-width:560px">Por <b>estado</b>, <b>mês</b>, <b>formato</b> ou nome. Cada card com selo, data e link para ouvir.</p>
+    </div>
+  </section>
+
+  <!-- S8 · Mobile -->
+  <section class="scene" id="s8">
+    <div class="abs garet" id="s8-ghost" style="left:-40px; top:120px; font-size:520px; color:#0f0f0f; white-space:nowrap">MOBILE MOBILE</div>
+    <div class="phone" id="s8-phone" style="left:1240px; top:90px">
+      <div class="screen"><div class="notch"></div><img id="s8-img" src="telas/mobile.jpg" alt=""></div>
+    </div>
+    <div class="abs" style="left:110px; top:360px; width:900px">
+      <span class="mask"><span class="garet" id="s8-a" style="font-size:132px">No seu</span></span>
+      <span class="mask"><span class="garet lime" id="s8-b" style="font-size:132px">bolso.</span></span>
+      <p class="cap" id="s8-cap" style="margin-top:40px; max-width:620px">Feito para o celular, com <b>modo claro e escuro</b>. Abre rápido, sem instalar nada.</p>
+    </div>
+  </section>
+
+  <!-- S9 · Ficou de fora? -->
+  <section class="scene" id="s9" style="perspective:2200px">
+    <div class="browser" id="s9-browser" style="left:930px; top:140px; width:1100px">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><div class="url"><i></i>guiadelancamentos.com.br · envie sua música</div></div>
+      <div class="view" style="height:800px">
+        <img id="s9-img" src="telas/envio.jpg" alt="">
+        <div class="abs" id="s9-type" style="font-size:21px; color:#fff; white-space:nowrap"></div>
+      </div>
+    </div>
+    <div class="abs" style="left:110px; top:300px; width:780px">
+      <span class="mask"><span class="garet lime" id="s9-a" style="font-size:132px">Ficou</span></span>
+      <span class="mask"><span class="garet lime" id="s9-b" style="font-size:132px">de fora?</span></span>
+      <p class="cap" id="s9-c" style="margin-top:44px; font-size:40px"><b>A comunidade envia.</b></p>
+      <p class="cap" id="s9-d" style="margin-top:6px; font-size:40px"><b>A curadoria aprova.</b></p>
+    </div>
+  </section>
+
+  <!-- S10 · Assinatura -->
+  <section class="scene" id="s10">
+    <div class="abs garet" id="s10-logo" style="left:0; right:0; top:300px; text-align:center; font-size:300px"><span class="lime">GUIA</span> 26</div>
+    <div class="abs" id="s10-tag" style="left:0; right:0; top:610px; text-align:center; font-size:44px; font-weight:300; color:#cfcfcf">Lançamentos da música br 2026</div>
+    <div class="abs" id="s10-url" style="left:0; right:0; top:730px; text-align:center"><span class="pill">guiadelancamentos.com.br <span style="font-size:34px">→</span></span></div>
+  </section>
+
+  <div id="grain"></div>
+  <div id="vignette"></div>
+  <div id="hud"><b>GUIA <span>26</span></b><span class="mono" id="hud-r">2026</span></div>
+  <div id="flash"></div>
+  <div id="bar"></div>
+</div>
+<div id="preview-hint">clique para tocar com som · espaço pausa</div>
+
+<script>
+const DURATION = 33, BEAT = 0.5;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const ease = {
+  lin: x => x,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  outBack: x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); },
+};
+const P = (t, a, b, e = ease.outExpo) => e(clamp((t - a) / (b - a)));
+const show = (el, on) => { el.style.visibility = on ? 'visible' : 'hidden'; };
+// Texto que "sobe" de dentro de uma máscara
+const rise = (el, t, at, dur = .55) => { const k = P(t, at, at + dur); el.style.transform = `translateY(${(1 - k) * 110}%)`; };
+const fadeUp = (el, t, at, dur = .6) => { const k = P(t, at, at + dur, ease.outCubic); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * 30}px)`; };
+
+// Dados reais da base do guia
+const ARTISTS = [
+  ['Luedji Luna', 'Salvador'], ['Criolo, Amaro & Dino', 'São Paulo'], ['Flora Matos', 'Brasília'], ['BaianaSystem', 'Salvador'],
+  ['Rachel Reis', 'Feira de Santana'], ['Black Alien', 'Niterói'], ['Tuyo', 'Curitiba'], ['Afrocidade', 'Camaçari'],
+  ['Negro Leo', 'Rio de Janeiro'], ['Alaide Costa', 'Rio de Janeiro'], ['Rael', 'São Paulo'], ['Aíla', 'Belém'],
+  ['Cidadão Instigado', 'Fortaleza'], ['Luana Flores', 'João Pessoa'], ['Josyara, Martins', 'Juazeiro e Recife'], ['Bemti', 'Belo Horizonte'],
+  ['Doralyce', 'Recife'], ['Dandara MC', 'Rio de Janeiro'], ['Rancore', 'São Paulo'], ['Lê Almeida', 'Rio de Janeiro'],
+  ['Tuany', 'Porto Alegre'], ['Luca Argel', 'Rio de Janeiro'], ['Anais Sylla', 'São Paulo'], ['Ali Prando', 'São Paulo'],
+];
+const CITIES = 'Belém · Macapá · Manaus · Fortaleza · Recife · João Pessoa · Salvador · Cuiabá · Goiânia · Brasília · Belo Horizonte · Vitória · Rio de Janeiro · São Paulo · Curitiba · Florianópolis · Porto Alegre · ';
+$('s6-ticker').textContent = CITIES.repeat(3);
+
+const SCENES = [
+  ['s1', 0, 2], ['s2', 2, 4], ['s3', 4, 7], ['s4', 7, 10], ['s5', 10, 14],
+  ['s6', 14, 20], ['s7', 20, 23], ['s8', 23, 26], ['s9', 26, 29], ['s10', 29, 33],
+];
+
+function render(t) {
+  for (const [id, a, b] of SCENES) show($(id), t >= a && t < b);
+  $('bar').style.width = `${(t / DURATION) * 100}%`;
+  $('hud').style.opacity = (t > 4 && t < 29) ? 1 : 0;
+  $('hud-r').textContent = t < 10 ? 'Guia de lançamentos' : t < 20 ? 'guiadelancamentos.com.br' : 'música brasileira · 2026';
+
+  // Flashes nos cortes fortes (impactos da trilha)
+  const flashAt = [0.5, 10, 29];
+  let f = 0; for (const x of flashAt) if (t >= x) f = Math.max(f, 1 - P(t, x, x + .45, ease.outCubic));
+  $('flash').style.opacity = f * .9;
+
+  // Câmera "respirando" — leve shake sincronizado ao kick
+  const beatPhase = (t % BEAT) / BEAT, drums = (t >= 2 && t < 9.5) || (t >= 10 && t < 29);
+  const kickPunch = drums ? Math.exp(-beatPhase * 9) : 0;
+
+  /* S1 */
+  if (t < 2) {
+    $('s1-line').style.width = `${P(t, 0, .5, ease.inOutCubic) * 100}%`;
+    $('s1-line').style.opacity = 1 - P(t, .5, .7);
+    const k = P(t, .5, 1.1);
+    const y = $('s1-year');
+    y.style.opacity = t >= .5 ? 1 : 0;
+    y.style.transform = `scale(${lerp(1.6, 1, k) + P(t, 1.1, 2, ease.lin) * .06})`;
+    y.style.letterSpacing = `${lerp(.12, -.04, k)}em`;
+    y.style.filter = `blur(${(1 - k) * 18}px)`;
+    y.style.color = t < .7 ? 'var(--lime)' : '#fff';
+    fadeUp($('s1-sub'), t, 1.0);
+  }
+
+  /* S2 — uma palavra por batida */
+  if (t >= 2 && t < 4) {
+    const words = [['DISCOS.', '#fff', '#000'], ['EPS.', '#000', 'var(--lime)'], ['SINGLES.', '#fff', '#000'], ['TUDO.', '#000', 'var(--lime)']];
+    const i = Math.min(3, Math.floor((t - 2) / BEAT));
+    const [w, fg, bg] = words[i];
+    const local = (t - 2) - i * BEAT;
+    const el = $('s2-word');
+    el.textContent = w; el.style.color = fg; $('s2').style.background = bg;
+    el.style.transform = `scale(${lerp(1.18, 1, ease.outExpo(clamp(local / .25)))})`;
+    const kick = $('s2-kicker');
+    kick.textContent = i === 3 ? 'em um só lugar' : 'de todo o brasil';
+    kick.style.color = bg === '#000' ? '#666' : '#000';
+  }
+
+  /* S3 — rajada de nomes (1/4 de batida cada) */
+  if (t >= 4 && t < 7) {
+    const i = Math.min(ARTISTS.length - 1, Math.floor((t - 4) / (BEAT / 4)));
+    const [name, city] = ARTISTS[i];
+    const el = $('s3-name');
+    el.textContent = name;
+    el.style.color = i % 4 === 3 ? 'var(--lime)' : '#fff';
+    el.style.fontSize = name.length > 16 ? '150px' : '200px';
+    const local = (t - 4) - i * BEAT / 4;
+    el.style.transform = `translateX(${(1 - ease.outExpo(clamp(local / .1))) * 40}px)`;
+    $('s3-meta').textContent = `→ ${city}`;
+    $('s3-count').textContent = String(i + 1).padStart(3, '0') + ' / 432';
+  }
+
+  /* S4 — contador + números */
+  if (t >= 7 && t < 10) {
+    const n = Math.round(432 * P(t, 7, 8.4, ease.outCubic));
+    $('s4-num').textContent = n;
+    $('s4-num').style.transform = `scale(${1 + kickPunch * .015})`;
+    fadeUp($('s4-label'), t, 7.2);
+    [['s4-t1', 8.0], ['s4-t2', 8.5], ['s4-t3', 9.0]].forEach(([id, at]) => {
+      const k = P(t, at, at + .45, ease.outBack);
+      const el = $(id); el.style.opacity = clamp((t - at) / .15); el.style.transform = `translateY(${(1 - k) * 80}px) scale(${lerp(.9, 1, k)})`;
+    });
+    // Build-up: tudo acelera para dentro da tela
+    const z = P(t, 9.5, 10, ease.inExpo);
+    $('s4').style.transform = `scale(${1 + z * 2.2})`; $('s4').style.filter = `blur(${z * 14}px)`; $('s4').style.opacity = 1 - z * .6;
+  }
+
+  /* S5 — revelação do site */
+  if (t >= 10 && t < 14) {
+    const k = P(t, 10, 11.4, ease.outExpo);
+    const b = $('s5-browser');
+    b.style.transform = `translateY(${(1 - k) * 420}px) rotateY(${lerp(-38, -12, k) + P(t, 11.4, 14, ease.lin) * 4}deg) rotateX(${lerp(26, 4, k)}deg) scale(${lerp(.75, 1, k)})`;
+    $('s5-img').style.transform = `translateY(${-P(t, 11.6, 14, ease.inOutCubic) * 220}px)`;
+    rise($('s5-a'), t, 10.5); rise($('s5-b'), t, 11.0); rise($('s5-c'), t, 11.5);
+    fadeUp($('s5-cap'), t, 12.0);
+  }
+
+  /* S6 — câmera no gráfico de frequência, depois no mapa */
+  if (t >= 14 && t < 20) {
+    // Coordenadas (px da captura 2400×1500) dos painéis "Frequência" e "Região"
+    const FREQ = { x: 250, y: 690, s: 0.92 }, MAP = { x: 1309, y: 703, s: 1.1 };
+    const m = P(t, 16.8, 17.6, ease.inOutCubic);
+    const zoomIn = P(t, 14, 15.2, ease.outCubic);
+    const s = lerp(lerp(.62, FREQ.s, zoomIn), MAP.s, m) + P(t, 17.6, 20, ease.lin) * .08;
+    const x = lerp(lerp(150, FREQ.x, zoomIn), MAP.x, m), y = lerp(lerp(500, FREQ.y, zoomIn), MAP.y, m);
+    $('s6-img').style.transform = `scale(${s}) translate(${-x}px, ${-y}px)`;
+    const card = $('s6-card'), ck = P(t, 14, 14.6);
+    card.style.transform = `translateX(${(1 - ck) * -200}px)`; card.style.opacity = ck;
+    const second = t >= 17;
+    $('s6-kick').textContent = second ? 'mapa por estado' : 'linha do tempo';
+    $('s6-b').textContent = second ? 'de onde' : 'quando';
+    $('s6-c').textContent = second ? 'vem.' : 'sai.';
+    const base = second ? 17 : 14.3;
+    rise($('s6-a'), t, base); rise($('s6-b'), t, base + .25); rise($('s6-c'), t, base + .5);
+    fadeUp($('s6-kick'), t, base);
+    const tk = $('s6-ticker');
+    tk.style.transform = `translateX(${-(t - 14) * 260}px)`;
+    tk.style.color = second ? '#555' : '#2a2a2a';
+  }
+
+  /* S7 — lista em perspectiva rolando */
+  if (t >= 20 && t < 23) {
+    const k = P(t, 20, 20.8);
+    const pl = $('s7-plane');
+    pl.style.transform = `rotateX(38deg) rotateZ(-18deg) translateY(${-(t - 20) * 380 + (1 - k) * 600}px)`;
+    pl.style.opacity = k;
+    rise($('s7-a'), t, 20.0); rise($('s7-b'), t, 20.5); rise($('s7-c'), t, 21.0);
+    fadeUp($('s7-cap'), t, 21.4);
+  }
+
+  /* S8 — celular */
+  if (t >= 23 && t < 26) {
+    const k = P(t, 23, 23.9);
+    const ph = $('s8-phone');
+    ph.style.transform = `translateY(${(1 - k) * 900}px) rotate(${lerp(14, -4, k) + P(t, 23.9, 26, ease.lin) * 2}deg)`;
+    $('s8-img').style.transform = `translateY(${-P(t, 23.7, 26, ease.inOutCubic) * 1850}px)`;
+    $('s8-ghost').style.transform = `translateX(${-(t - 23) * 160}px)`;
+    rise($('s8-a'), t, 23.2); rise($('s8-b'), t, 23.6);
+    fadeUp($('s8-cap'), t, 24.2);
+  }
+
+  /* S9 — envio da comunidade */
+  if (t >= 26 && t < 29) {
+    const k = P(t, 26, 26.9);
+    $('s9-browser').style.transform = `translateX(${(1 - k) * 700}px) rotateY(${lerp(-30, -10, k)}deg)`;
+    // Digitação no campo "Artista" (posição relativa à captura: 26,3% / 50,6%)
+    const view = $('s9-img'), scale = 1100 / 2400;
+    const msg = 'Sua banda aqui';
+    const n = Math.floor(clamp((t - 26.8) / 1.0) * msg.length);
+    const caret = (Math.floor(t * 4) % 2 === 0) ? '|' : ' ';
+    const ty = $('s9-type');
+    ty.textContent = msg.slice(0, n) + (t > 26.6 ? caret : '');
+    ty.style.left = `${758 * scale}px`; ty.style.top = `${802 * scale - 13}px`;
+    // Apaga o placeholder com um retângulo da cor do fundo do formulário
+    ty.style.background = t > 26.6 ? '#111' : 'transparent';
+    ty.style.minWidth = t > 26.6 ? '260px' : '0'; ty.style.padding = '2px 0';
+    view.style.transform = `scale(${1 + P(t, 26.5, 29, ease.lin) * .05})`; view.style.transformOrigin = '30% 50%';
+    rise($('s9-a'), t, 26.2); rise($('s9-b'), t, 26.5);
+    fadeUp($('s9-c'), t, 27.0); fadeUp($('s9-d'), t, 27.5);
+    const out = P(t, 28.5, 29, ease.inExpo);
+    $('s9').style.transform = `scale(${1 + out * .4})`; $('s9').style.filter = `blur(${out * 10}px)`;
+  }
+
+  /* S10 — assinatura */
+  if (t >= 29) {
+    const k = P(t, 29, 29.6);
+    const logo = $('s10-logo');
+    logo.style.transform = `scale(${lerp(1.5, 1, k) + P(t, 29.6, 33, ease.lin) * .04})`;
+    logo.style.letterSpacing = `${lerp(.1, -.04, k)}em`;
+    logo.style.filter = `blur(${(1 - k) * 16}px)`;
+    fadeUp($('s10-tag'), t, 29.8); fadeUp($('s10-url'), t, 30.4);
+    $('s10').style.opacity = 1 - P(t, 32.2, 33, ease.inOutCubic);
+  }
+
+  // Grão animado (muda de posição a cada quadro de 12 fps — textura de filme)
+  const g = Math.floor(t * 12);
+  $('grain').style.transform = `translate(${(g * 37) % 100 - 50}px, ${(g * 53) % 100 - 50}px)`;
+}
+
+// Modo render: o script de captura chama window.render(t) quadro a quadro.
+window.render = render;
+const RENDER = new URLSearchParams(location.search).has('render');
+if (RENDER) {
+  document.getElementById('preview-hint').remove();
+  window.ready = document.fonts.ready.then(() => Promise.all([...document.images].map(i => i.decode().catch(() => {}))));
+  render(0);
+} else {
+  // Prévia no navegador: ajusta à janela e toca em loop (com som se trilha.mp3 existir)
+  const fit = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); $('stage').style.transform = `scale(${s})`; };
+  addEventListener('resize', fit); fit();
+  const audio = new Audio('trilha.mp3');
+  let start = performance.now(), paused = false, pausedAt = 0;
+  const tick = now => { if (!paused) render(((now - start) / 1000) % DURATION); requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  addEventListener('click', () => { start = performance.now(); audio.currentTime = 0; audio.play().catch(() => {}); paused = false; });
+  addEventListener('keydown', e => {
+    if (e.code !== 'Space') return;
+    paused = !paused;
+    if (paused) { pausedAt = performance.now(); audio.pause(); } else { start += performance.now() - pausedAt; audio.play().catch(() => {}); }
+  });
+}
+</script>
+</body>
+</html>
