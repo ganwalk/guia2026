@@ -1,11 +1,13 @@
-# Vídeo promocional — "brag" do Guia 26
+# Vídeo convite — Guia 26
 
-Vídeo de 33 s (1920×1080, 30 fps) vendendo o site, montado como uma composição HTML com
-linha do tempo determinística e renderizado quadro a quadro.
+Vídeo de 33 s (1920×1080, 30 fps) chamando artistas e toda a cadeia da música (bandas, selos,
+assessorias, produtoras, jornalistas) para colocar seus lançamentos no guia. Tom lúdico:
+adesivos que pulam com mola, vinil girando, pins caindo no mapa, confete e trilha pop.
+É uma composição HTML com linha do tempo determinística, renderizada quadro a quadro.
 
 - **`guia26-promo.mp4`** — vídeo final, com trilha.
 - **`video.html`** — a composição. Aberta no navegador, roda em loop (clique para tocar com som, espaço pausa).
-- **`trilha.py`** — sintetiza a trilha de 120 BPM; cada corte de cena cai numa batida.
+- **`trilha.py`** — sintetiza a trilha (120 BPM, Dó maior, marimba + efeitos sincronizados com as animações).
 - **`render.js`** — captura os quadros com Playwright e monta o MP4 com ffmpeg.
 - **`telas/`** — capturas reais do site em modo escuro (desktop, lista, formulário e mobile).
 
@@ -13,16 +15,16 @@ linha do tempo determinística e renderizado quadro a quadro.
 
 | Tempo | Cena |
 |---|---|
-| 0–2 s | **2026** entra com impacto |
-| 2–4 s | DISCOS. EPS. SINGLES. TUDO. — uma palavra por batida |
-| 4–7 s | Rajada de 24 artistas reais da base, 1/4 de batida cada |
-| 7–10 s | Contador até **432 lançamentos**, 90+ cidades, 120+ fontes |
-| 10–14 s | Revelação do site em perspectiva — "Tudo num só lugar." |
-| 14–20 s | Câmera na linha do tempo ("Saiba quando sai.") e no mapa ("Saiba de onde vem.") |
-| 20–23 s | Lista em perspectiva — "Filtre. Busque. Descubra." |
-| 23–26 s | Celular rolando o site — "No seu bolso." |
-| 26–29 s | Formulário sendo preenchido — "Ficou de fora?" |
-| 29–33 s | Assinatura **GUIA 26** + guiadelancamentos.com.br |
+| 0–2 s | Um vinil rola até o centro — adesivos "Psiu!" 👀 — "é, você que faz música." |
+| 2–4 s | "Vai lançar" + adesivos *um disco? / um EP? / um single?*, um por batida |
+| 4–7 s | "Tá em boa companhia:" — 24 artistas reais da base caem como adesivos → "+400 artistas!" |
+| 7–10 s | Fundo lima: contador até **432 lançamentos no radar**, 90+ cidades, 120+ fontes, equalizador no beat |
+| 10–14 s | O site entra com mola — "O mapa da música br de 2026." + "feito pela comunidade" |
+| 14–20 s | Linha do tempo com março circulado ("março tá lotado!") e pins caindo nas cidades: "Seu público sabe quando sai / de onde vem." |
+| 20–23 s | Lista em perspectiva com um card "SUA BANDA AQUI" encaixado — "Seu nome aqui, ó!" 👉 |
+| 23–26 s | Celular soltando notas musicais — "Seu público no bolso." |
+| 26–29 s | Formulário sendo preenchido + confete — "Ficou de fora? Bora! preenche, envia, tá no mapa!" |
+| 29–33 s | **GUIA 26** — "Chega mais, artista! banda! selo! assessoria!…" — "Coloca seu som no mapa →" |
 
 ## Renderizar de novo
 
